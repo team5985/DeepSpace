@@ -106,7 +106,49 @@ public class Drive extends Subsystem {
 		// Invert right side NOTE: this will make the right controllers green when driving forward
 		leftDriveA.setInverted(Constants.kLeftDriveMotorPhase);
 		rightDriveA.setInverted(Constants.kRightDriveMotorPhase);
-    }
+
+		
+	}
+	//Gyro Turning
+	public boolean actionGyroTurn(double gain, double degrees, int speed) {
+
+		boolean completed = false;
+		boolean dirLeft = true;
+		double actualPos = imu.getYaw();
+
+		
+		
+		var requiredMovement = (degrees - actualPos);
+		double setMovement = gain * requiredMovement;
+
+		
+			if (setMovement < 0) {
+				arcadeDrive(0.0, 1.0, speed);
+				completed = true;
+			}
+			else if (setMovement > 0) {
+				arcadeDrive(0.0, -1.0, speed);
+				completed = true;
+			}
+
+			return completed;
+		}
+		
+	//Driver Heading Assist
+			public void headingAssist(double speed, double adjustAmmount) {
+				float yaw = imu.getYaw();;
+				if(yaw != 0) {
+					if((imu.getYaw()) > 0) {
+						arcadeDrive(0.0, (adjustAmmount * -1), speed);
+					}
+					else {
+						arcadeDrive(0.0, adjustAmmount, speed);
+					}
+
+					
+				}
+			
+			}
 
 	@Override
 	void configSensors() {
