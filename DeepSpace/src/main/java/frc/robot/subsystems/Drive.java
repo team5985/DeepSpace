@@ -49,11 +49,16 @@ public class Drive extends Subsystem {
 	 */
     private Drive() {
     	configActuators();
-    	configSensors();
-    }
+		configSensors();
+	}
+
+	public void arcadeDrive(double power, double steering, double throttle) {
+		double leftPower = steering;
+		double rightPower = steering;
+	}
     
     /**
-     * Set the power of both sides of the drivetrain individually. Ranges -1 to 1.
+     * Set the power of both sides of the drivetrain individually. Ranges from -1 to 1.
      * @param leftPower
      * @param rightPower
      */
