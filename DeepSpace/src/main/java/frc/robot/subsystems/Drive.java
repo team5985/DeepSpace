@@ -118,7 +118,7 @@ public class Drive extends Subsystem {
 
 		
 		imu.getYaw(actualPos);
-		double requiredMovement = (degrees - actualPos);
+		var requiredMovement = (degrees - actualPos);
 		double setMovement = gain * requiredMovement;
 
 		
@@ -136,8 +136,10 @@ public class Drive extends Subsystem {
 		
 	//Driver Heading Assist
 			public void headingAssist(double speed, double adjustAmmount) {
-				while((imu.getYaw()) =! 0) {
-					if((imu.getYaw()) >0) {
+				float yaw = 0;
+				imu.getYaw(yaw);
+				if(yaw =! 0) {
+					if((imu.getYaw()) > 0) {
 						arcadeDrive(0.0, (adjustAmmount * -1), speed);
 					}
 					else {
