@@ -110,39 +110,38 @@ public class Drive extends Subsystem {
 		
 	}
 	//Gyro Turning
-	public boolean actionGyroTurn(int gain, int degrees, int speed) {
+	public boolean actionGyroTurn(double gain, double degrees, int speed) {
 
-		private boolean completed; completed = false;
-		private int requiredMovement = 0;
-		private boolean dirLeft = true;
+		boolean completed = false;
+		boolean dirLeft = true;
+		double actualPos = 0.0;
 
 		
 		imu.getYaw(actualPos);
-		private int requiredMovement = (degrees - actualPos);
-		private int setMovement = gain * requiredMovement;
+		double requiredMovement = (degrees - actualPos);
+		double setMovement = gain * requiredMovement;
 
 		
-			for (setMovement < 0) {
-				Drive.arcadeDrive(0.0, 1.0, speed);
-				private boolean completed = true;
+			if (setMovement < 0) {
+				arcadeDrive(0.0, 1.0, speed);
+				completed = true;
 			}
-			for (setMovement > 0) {
-				Drive.arcadeDrive(0.0, -1.0, speed);
-				private boolean completed = true;
+			else if (setMovement > 0) {
+				arcadeDrive(0.0, -1.0, speed);
+				completed = true;
 			}
 
 			return completed;
 		}
 		
 	//Driver Heading Assist
-			public void headingAssist(private double speed, private double adjustAmmount) {
-				private double adjustAmmount = 0.1;
+			public void headingAssist(double speed, double adjustAmmount) {
 				while((imu.getYaw()) =! 0) {
 					if((imu.getYaw()) >0) {
-						Drive.arcadeDrive(0.0, (adjustAmmount * -1), speed);
+						arcadeDrive(0.0, (adjustAmmount * -1), speed);
 					}
 					else {
-						Drive.arcadeDrive(0.0, adjustAmmount, speed);
+						arcadeDrive(0.0, adjustAmmount, speed);
 					}
 
 					
