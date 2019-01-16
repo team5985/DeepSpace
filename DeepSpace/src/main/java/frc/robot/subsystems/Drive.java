@@ -23,7 +23,7 @@ public class Drive extends Subsystem {
     public static Drive driveInstance;
 
     /**
-     * Get instance of the drivetrain subsystem.
+     * Get instance of the drive subsystem
      * @return Drive instance
      */
     public static Drive getInstance() {
