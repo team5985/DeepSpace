@@ -24,7 +24,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-	  Drive.getInstance();
   }
 
   @Override
@@ -50,5 +49,4 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
-
 }
