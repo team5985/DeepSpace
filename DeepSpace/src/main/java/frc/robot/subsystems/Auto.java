@@ -6,9 +6,9 @@ public abstract class Auto {
    
 	public void auto() {
 	
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		long endTime = 0;
-		long maxTime = 15000;
+		final long maxTime = 15000;
 		long elapsedTime = 0;
 		boolean end = false;
 		boolean completed = false;
