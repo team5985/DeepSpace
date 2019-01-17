@@ -65,6 +65,12 @@ public class Drive extends Subsystem {
 		setMotors(leftPower, rightPower);
 
 	}
+
+	// Function to drive in a straight line
+	public void straightDrive(double power, int direction, double throttle) {
+		reverse = direction;
+		arcadeDrive(power, 0 , throttle);
+	}
     
     /**
      * Set the power of both sides of the drivetrain individually. Ranges from -1 to 1.
@@ -125,7 +131,6 @@ public class Drive extends Subsystem {
 		boolean dirLeft = true;
 		double actualPos = imu.getYaw();
 
-		
 		
 		var requiredMovement = (degrees - actualPos);
 		double setMovement = gain * requiredMovement;
