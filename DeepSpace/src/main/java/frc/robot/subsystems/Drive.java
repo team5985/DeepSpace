@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 
@@ -43,6 +44,9 @@ public class Drive extends Subsystem {
 	private WPI_TalonSRX rightDriveC; // Slave
 	
 	private AHRS imu; // Inertial Measurement Unit (navx)
+
+	Joystick stick;
+	int reverse = 1;
     
 	/**
 	 * Initialise drivetrain
@@ -53,8 +57,13 @@ public class Drive extends Subsystem {
 	}
 
 	public void arcadeDrive(double power, double steering, double throttle) {
-		double leftPower = steering;
-		double rightPower = steering;
+		if (stick.getRawButtonPressed(7)) {
+			reverse *= -1;
+	   }
+		double leftPower = (power + steering) * throttle * reverse;
+		double rightPower = (power - steering) * throttle * reverse;
+		setMotors(leftPower, rightPower);
+
 	}
     
     /**
@@ -78,7 +87,7 @@ public class Drive extends Subsystem {
 		rightDriveB = new WPI_TalonSRX(Constants.kRightDriveBCanId);
 		rightDriveC = new WPI_TalonSRX(Constants.kRightDriveCCanId);
 		
-		// Reset to factory default, so we ensure all the settings are what's in this method
+		// Reset to factory default, so we ensure all the settings are what's in this method.
 		leftDriveA.configFactoryDefault();
 		leftDriveB.configFactoryDefault();
 		leftDriveC.configFactoryDefault();
@@ -159,5 +168,7 @@ public class Drive extends Subsystem {
 		
 		rightDriveA.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
 		rightDriveA.setSensorPhase(Constants.kRightDriveEncoderPhase);
+
+		stick = new Joystick(1);
 	}
 }
