@@ -56,6 +56,7 @@ public class Drive extends Subsystem {
 		configSensors();
 	}
 
+	// Drive-Control
 	public void arcadeDrive(double power, double steering, double throttle) {
 		if (stick.getRawButtonPressed(7)) {
 			reverse *= -1;
