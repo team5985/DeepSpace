@@ -6,7 +6,7 @@ public abstract class Method {
 	
 	public boolean methodStickInterupt() {
 		boolean end = false;
-		Stick = new Joystick(1);
+		Stick = new Joystick(0);
 
 		if(Stick.getX >= 0.7) {
 			end = true;
