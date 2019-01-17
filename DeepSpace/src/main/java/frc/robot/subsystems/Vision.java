@@ -10,7 +10,7 @@ public abstract class Vision {
 
 	//Main vision class
 
-	boolean machineVision() {
+	public boolean machineVision() {
 			
 			long startTime = System.currentTimeMillis();
 			long endTime = 0;
@@ -32,19 +32,8 @@ public abstract class Vision {
 				}else if(Stick.getButtonPressed(2)) {
 					end = true;
 				}//Violent Stick Movement
-
-				else if(Stick.getX >= 0.7) {
-					end = true;
-				}else if(Stick.getX <= -0.7) {
-					end = true;
-				}else if(Stick.getY >= 0.7) {
-					end = true;
-				}else if(Stick.getY <= -0.7) {
-					end = true;
-				}else if(Stick.getZ >= 0.7) {
-					end = true;
-				}else if(Stick.getZ <= -0.7) {
-					end = true;
+					Method.methodStickInterupt(end);
+			
 			}
 			if(end = true) {
 				completed = false;
