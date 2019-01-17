@@ -8,8 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.subsystems.Vision;
+
 
 /**
  * Do NOT add any static variables to this class, or any initialization at all.
@@ -28,10 +27,7 @@ public final class Main {
   public static void main(String... args) {
     RobotBase.startRobot(Robot::new);
 
-//Look for Vision activation
-  Joystick stick;
-  if (Stick.getRawButtonPressed(7)) {
-      Vision.machineVision();
+
     }
 
 

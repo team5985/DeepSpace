@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public abstract class Vision {
 	Timer timer = new Timer();
-	Stick = new Joystick(1);
+	Stick = new Joystick(0);
 
 	//Main vision class
 
