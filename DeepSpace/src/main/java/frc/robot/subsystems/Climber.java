@@ -4,16 +4,19 @@ import com.kauailabs.navx.frc.AHRS;
 
 public abstract class Climber {
 
-boolean encoder = true;
-
+boolean encoderElev = true;
+boolean encoderArm = true;
 private AHRS imu;
 	
 private void mantisArmManual(Boolean direction) {
 /**Boolean direction-True = Up */
+boolean completed = false;
 	if(direction == true){
 		//Arm Up
+		completed = true;
 	}else {
 		//Arm down
+		completed = true;
 	}
 }
 private void elevatorAMove(Boolean direction) {
@@ -25,7 +28,7 @@ private void elevatorAMove(Boolean direction) {
 		//Arm down
 	}
 }
-}
+
 private void elevatorBMove(Boolean direction) {
 
 	/**Boolean direction-True = Up */
@@ -36,29 +39,67 @@ private void elevatorBMove(Boolean direction) {
 	}
 }
 
+
+
 public boolean elevatorManual(boolean direction) {
-	if (encoder == false) {
+		/**Boolean direction-True = Up */
+	boolean completed = false;
+	if (encoderElev == false) {
 		if (direction = true)
-			if ((imu.getYaw) <= -5) {
+			if ((imu.getRoll()) <= -5.0) {
 				elevatorBMove(true);
-			}else if ((imu.getYaw) <= -5) {
+				completed = true;
+			}else if ((imu.getRoll()) >= 5.0) {
 				elevatorAMove(true);
+				completed = true;
 			}else {
 				elevatorAMove(true);
 				elevatorAMove(true);
+				completed = true;
 			}
 		}else if (direction = false) {
-			if ((imu.getYaw) <= -5) {
+			if ((imu.getRoll()) <= -5.0) {
 				elevatorBMove(false);
-			}else if ((imu.getYaw) <= -5) {
+				completed = true;
+			}else if ((imu.getRoll()) >= 5.0) {
 				elevatorAMove(false);
+				completed = true;
 			}else {
 				elevatorAMove(false);
 				elevatorAMove(false);
+				completed = true;  
 			}
-	}else if {
-		
-		
-	}	
+	}	return completed;}		
+	
+	public boolean elevatorPitch() {
+		boolean completedElev = false;
+		boolean completedProc = false;
 
-}
+		boolean base = true;
+		if ((imu.getPitch()) <= -5.0) {
+			completedElev = (elevatorManual(false));
+		}else if ((imu.getPitch()) >= 5.0); {
+			completedElev = (elevatorManual(false));
+		}else {
+			
+		}
+	return base == completedElev == completedProc;
+	
+
+	}
+	public boolean climb(boolean direction) {
+		boolean base = true;
+		if (encoderArm = false) {
+			boolean completedArm = (mantisArmManual(direction));
+		}
+		boolean competedElev = (elevatorPitch());
+		return base == completedArm == completedElev;
+
+	}
+}	
+
+
+	
+
+
+ 
