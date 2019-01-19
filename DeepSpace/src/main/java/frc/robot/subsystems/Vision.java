@@ -6,12 +6,11 @@ import edu.wpi.first.wpilibj.Joystick;
 
 public abstract class Vision {
 	Timer timer = new Timer();
-	Stick = new Joystick(0);
+	Joystick stick = new Joystick(0);
 
 	//Main vision class
 
 	public boolean machineVision() {
-			
 			long startTime = System.currentTimeMillis();
 			long endTime = 0;
 			long elapsedTime = 0;
@@ -29,10 +28,10 @@ public abstract class Vision {
 					end = true;
 				//Vision Button
 
-				}else if(Stick.getButtonPressed(2)) {
+				}else if(stick.getRawButtonPressed(2)) {
 					end = true;
 				}//Violent Stick Movement
-					Method.methodStickInterupt(end);
+					methodStickInterupt(end);
 			
 			}
 			if(end = true) {
@@ -43,11 +42,6 @@ public abstract class Vision {
 
 		return(completed);
 	}
-		
-			
-		
-			
-		}
 
 
 }

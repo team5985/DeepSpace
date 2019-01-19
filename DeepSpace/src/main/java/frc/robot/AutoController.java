@@ -1,8 +1,8 @@
-package frc.robot.subsystems;
+package frc.robot;
 
 import java.util.Timer;
 
-public abstract class Auto {
+public abstract class AutoController {
    
 	public void auto() {
 	
@@ -23,10 +23,8 @@ public abstract class Auto {
 			} else if(Stick.getButtonPressed(8)){
 				end = false;
 			}
-			Method.methodStickInterupt(end);
+			methodStickInterupt();
 			
 		}
-	
-	
 	}
 }
