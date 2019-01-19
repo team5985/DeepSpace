@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 
@@ -23,7 +24,7 @@ public class Drive extends Subsystem {
     public static Drive driveInstance;
 
     /**
-     * Get instance of the drivetrain subsystem.
+     * Get instance of the drive subsystem
      * @return Drive instance
      */
     public static Drive getInstance() {
@@ -43,6 +44,9 @@ public class Drive extends Subsystem {
 	private WPI_TalonSRX rightDriveC; // Slave
 	
 	private AHRS imu; // Inertial Measurement Unit (navx)
+
+	Joystick stick;
+	int reverse = 1;
     
 	/**
 	 * Initialise drivetrain
@@ -52,9 +56,21 @@ public class Drive extends Subsystem {
 		configSensors();
 	}
 
+	// Drive-Control
 	public void arcadeDrive(double power, double steering, double throttle) {
-		double leftPower = steering;
-		double rightPower = steering;
+		if (stick.getRawButtonPressed(7)) {
+			reverse *= -1;
+	   }
+		double leftPower = (power + steering) * throttle * reverse;
+		double rightPower = (power - steering) * throttle * reverse;
+		setMotors(leftPower, rightPower);
+
+	}
+
+	// Function to drive in a straight line
+	public void straightDrive(double power, int direction, double throttle) {
+		reverse = direction;
+		arcadeDrive(power, 0 , throttle);
 	}
     
     /**
@@ -78,7 +94,7 @@ public class Drive extends Subsystem {
 		rightDriveB = new WPI_TalonSRX(Constants.kRightDriveBCanId);
 		rightDriveC = new WPI_TalonSRX(Constants.kRightDriveCCanId);
 		
-		// Reset to factory default, so we ensure all the settings are what's in this method
+		// Reset to factory default, so we ensure all the settings are what's in this method.
 		leftDriveA.configFactoryDefault();
 		leftDriveB.configFactoryDefault();
 		leftDriveC.configFactoryDefault();
@@ -109,32 +125,29 @@ public class Drive extends Subsystem {
 
 		
 	}
-	
-	public actionGyroTurn (private int degrees, private int speed, public boolean completed) {
+	//Gyro Turning
+	public boolean actionGyroTurn(double gain, double degrees, int speed) {
 
-		public boolean completed; completed = false;
-		private int requiredMovement = 0;
-		private boolean dirLeft = true;
-
-		
-		imu.getYaw(private int actualPos);
-		private int requiredMovement = (degrees - actualPos);
+		boolean completed = false;
+		boolean dirLeft = true;
+		double actualPos = imu.getYaw();
 
 		
-			for (requiredMovement < 0) {
-				//Turn Right
+		var requiredMovement = (degrees - actualPos);
+		double setMovement = gain * requiredMovement;
+
+		
+			if (setMovement < 0) {
+				arcadeDrive(0.0, 1.0, speed);
+				completed = true;
 			}
-			for (requiredMovement > 0) {
-				//Turn Left
+			else if (setMovement > 0) {
+				arcadeDrive(0.0, -1.0, speed);
+				completed = true;
 			}
-		
 
-
-		
-
-
-	}
-}
+			return completed;
+		}
 
 	@Override
 	void configSensors() {
@@ -145,5 +158,7 @@ public class Drive extends Subsystem {
 		
 		rightDriveA.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
 		rightDriveA.setSensorPhase(Constants.kRightDriveEncoderPhase);
+
+		stick = new Joystick(1);
 	}
 }
