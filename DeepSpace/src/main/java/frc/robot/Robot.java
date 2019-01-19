@@ -22,8 +22,11 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
+  Drive m_drive;
+
   @Override
   public void robotInit() {
+    m_drive = Drive.getInstance();
   }
 
   @Override
@@ -40,6 +43,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    m_drive.arcadeDrive(0.5, 0.0, 1.0);
   }
 
   @Override
