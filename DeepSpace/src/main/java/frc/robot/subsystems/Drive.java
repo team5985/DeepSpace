@@ -47,7 +47,7 @@ public class Drive extends Subsystem {
 
 	Joystick stick;
 	int reverse = 1;
-    
+    private boolean robotTipped = false;
 	/**
 	 * Initialise drivetrain
 	 */
@@ -58,14 +58,20 @@ public class Drive extends Subsystem {
 
 	// Drive-Control
 	public void arcadeDrive(double power, double steering, double throttle) {
-		if (stick.getRawButtonPressed(7)) {
-			reverse *= -1;
-	   }
-		double leftPower = (power + steering) * throttle * reverse;
-		double rightPower = (power - steering) * throttle * reverse;
-		setMotors(leftPower, rightPower);
+		if (robotTipped == false){
+
+			if (stick.getRawButtonPressed(7)) {
+				reverse *= -1;
+				}
+			double leftPower = (power + steering) * throttle * reverse;
+			double rightPower = (power - steering) * throttle * reverse;
+			setMotors(leftPower, rightPower);
+			}
 
 	}
+
+		
+
 
 	// Function to drive in a straight line
 	public void straightDrive(double power, int direction, double throttle) {
@@ -151,7 +157,7 @@ public class Drive extends Subsystem {
 		
 	//Driver Heading Assist
 			public void headingAssist(double speed, double adjustAmmount) {
-				float yaw = imu.getYaw();;
+				float yaw = imu.getYaw();
 				if(yaw != 0) {
 					if((imu.getYaw()) > 0) {
 						arcadeDrive(0.0, (adjustAmmount * -1), speed);
@@ -165,6 +171,28 @@ public class Drive extends Subsystem {
 			
 			}
 
+		//////// idk what im doing
+		// TODO      make sure electronics direction is right
+		public void testTip(){
+			float roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
+			float threshold = 10.0f;
+			if(roll > threshold || roll < -threshold){
+				robotTipped = true;
+				if (roll > threshold){
+					setMotors(-0.5, -0.5);
+				}
+				//TODO: fix
+				if (roll < -threshold){
+					setMotors(0.5, 0.5);
+				}
+				//TODO: test 
+			}
+			else{
+				robotTipped = false;
+			}
+
+		}
+	
 	@Override
 	void configSensors() {
 		imu = new AHRS(SPI.Port.kMXP); // Must be over SPI so the JeVois can communicate through UART Serial.
@@ -176,5 +204,7 @@ public class Drive extends Subsystem {
 		rightDriveA.setSensorPhase(Constants.kRightDriveEncoderPhase);
 
 		stick = new Joystick(1);
+
+
 	}
 }
