@@ -28,8 +28,7 @@ public class Robot extends TimedRobot {
   Joystick stick;
 
   Vision machineVision;
-
-
+  
   @Override
   public void robotInit() {
     stick = new Joystick(0);

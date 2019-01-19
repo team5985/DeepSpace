@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 
@@ -54,6 +55,7 @@ public class Drive extends Subsystem {
     private Drive() {
     	configActuators();
 		configSensors();
+		
 	}
 
 	// Drive-Control
