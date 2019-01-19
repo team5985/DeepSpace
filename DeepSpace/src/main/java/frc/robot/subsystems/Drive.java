@@ -148,22 +148,6 @@ public class Drive extends Subsystem {
 
 			return completed;
 		}
-		
-	//Driver Heading Assist
-			public void headingAssist(double speed, double adjustAmmount) {
-				float yaw = imu.getYaw();;
-				if(yaw != 0) {
-					if((imu.getYaw()) > 0) {
-						arcadeDrive(0.0, (adjustAmmount * -1), speed);
-					}
-					else {
-						arcadeDrive(0.0, adjustAmmount, speed);
-					}
-
-					
-				}
-			
-			}
 
 	@Override
 	void configSensors() {
