@@ -129,7 +129,7 @@ public class Drive extends Subsystem {
 	}
 	//Gyro Turning
 	public boolean actionGyroTurn(double gain, double degrees, int speed) {
-
+/** double gaim, double degrees, int speed*/
 		boolean completed = false;
 		boolean dirLeft = true;
 		double actualPos = imu.getYaw();
@@ -153,6 +153,7 @@ public class Drive extends Subsystem {
 		
 	//Driver Heading Assist
 			public void headingAssist(double speed, double adjustAmmount) {
+			/** double speed, double adjustAmmount*/
 				float yaw = imu.getYaw();;
 				if(yaw != 0) {
 					if((imu.getYaw()) > 0) {
