@@ -12,6 +12,10 @@ public class Constants {
     public static final int kRightDriveBCanId = 5;
     public static final int kRightDriveCCanId = 6;
 
+    //elevator TalonSRX 
+    public static final int kTalonElevatorLeftCanId = 0;
+    public static final int kTalonElevatorRightCanId = 1;
+
     // Driverstation Ports
     public static final int kJoystickPort = 0;
     
@@ -32,5 +36,10 @@ public class Constants {
     public static final double kPitchErrorMin = kPitchErrorMax * -1;
 
     public static final double kYawErrorMax = 5;
-    public static final double kYawErrorMin = kYawErrorMax * -1;    
+    public static final double kYawErrorMin = kYawErrorMax * -1;   
+    
+    // PCM Solenoid Ports
+    public static final int kMantisLeftPcmPort = 0;
+    public static final int kMantisRightPcmPort = 1;
+    
 }

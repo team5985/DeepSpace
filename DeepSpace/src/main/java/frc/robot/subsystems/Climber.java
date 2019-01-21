@@ -1,26 +1,35 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.Constants;
 
 public class Climber extends Subsystem {
 
 	boolean encoderElev = true;
 	boolean encoderArm = true;
 	private AHRS imu;
+
+	Solenoid mantisLeft;
+	Solenoid mantisRight;
+	TalonSRX talonLeft;
+	TalonSRX talonRight;
 		
 	/**
 	 * Set the Mantis Arms position.
 	 * @param direction where true is extended and false is retracted.
 	 */
 	private boolean manualExtendMantisArms(boolean direction) {
+		boolean completed = false;
 		if(direction == true){
-			
 			completed = true;
 		} else {
 			//Arm down
 			completed = true;
 		}
-
 		return completed;
 	}
 
@@ -46,30 +55,37 @@ public class Climber extends Subsystem {
 		if (encoderElev == false) {
 			if (direction = true)
 				if ((imu.getRoll()) <= -5.0) {
-					elevatorBMove(true);
+					elevatorMoveUP();
 					completed = true;
 				}else if ((imu.getRoll()) >= 5.0) {
-					elevatorAMove(true);
-					completed = true;
+					elevatorMoveUP();
+					completed = true;            //TILT CONTROL
 				}else {
-					elevatorAMove(true);
-					elevatorAMove(true);
-					completed = true;
+					elevatorMoveUP();
+					completed = true;                        
 				}
 			}else if (direction = false) {
 				if ((imu.getRoll()) <= -5.0) {
-					elevatorBMove(false);
+					elevatorMoveDown();;
 					completed = true;
 				}else if ((imu.getRoll()) >= 5.0) {
-					elevatorAMove(false);
+					elevatorMoveDown();;
 					completed = true;
 				}else {
-					elevatorAMove(false);
-					elevatorAMove(false);
+					elevatorMoveDown();
 					completed = true;  
 				}
-		}	return completed;}		
-		
+		}	return completed;
+	}		
+		public void elevatorMoveUP(){
+			talonLeft.set(ControlMode.PercentOutput, 1);
+			talonRight.set(ControlMode.PercentOutput, 1);
+		}
+		public void elevatorMoveDown(){
+			talonLeft.set(ControlMode.PercentOutput, -1);
+			talonRight.set(ControlMode.PercentOutput, -1);          //TODO change to make less jittery (proportional)
+		}
+
 		public boolean elevatorPitch() {
 			boolean completedElev = false;
 			boolean completedProc = false;
@@ -84,13 +100,20 @@ public class Climber extends Subsystem {
 		
 
 		}
-		public boolean climb(boolean direction) {
+		public boolean actionClimb(boolean direction) {
 			boolean base = true;
 			if (encoderArm = false) {
-				boolean completedArm = (mantisArmManual(direction));
+				//boolean completedArm = (mantisArmManual(direction));      add methods
 			}
 			boolean competedElev = (elevatorPitch());
-			return base == completedArm == completedElev;
+			//return base == completedArm == completedElev;            add methods
 
+	}
+
+	void configActuators() {
+		mantisLeft = new Solenoid(Constants.kMantisLeftPcmPort);
+		mantisRight = new Solenoid(Constants.kMantisRightPcmPort);
+		talonLeft = new TalonSRX(Constants.kTalonElevatorLeftCanId);
+		talonRight = new TalonSRX(Constants.kTalonElevatorLeftCanId);
 	}
 }	
