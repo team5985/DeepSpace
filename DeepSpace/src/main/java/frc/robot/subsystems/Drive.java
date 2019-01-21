@@ -134,7 +134,6 @@ public class Drive extends Subsystem {
 		boolean dirLeft = true;
 		double actualPos = imu.getYaw();
 
-		
 		var requiredMovement = (degrees - actualPos);
 		double setMovement = gain * requiredMovement;
 

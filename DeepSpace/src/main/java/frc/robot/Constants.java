@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class Constants {
@@ -12,6 +11,9 @@ public class Constants {
     public static final int kRightDriveACanId = 4;
     public static final int kRightDriveBCanId = 5;
     public static final int kRightDriveCCanId = 6;
+
+    // Driverstation Ports
+    public static final int kJoystickPort = 0;
     
     // Drivetrain Constants
     public static NeutralMode kDriveNeutralMode = NeutralMode.Brake;
@@ -30,7 +32,5 @@ public class Constants {
     public static final double kPitchErrorMin = kPitchErrorMax * -1;
 
     public static final double kYawErrorMax = 5;
-    public static final double kYawErrorMin = kYawErrorMax * -1;
-
-    
+    public static final double kYawErrorMin = kYawErrorMax * -1;    
 }
