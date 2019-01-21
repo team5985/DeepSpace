@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * Drivetrain class. Contains actions and functions to operate the drivetrain.
@@ -49,7 +50,8 @@ public class Drive extends Subsystem {
 	Joystick stick;
 	int reverse = 1;
 	private boolean robotTipped = false;
-	int tipTimer = 0;
+	double oldTime = 0;
+	double newTime = 0;
     
 	/**
 	 * Initialise drivetrain
@@ -72,13 +74,14 @@ public class Drive extends Subsystem {
 	}
 
 	}
+
 	public void testTip(){
 		double roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
 		double threshold = 10.0f;
 		if(roll > threshold || roll < -threshold){
-			if (tipTimer <= 150){
+			newTime = driveInstance.getInstance().getMatchTime()
+			if (3 <= newTime - oldTime ){
 			robotTipped = true;
-			tipTimer += 1;
 			if (roll > threshold){
 				setMotors(-0.5, -0.5);
 			}
@@ -93,7 +96,7 @@ public class Drive extends Subsystem {
 		}
 		else{
 			robotTipped = false;
-			tipTimer = 0;
+			oldTime = DriverStation.getInstance().getMatchTime();
 		}
 
 	}
