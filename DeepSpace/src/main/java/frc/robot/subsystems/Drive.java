@@ -22,6 +22,15 @@ import edu.wpi.first.wpilibj.DriverStation;
  *
  */
 public class Drive extends Subsystem {
+	public boolean zeroPosition(){
+		return false;
+	}
+	/**
+	 * returns z angle of Interial Measurement Unit
+	 */
+	public double getPosition(){
+		return imu.getYaw();
+	}
 	// Subsystems are singletons (only one instance of this class is possible)
     public static Drive driveInstance;
 
@@ -79,7 +88,7 @@ public class Drive extends Subsystem {
 		double roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
 		double threshold = 10.0f;
 		if(roll > threshold || roll < -threshold){
-			newTime = driveInstance.getInstance().getMatchTime()
+			newTime = DriverStation.getInstance().getMatchTime();
 			if (3 <= newTime - oldTime ){
 			robotTipped = true;
 			if (roll > threshold){
