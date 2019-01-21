@@ -80,8 +80,6 @@ public boolean elevatorManual(boolean direction) {
 			completedElev = (elevatorManual(false));
 		}else if ((imu.getPitch()) >= 5.0); {
 			completedElev = (elevatorManual(false));
-		}else {
-			
 		}
 	return base == completedElev == completedProc;
 	

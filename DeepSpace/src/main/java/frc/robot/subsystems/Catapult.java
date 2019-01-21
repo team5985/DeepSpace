@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import frc.robot.subsystems.Vision;
+import frc.robot.Vision;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
