@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants;
 
@@ -24,7 +25,7 @@ public class Drive extends Subsystem {
     public static Drive driveInstance;
 
     /**
-     * Get instance of the drivetrain subsystem.
+     * Get instance of the drive subsystem
      * @return Drive instance
      */
     public static Drive getInstance() {
@@ -47,6 +48,8 @@ public class Drive extends Subsystem {
 
 	Joystick stick;
 	int reverse = 1;
+	private boolean robotTipped = false;
+	int tipTimer = 0;
     
 	/**
 	 * Initialise drivetrain
@@ -54,15 +57,44 @@ public class Drive extends Subsystem {
     private Drive() {
     	configActuators();
 		configSensors();
+		
 	}
 
+	// Drive-Control
 	public void arcadeDrive(double power, double steering, double throttle) {
+		if (robotTipped == false){
 		if (stick.getRawButtonPressed(7)) {
 			reverse *= -1;
 	   }
 		double leftPower = (power + steering) * throttle * reverse;
 		double rightPower = (power - steering) * throttle * reverse;
 		setMotors(leftPower, rightPower);
+	}
+
+	}
+	public void testTip(){
+		double roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
+		double threshold = 10.0f;
+		if(roll > threshold || roll < -threshold){
+			if (tipTimer <= 150){
+			robotTipped = true;
+			tipTimer += 1;
+			if (roll > threshold){
+				setMotors(-0.5, -0.5);
+			}
+			//TODO: fix
+			if (roll < -threshold){
+				setMotors(0.5, 0.5);
+			}
+			} else {
+				robotTipped = false;
+			}
+			//TODO: test 
+		}
+		else{
+			robotTipped = false;
+			tipTimer = 0;
+		}
 
 	}
 
@@ -70,6 +102,7 @@ public class Drive extends Subsystem {
 	public void straightDrive(double power, int direction, double throttle) {
 		reverse = direction;
 		arcadeDrive(power, 0 , throttle);
+		
 	}
     
     /**
@@ -126,7 +159,7 @@ public class Drive extends Subsystem {
 	}
 	//Gyro Turning
 	public boolean actionGyroTurn(double gain, double degrees, int speed) {
-
+/** double gaim, double degrees, int speed*/
 		boolean completed = false;
 		boolean dirLeft = true;
 		double actualPos = imu.getYaw();
@@ -150,6 +183,7 @@ public class Drive extends Subsystem {
 		
 	//Driver Heading Assist
 			public void headingAssist(double speed, double adjustAmmount) {
+			/** double speed, double adjustAmmount*/
 				float yaw = imu.getYaw();;
 				if(yaw != 0) {
 					if((imu.getYaw()) > 0) {
