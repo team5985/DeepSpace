@@ -4,9 +4,13 @@ import java.util.Timer;
 import edu.wpi.first.wpilibj.Joystick;
 
 
-public abstract class Vision {
+public class Vision {
 	Timer timer = new Timer();
 	Joystick stick = new Joystick(0);
+
+	public Vision() {
+
+	}
 
 	//Main vision class
 
@@ -43,5 +47,7 @@ public abstract class Vision {
 		return(completed);
 	}
 
-
+	public double getX() {
+		return 0.0;
+	}
 }
