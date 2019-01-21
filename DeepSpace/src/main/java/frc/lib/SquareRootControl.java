@@ -54,4 +54,5 @@ public class SquareRootControl {
         vDown = _K * Math.sqrt(error);
         return Math.min(Math.min(vUp, vCoast), vDown); // Return lowest speed.
     }
+    //TODO need to convert to volts???? advice??
 }
