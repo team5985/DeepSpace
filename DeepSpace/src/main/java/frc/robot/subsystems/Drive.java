@@ -48,6 +48,8 @@ public class Drive extends Subsystem {
 
 	Joystick stick;
 	int reverse = 1;
+	private boolean robotTipped = false;
+	int tipTimer = 0;
     
 	/**
 	 * Initialise drivetrain
@@ -60,12 +62,39 @@ public class Drive extends Subsystem {
 
 	// Drive-Control
 	public void arcadeDrive(double power, double steering, double throttle) {
+		if (robotTipped == false){
 		if (stick.getRawButtonPressed(7)) {
 			reverse *= -1;
 	   }
 		double leftPower = (power + steering) * throttle * reverse;
 		double rightPower = (power - steering) * throttle * reverse;
 		setMotors(leftPower, rightPower);
+	}
+
+	}
+	public void testTip(){
+		double roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
+		double threshold = 10.0f;
+		if(roll > threshold || roll < -threshold){
+			if (tipTimer <= 150){
+			robotTipped = true;
+			tipTimer += 1;
+			if (roll > threshold){
+				setMotors(-0.5, -0.5);
+			}
+			//TODO: fix
+			if (roll < -threshold){
+				setMotors(0.5, 0.5);
+			}
+			} else {
+				robotTipped = false;
+			}
+			//TODO: test 
+		}
+		else{
+			robotTipped = false;
+			tipTimer = 0;
+		}
 
 	}
 
@@ -73,6 +102,7 @@ public class Drive extends Subsystem {
 	public void straightDrive(double power, int direction, double throttle) {
 		reverse = direction;
 		arcadeDrive(power, 0 , throttle);
+		
 	}
     
     /**
