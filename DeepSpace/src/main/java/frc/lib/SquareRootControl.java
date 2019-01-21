@@ -32,8 +32,12 @@ public class SquareRootControl {
     /**
      * Configure K gain for square root deceleration.
      */
-    public void configureK(double K) {
+    public void configK(double K) {
         _K = K;
+    }
+
+    public void configMaxSpeed(double maximumSpeed) {
+        _maxSpeed = maximumSpeed;
     }
 
     /**
