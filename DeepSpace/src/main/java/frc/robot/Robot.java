@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.Vision;
@@ -49,7 +48,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    
+
     if (stick.getRawButtonPressed(7)) {
       Vision.machineVision(); }
       Drive.getInstance().testTip();

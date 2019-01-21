@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class Constants {
@@ -12,13 +11,26 @@ public class Constants {
     public static final int kRightDriveACanId = 4;
     public static final int kRightDriveBCanId = 5;
     public static final int kRightDriveCCanId = 6;
+
+    // Driverstation Ports
+    public static final int kJoystickPort = 0;
     
-    // Drivetrain constants
+    // Drivetrain Constants
     public static NeutralMode kDriveNeutralMode = NeutralMode.Brake;
     
 	public static final boolean kLeftDriveEncoderPhase = false; // false = not inverted, true = inverted
 	public static final boolean kRightDriveEncoderPhase = false; // TODO: Check this
 	
 	public static final boolean kLeftDriveMotorPhase = false; // false = not inverted, true = inverted
-	public static final boolean kRightDriveMotorPhase = true;
+    public static final boolean kRightDriveMotorPhase = true;
+    
+    // Tilt Compensation Constants
+    public static final double kRollErrorMax = 5;
+    public static final double kRollErrorMin = kRollErrorMax * -1;
+
+    public static final double kPitchErrorMax = 5;
+    public static final double kPitchErrorMin = kPitchErrorMax * -1;
+
+    public static final double kYawErrorMax = 5;
+    public static final double kYawErrorMin = kYawErrorMax * -1;    
 }
