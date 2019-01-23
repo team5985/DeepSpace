@@ -17,6 +17,10 @@ public class Constants {
     public static final int kTalonElevatorRightCanId = 8;
     public static final int kTalonCargoIntakeCanId = 9;
 
+
+    //Solenoid
+    public static final byte kSolenoidMantisChannel = 0;
+
     // Driverstation Ports
     public static final int kJoystickPort = 0;
     public static final int kXboxPort = 1;
@@ -53,7 +57,7 @@ public class Constants {
     // PCM Solenoid Ports
     public static final int kMantisLeftPcmPort = 0;
     public static final int kMantisRightPcmPort = 1;  
-
+  
     // CargoIntake Contants
     /**degrees per second per second */
     public static final double kCargoIntakeMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
