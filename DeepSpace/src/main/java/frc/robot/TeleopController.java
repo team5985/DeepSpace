@@ -23,7 +23,10 @@ public class TeleopController {
         _drive = Drive.getInstance();
     }
 
-    public void run() {
+    /**
+     * To be called by Robot.teleopPeriodic() to run the teleop controller during the teleop mode.
+     */
+    public void runTeleop() {
         _drive.arcadeDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
     }
 }

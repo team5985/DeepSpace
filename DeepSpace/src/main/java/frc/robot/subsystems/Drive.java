@@ -6,8 +6,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SPI;
+import frc.lib.SquareRootControl;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -61,6 +61,8 @@ public class Drive extends Subsystem {
 	private boolean robotTipped = false;
 	double oldTime = 0;
 	double newTime = 0;
+
+	SquareRootControl gyroTurnController;
     
 	/**
 	 * Initialise drivetrain
@@ -69,6 +71,7 @@ public class Drive extends Subsystem {
     	configActuators();
 		configSensors();
 		
+		gyroTurnController = new SquareRootControl(Constants.kDriveMaxRotationalAccel, Constants.kDriveMaxRotationalVel, Constants.kDriveGyroTurnGain);
 	}
 
 	// Drive-Control
@@ -115,6 +118,41 @@ public class Drive extends Subsystem {
 		reverse = direction;
 		arcadeDrive(power, 0 , throttle);
 		
+	}
+
+	/**
+	 * Turn the robot on the spot based on gyro heading.
+	 * @param gain Gain to use for square root ramping.
+	 * @param targetHeading Heading to aim at, in degrees.
+	 * @param maxRate Coast rotational rate, in deg/s.
+	 * @return True when heading and rate within target threshold.
+	 */
+	public boolean actionGyroTurn(double gain, double targetHeading, int maxRate) {
+		double currentHeading = imu.getYaw();
+		double currentRate = imu.getRate();
+
+		gyroTurnController.configK(gain);
+		gyroTurnController.configMaxSpeed(maxRate);
+		double rate = gyroTurnController.run(currentHeading, targetHeading);
+
+		double steering = (rate * Constants.kDriveGyroTurnKf) + (rate - currentRate) * Constants.kDriveGyroTurnKp;  // TODO: Find feedforward and tune compensation
+		arcadeDrive(0.0, steering, 1.0);
+
+		return (Math.abs(targetHeading - currentHeading) <= Constants.kDriveGyroTurnThresh) && (Math.abs(currentRate) <= Constants.kDriveGyroRateThresh);
+	}
+		
+	//Driver Heading Assist
+	public void headingAssist(double speed, double adjustAmmount) {
+	/** double speed, double adjustAmmount*/
+		float yaw = imu.getYaw();
+		if(yaw != 0) {
+			if((imu.getYaw()) > 0) {
+				arcadeDrive(0.0, (adjustAmmount * -1), speed);
+			}
+			else {
+				arcadeDrive(0.0, adjustAmmount, speed);
+			}	
+		}
 	}
     
     /**
@@ -166,48 +204,7 @@ public class Drive extends Subsystem {
 		// Invert right side NOTE: this will make the right controllers green when driving forward
 		leftDriveA.setInverted(Constants.kLeftDriveMotorPhase);
 		rightDriveA.setInverted(Constants.kRightDriveMotorPhase);
-
-		
 	}
-	//Gyro Turning
-	public boolean actionGyroTurn(double gain, double degrees, int speed) {
-/** double gaim, double degrees, int speed*/
-		boolean completed = false;
-		boolean dirLeft = true;
-		double actualPos = imu.getYaw();
-
-		var requiredMovement = (degrees - actualPos);
-		double setMovement = gain * requiredMovement;
-
-		
-			if (setMovement < 0) {
-				arcadeDrive(0.0, 1.0, speed);
-				completed = true;
-			}
-			else if (setMovement > 0) {
-				arcadeDrive(0.0, -1.0, speed);
-				completed = true;
-			}
-
-			return completed;
-		}
-		
-	//Driver Heading Assist
-			public void headingAssist(double speed, double adjustAmmount) {
-			/** double speed, double adjustAmmount*/
-				float yaw = imu.getYaw();;
-				if(yaw != 0) {
-					if((imu.getYaw()) > 0) {
-						arcadeDrive(0.0, (adjustAmmount * -1), speed);
-					}
-					else {
-						arcadeDrive(0.0, adjustAmmount, speed);
-					}
-
-					
-				}
-			
-			}
 
 	@Override
 	void configSensors() {
