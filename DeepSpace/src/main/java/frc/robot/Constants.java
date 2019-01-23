@@ -14,6 +14,7 @@ public class Constants {
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
+    public static final int kXboxPort = 1;
     
     // Drivetrain Constants
     public static NeutralMode kDriveNeutralMode = NeutralMode.Brake;
