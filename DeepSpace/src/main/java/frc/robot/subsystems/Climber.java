@@ -8,7 +8,14 @@ boolean encoderElev = true;
 boolean encoderArm = true;
 private AHRS imu;
 Solenoid sMantisArm = new Solenoid(Constants.kSolenidMantisChannel);
+private WPI_TalonSRX elevator = new WPI_
 	
+public double elevatorEncoder() {
+
+	
+
+}
+
 private void mantisArmManual(Boolean direction) {
 /**Boolean direction-True = Up */
 boolean completed = false;
@@ -20,7 +27,7 @@ boolean completed = false;
 		completed = true;
 	}
 }
-private void elevatorAMove(Boolean direction) {
+private void elevatorMove(Boolean direction) {
 
 	/**Boolean direction-True = Up */
 	if(direction == true){
@@ -30,7 +37,7 @@ private void elevatorAMove(Boolean direction) {
 	}
 }
 
-private void elevatorBMove(Boolean direction) {
+private void elevatorMove(Boolean direction) {
 
 	/**Boolean direction-True = Up */
 	if(direction == true){
