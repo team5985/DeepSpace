@@ -7,15 +7,16 @@ public abstract class Climber {
 boolean encoderElev = true;
 boolean encoderArm = true;
 private AHRS imu;
+Solenoid sMantisArm = new Solenoid(Constants.kSolenidMantisChannel);
 	
 private void mantisArmManual(Boolean direction) {
 /**Boolean direction-True = Up */
 boolean completed = false;
 	if(direction == true){
-		//Arm Up
+		sMantisArm.set(true);
 		completed = true;
 	}else {
-		//Arm down
+		mantisArms.set(false);
 		completed = true;
 	}
 }
