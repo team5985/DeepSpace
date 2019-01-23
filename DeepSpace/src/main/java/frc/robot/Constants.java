@@ -17,11 +17,17 @@ public class Constants {
 	public static final int kDriveLeftEncoderBPort = 1;
 
     //elevator TalonSRX 
-    public static final int kTalonElevatorLeftCanId = 0;
-    public static final int kTalonElevatorRightCanId = 1;
+    public static final int kTalonElevatorLeftCanId = 7;
+    public static final int kTalonElevatorRightCanId = 8;
+    public static final int kTalonCargoIntakeCanId = 9;
+
+
+    //Solenoid
+    public static final byte kSolenoidMantisChannel = 0;
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
+    public static final int kXboxPort = 1;
 
     // Encoder Constants
     public static final int kEncoderPpr = 1024;  // Number of pulses per revolution of the encoder. Settable by the DIP switches on the AMT-103, should be checked.
@@ -30,7 +36,8 @@ public class Constants {
     public static IdleMode kDriveIdleMode = IdleMode.kBrake;
     
 	public static final boolean kLeftDriveEncoderPhase = false; // false = not inverted, true = inverted
-	public static final boolean kRightDriveEncoderPhase = true; // TODO: Check this
+    public static final boolean kRightDriveEncoderPhase = false; // TODO: Check this
+    public static final boolean kTalonCargoIntakeEncoderPhase = true; //TODO: Check 
 	
 	public static final boolean kLeftDriveMotorPhase = false; // false = not inverted, true = inverted
     public static final boolean kRightDriveMotorPhase = true;
@@ -58,5 +65,11 @@ public class Constants {
     
     // PCM Solenoid Ports
     public static final int kMantisLeftPcmPort = 0;
-    public static final int kMantisRightPcmPort = 1; 
+    public static final int kMantisRightPcmPort = 1;  
+  
+    // CargoIntake Contants
+    /**degrees per second per second */
+    public static final double kCargoIntakeMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
+    public static final double kCargoIntakeMaxSpeed = 518.4;
+    public static final double kCargoIntakeGain = 1;  //placeholder
 }

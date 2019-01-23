@@ -50,11 +50,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-
-    if (stick.getRawButtonPressed(7)) {
-      machineVision.machineVision(); 
-    }
-      Drive.getInstance().testTip();
+    Drive.getInstance().testTip();
   }
 
   @Override
@@ -63,5 +59,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
+  
   }
 }
+
+
+- rollMax, rollMin

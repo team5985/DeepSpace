@@ -67,7 +67,7 @@ public class Drive extends Subsystem {
 	double newTime = 0;
 
 	SquareRootControl gyroTurnController;
-    
+  
 	/**
 	 * Initialise drivetrain
 	 */
@@ -116,6 +116,9 @@ public class Drive extends Subsystem {
 		}
 
 	}
+
+		
+
 
 	// Function to drive in a straight line
 	public void straightDrive(double power, int direction, double throttle) {
@@ -197,7 +200,68 @@ public class Drive extends Subsystem {
 		leftDriveA.setSmartCurrentLimit(40);
 		rightDriveA.setSmartCurrentLimit(40);
 	}
+	//Gyro Turning
+	public boolean actionGyroTurn(double gain, double degrees, int speed) {
 
+		boolean completed = false;
+		boolean dirLeft = true;
+		double actualPos = imu.getYaw();
+
+		
+		var requiredMovement = (degrees - actualPos);
+		double setMovement = gain * requiredMovement;
+
+		
+			if (setMovement < 0) {
+				arcadeDrive(0.0, 1.0, speed);
+				completed = true;
+			}
+			else if (setMovement > 0) {
+				arcadeDrive(0.0, -1.0, speed);
+				completed = true;
+			}
+
+			return completed;
+		}
+		
+	//Driver Heading Assist
+			public void headingAssist(double speed, double adjustAmmount) {
+				float yaw = imu.getYaw();
+				if(yaw != 0) {
+					if((imu.getYaw()) > 0) {
+						arcadeDrive(0.0, (adjustAmmount * -1), speed);
+					}
+					else {
+						arcadeDrive(0.0, adjustAmmount, speed);
+					}
+
+					
+				}
+			
+			}
+
+		//////// idk what im doing
+		// TODO      make sure electronics direction is right
+		public void testTip(){
+			float roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
+			float threshold = 10.0f;
+			if(roll > threshold || roll < -threshold){
+				robotTipped = true;
+				if (roll > threshold){
+					setMotors(-0.5, -0.5);
+				}
+				//TODO: fix
+				if (roll < -threshold){
+					setMotors(0.5, 0.5);
+				}
+				//TODO: test 
+			}
+			else{
+				robotTipped = false;
+			}
+
+		}
+	
 	@Override
 	void configSensors() {
 		imu = new AHRS(SPI.Port.kMXP); // Must be over SPI so the JeVois can communicate through UART Serial.
