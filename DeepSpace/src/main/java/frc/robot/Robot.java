@@ -50,7 +50,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    Drive.getInstance().testTip();
   }
 
   @Override
@@ -59,9 +58,5 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
-  
   }
 }
-
-
-- rollMax, rollMin

@@ -8,7 +8,6 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
-import frc.lib.CuiEncoder;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -81,13 +80,13 @@ public class Drive extends Subsystem {
 	// Drive-Control
 	public void arcadeDrive(double power, double steering, double throttle) {
 		if (robotTipped == false){
-		if (stick.getRawButtonPressed(7)) {
-			reverse *= -1;
-	   }
-		double leftPower = (power + steering) * throttle * reverse;
-		double rightPower = (power - steering) * throttle * reverse;
-		setMotors(leftPower, rightPower);
-	}
+			if (stick.getRawButtonPressed(7)) {
+				reverse *= -1;
+			}
+			double leftPower = (power + steering) * throttle * reverse;
+			double rightPower = (power - steering) * throttle * reverse;
+			setMotors(leftPower, rightPower);
+		}
 
 	}
 
@@ -116,9 +115,6 @@ public class Drive extends Subsystem {
 		}
 
 	}
-
-		
-
 
 	// Function to drive in a straight line
 	public void straightDrive(double power, int direction, double throttle) {
@@ -200,68 +196,7 @@ public class Drive extends Subsystem {
 		leftDriveA.setSmartCurrentLimit(40);
 		rightDriveA.setSmartCurrentLimit(40);
 	}
-	//Gyro Turning
-	public boolean actionGyroTurn(double gain, double degrees, int speed) {
-
-		boolean completed = false;
-		boolean dirLeft = true;
-		double actualPos = imu.getYaw();
-
 		
-		var requiredMovement = (degrees - actualPos);
-		double setMovement = gain * requiredMovement;
-
-		
-			if (setMovement < 0) {
-				arcadeDrive(0.0, 1.0, speed);
-				completed = true;
-			}
-			else if (setMovement > 0) {
-				arcadeDrive(0.0, -1.0, speed);
-				completed = true;
-			}
-
-			return completed;
-		}
-		
-	//Driver Heading Assist
-			public void headingAssist(double speed, double adjustAmmount) {
-				float yaw = imu.getYaw();
-				if(yaw != 0) {
-					if((imu.getYaw()) > 0) {
-						arcadeDrive(0.0, (adjustAmmount * -1), speed);
-					}
-					else {
-						arcadeDrive(0.0, adjustAmmount, speed);
-					}
-
-					
-				}
-			
-			}
-
-		//////// idk what im doing
-		// TODO      make sure electronics direction is right
-		public void testTip(){
-			float roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
-			float threshold = 10.0f;
-			if(roll > threshold || roll < -threshold){
-				robotTipped = true;
-				if (roll > threshold){
-					setMotors(-0.5, -0.5);
-				}
-				//TODO: fix
-				if (roll < -threshold){
-					setMotors(0.5, 0.5);
-				}
-				//TODO: test 
-			}
-			else{
-				robotTipped = false;
-			}
-
-		}
-	
 	@Override
 	void configSensors() {
 		imu = new AHRS(SPI.Port.kMXP); // Must be over SPI so the JeVois can communicate through UART Serial.
@@ -270,5 +205,10 @@ public class Drive extends Subsystem {
 		leftEncoder.setMaxPeriod(0.1); 
 		leftEncoder.setDistancePerPulse(Constants.kDriveEncoderDistancePerPulse);
 		leftEncoder.setSamplesToAverage(8);
+
+		rightEncoder = new Encoder(Constants.kDriveRightEncoderAPort, Constants.kDriveRightEncoderBPort, Constants.kRightDriveEncoderPhase, EncodingType.k4X);
+		rightEncoder.setMaxPeriod(0.1); 
+		rightEncoder.setDistancePerPulse(Constants.kDriveEncoderDistancePerPulse);
+		rightEncoder.setSamplesToAverage(8);
 	}
 }

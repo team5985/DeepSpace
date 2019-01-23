@@ -12,17 +12,18 @@ public class Constants {
     public static final int kRightDriveBCanId = 5;
     public static final int kRightDriveCCanId = 6;
 
-    // RoboRIO DIO Ports
-    public static final int kDriveLeftEncoderAPort = 0;
-	public static final int kDriveLeftEncoderBPort = 1;
-
-    //elevator TalonSRX 
+    // Elevator TalonSRX
     public static final int kTalonElevatorLeftCanId = 7;
     public static final int kTalonElevatorRightCanId = 8;
     public static final int kTalonCargoIntakeCanId = 9;
 
+    // RoboRIO DIO Ports
+    public static final int kDriveLeftEncoderAPort = 0;
+    public static final int kDriveLeftEncoderBPort = 1;
+    public static final int kDriveRightEncoderAPort = 2;
+    public static final int kDriveRightEncoderBPort = 3;
 
-    //Solenoid
+    // PCM Ports
     public static final byte kSolenoidMantisChannel = 0;
 
     // Driverstation Ports
