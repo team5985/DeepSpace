@@ -24,8 +24,7 @@ public class Constants {
     public static final int kJoystickPort = 0;
     public static final int kXboxPort = 1;
 
-    // Driverstation Ports
-    public static final int kJoystickPort = 0;
+  
 
     
     // Drivetrain Constants
@@ -59,4 +58,7 @@ public class Constants {
     // PCM Solenoid Ports
     public static final int kMantisLeftPcmPort = 0;
     public static final int kMantisRightPcmPort = 1;  
+
+    
+
 }

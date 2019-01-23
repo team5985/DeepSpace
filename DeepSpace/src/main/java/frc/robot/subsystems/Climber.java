@@ -3,21 +3,30 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.Constants;
 
-
-public abstract class Climber {
+public class Climber extends Subsystem{
 
 boolean encoderElev = true;
 boolean encoderArm = true;
 private AHRS imu;
-Solenoid sMantisArm = new Solenoid(Constants.kSolenidMantisChannel);
-private WPI_TalonSRX elevator = new WPI_
+Solenoid sMantisArm;
+TalonSRX elevator;
+
+
+Solenoid mantisLeft;
+Solenoid mantisRight;
+TalonSRX talonLeft;
+TalonSRX talonRight;
 	
-public double elevatorEncoder() {
+/**in inches */
+	private double getEncoderHeight() {
+		return elevator.getSelectedSensorPosition() * 0.000244140625; //change values when robot built
+	}
 
 	
-
-}
 
 private void mantisArmManual(Boolean direction) {
 /**Boolean direction-True = Up */
@@ -26,34 +35,10 @@ boolean completed = false;
 		sMantisArm.set(true);
 		completed = true;
 	}else {
-		mantisArms.set(false);
+		sMantisArm.set(false);
 		completed = true;
 	}
 }
-private void elevatorMove(Boolean direction) {
-
-	/**Boolean direction-True = Up */
-	if(direction == true){
-		//Arm Up
-	}else {
-		//Arm down
-
-
-private void elevatorMove(Boolean direction) {
-
-import edu.wpi.first.wpilibj.Solenoid;
-import frc.robot.Constants;
-
-public class Climber extends Subsystem {
-
-	boolean encoderElev = true;
-	boolean encoderArm = true;
-	private AHRS imu;
-
-	Solenoid mantisLeft;
-	Solenoid mantisRight;
-	TalonSRX talonLeft;
-	TalonSRX talonRight;
 		
 	/**
 	 * Set the Mantis Arms position.
@@ -77,12 +62,7 @@ public class Climber extends Subsystem {
 	 * @param position
 	 */
 	private void actionMoveTo(double position) {
-		/**Boolean direction-True = Up */
-		if(direction == true){
-			//Arm Up
-		}else {
-			//Arm down
-		}
+		
 	}
 
 	/**
@@ -141,12 +121,13 @@ public class Climber extends Subsystem {
 		}
 		public boolean actionClimb(boolean direction) {
 			boolean base = true;
+			boolean completedElev = false;
 			if (encoderArm = false) {
 				//boolean completedArm = (mantisArmManual(direction));      add methods
 			}
-			boolean competedElev = (elevatorPitch());
+			completedElev = (elevatorPitch());
 			//return base == completedArm == completedElev;            add methods
-
+			return(completedElev == true);
 	}
 
 	void configActuators() {
@@ -154,5 +135,17 @@ public class Climber extends Subsystem {
 		mantisRight = new Solenoid(Constants.kMantisRightPcmPort);
 		talonLeft = new TalonSRX(Constants.kTalonElevatorLeftCanId);
 		talonRight = new TalonSRX(Constants.kTalonElevatorLeftCanId);
+		sMantisArm = new Solenoid(Constants.kSolenoidMantisChannel);
+	}
+	void configSensors() {
+		elevator = new TalonSRX(Constants.kTalonElevatorLeftCanId);
+	}
+	double getPosition() {
+		//TODO: Change 0.0
+		return getEncoderHeight();
+	}
+	boolean zeroPosition() {
+		//TODO: Change 0.0
+		return false;
 	}
 }	
