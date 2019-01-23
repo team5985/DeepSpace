@@ -15,9 +15,9 @@ public class Hatch {
     WPI_TalonSRX wrist;
 
     private Hatch() {
-        
+
     }
     public void getWristAngle() {
-        
+
     }
 }
