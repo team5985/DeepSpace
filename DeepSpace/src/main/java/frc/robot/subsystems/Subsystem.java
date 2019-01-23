@@ -5,7 +5,7 @@ public abstract class Subsystem {
 	 * Get the position of the mechanism's axis.
 	 * @return Current position. Units will be in metres or degrees.
 	 */
-	abstract double getPosition();
+	abstract double getPosition(); 
 	
 	/**
 	 * Zero the mechanism by running a zeroing routine.
