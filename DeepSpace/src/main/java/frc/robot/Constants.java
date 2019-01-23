@@ -52,4 +52,10 @@ public class Constants {
     // PCM Solenoid Ports
     public static final int kMantisLeftPcmPort = 0;
     public static final int kMantisRightPcmPort = 1;  
+
+    // CargoIntake Contants
+    /**degrees per second per second */
+    public static final double kCargoIntakeMaxAccelerationDegrees =        // do calculations, placeholders (double max speed (not true value))
+    public static final double kCargoIntakeMaxSpeed = 
+    public static final double kCargoIntakeGain = 1;  //placeholder
 }
