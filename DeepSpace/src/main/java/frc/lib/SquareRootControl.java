@@ -32,8 +32,12 @@ public class SquareRootControl {
     /**
      * Configure K gain for square root deceleration.
      */
-    public void configureK(double K) {
+    public void configK(double K) {
         _K = K;
+    }
+
+    public void configMaxSpeed(double maximumSpeed) {
+        _maxSpeed = maximumSpeed;
     }
 
     /**
@@ -43,15 +47,28 @@ public class SquareRootControl {
         dt = 0;
     }
 
+    double lastTarget = 0.0;
+
     /**
      * Run a controller step.
-     * @param error
+     * @param position Current position.
+     * @param target Desired position.
      * @return Speed in units or m/s or deg/s.
      */
-    public double run(double error) {
-        vUp = _maxAccel * dt;
+    public double run(double position, double target) {
+        if (target != lastTarget) { // Starts new movement if commanded target is different.
+            reset();
+        }
+
+        double error = target - position;
+
+        vUp += _maxAccel * dt;
         vCoast = _maxSpeed;
         vDown = _K * Math.sqrt(error);
+
+        dt += 0.02;
+        lastTarget = target;
+
         return Math.min(Math.min(vUp, vCoast), vDown); // Return lowest speed.
     }
 }

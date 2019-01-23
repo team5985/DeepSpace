@@ -161,4 +161,32 @@ public class DriverControls {
 		return (stick.getRawButtonReleased(11) || stick.getRawButtonReleased(9) == true);
 }
 
+
+
+	/**
+	 * Get driver power command.
+	 * @return Y from -1 to 1.
+	 */
+	public double getDrivePower() {
+		return -stick.getY();
+	}
+
+	/**
+	 * Get driver steering command.
+	 * @return X from -1 to 1.
+	 */
+	public double getDriveSteering() {
+		return stick.getX();
+	}
+
+	/**
+	 * Get driver throttle command.
+	 * @return Throttle from 0 to 1.
+	 */
+	public double getDriveThrottle() {
+		return (-stick.getThrottle() + 1) / 2;
+	}
+
+	
+
 }
