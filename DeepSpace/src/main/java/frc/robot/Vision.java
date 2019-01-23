@@ -35,7 +35,6 @@ public class Vision {
 				}else if(stick.getRawButtonPressed(2)) {
 					end = true;
 				}//Violent Stick Movement
-					methodStickInterupt(end);
 			
 			}
 			if(end = true) {
