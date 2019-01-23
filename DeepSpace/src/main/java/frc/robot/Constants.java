@@ -16,12 +16,17 @@ public class Constants {
     public static final int kTalonElevatorLeftCanId = 0;
     public static final int kTalonElevatorRightCanId = 1;
 
+
     //Solenoid
     public static final byte kSolenoidMantisChannel = 0;
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
     public static final int kXboxPort = 1;
+
+    // Driverstation Ports
+    public static final int kJoystickPort = 0;
+
     
     // Drivetrain Constants
     public static NeutralMode kDriveNeutralMode = NeutralMode.Brake;
