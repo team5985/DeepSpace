@@ -55,7 +55,7 @@ public class Constants {
 
     // CargoIntake Contants
     /**degrees per second per second */
-    public static final double kCargoIntakeMaxAccelerationDegrees =        // do calculations, placeholders (double max speed (not true value))
-    public static final double kCargoIntakeMaxSpeed = 
+    public static final double kCargoIntakeMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
+    public static final double kCargoIntakeMaxSpeed = 518.4;
     public static final double kCargoIntakeGain = 1;  //placeholder
 }
