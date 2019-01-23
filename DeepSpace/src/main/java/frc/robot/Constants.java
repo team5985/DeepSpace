@@ -13,8 +13,9 @@ public class Constants {
     public static final int kRightDriveCCanId = 6;
 
     //elevator TalonSRX 
-    public static final int kTalonElevatorLeftCanId = 0;
-    public static final int kTalonElevatorRightCanId = 1;
+    public static final int kTalonElevatorLeftCanId = 7;
+    public static final int kTalonElevatorRightCanId = 8;
+    public static final int kTalonCargoIntakeCanId = 9;
 
 
     //Solenoid
@@ -23,15 +24,13 @@ public class Constants {
     // Driverstation Ports
     public static final int kJoystickPort = 0;
     public static final int kXboxPort = 1;
-
-  
-
     
     // Drivetrain Constants
     public static NeutralMode kDriveNeutralMode = NeutralMode.Brake;
     
 	public static final boolean kLeftDriveEncoderPhase = false; // false = not inverted, true = inverted
-	public static final boolean kRightDriveEncoderPhase = false; // TODO: Check this
+    public static final boolean kRightDriveEncoderPhase = false; // TODO: Check this
+    public static final boolean kTalonCargoIntakeEncoderPhase = true; //TODO: Check 
 	
 	public static final boolean kLeftDriveMotorPhase = false; // false = not inverted, true = inverted
     public static final boolean kRightDriveMotorPhase = true;
@@ -58,7 +57,10 @@ public class Constants {
     // PCM Solenoid Ports
     public static final int kMantisLeftPcmPort = 0;
     public static final int kMantisRightPcmPort = 1;  
-
-    
-
+  
+    // CargoIntake Contants
+    /**degrees per second per second */
+    public static final double kCargoIntakeMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
+    public static final double kCargoIntakeMaxSpeed = 518.4;
+    public static final double kCargoIntakeGain = 1;  //placeholder
 }
