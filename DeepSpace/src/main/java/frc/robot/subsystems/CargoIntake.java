@@ -14,7 +14,11 @@ public class CargoIntake extends Subsystem {
     private double feedBack = 0;
     private double angle = 0;
     public SquareRootControl wristMotorControl;
-    double velocity = 0;
+    private double velocity = 0;
+    private double stowedAngle = 0;
+    private double highAngle = 60;
+    private double midAngle = 90;
+    private double lowAngle = 120;
 
     public enum IntakePositions {
         STOWED,
@@ -23,32 +27,33 @@ public class CargoIntake extends Subsystem {
         LOW,
     }
 
+//**set to angles 30 degrees down, 30 degrees up, centre and stowed for picking up balls */
     public boolean actionMoveTo(IntakePositions position) {
         switch (position){
             case STOWED:
                 setPosition(0);
-                if (0 >= getPosition() - 2 && 0 <= getPosition() + 2){
+                if (stowedAngle >= getPosition() - 2 && stowedAngle <= getPosition() + 2){
                     return true;
                 } else {
                     return false;
                 }
             case HIGH:
                 setPosition(60);
-                if (60 >= getPosition() - 2 && 60 <= getPosition() + 2){
+                if (highAngle >= getPosition() - 2 && highAngle <= getPosition() + 2){
                     return true;
                 } else {
                     return false;
                 }
             case MID:
                 setPosition(90);
-                if (90 >= getPosition() - 2 && 90 <= getPosition() + 2){
+                if (midAngle >= getPosition() - 2 && midAngle <= getPosition() + 2){
                     return true;
                 } else {
                     return false;
                 }
             case LOW:
                 setPosition(120);
-                if (120 >= getPosition() - 2 && 120 <= getPosition() + 2){
+                if (lowAngle >= getPosition() - 2 && lowAngle <= getPosition() + 2){
                     return true;
                 } else {
                     return false;
@@ -59,7 +64,7 @@ public class CargoIntake extends Subsystem {
     }
 
     public boolean zeroPosition(){
-		return false;
+		return false; //TODO: fix
 	}
 	/**
 	 * returns z angle of Interial Measurement Unit

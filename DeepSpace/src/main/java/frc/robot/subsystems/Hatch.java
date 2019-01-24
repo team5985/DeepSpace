@@ -1,10 +1,18 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-public class Hatch {
-    public Hatch hatchInstance = null;
+import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.Constants;
 
+public class Hatch extends Subsystem {
+
+    public Hatch hatchInstance = null;
+    Solenoid hatchPopLeft;
+    Solenoid hatchPopRight;
+    
     public Hatch getInstance() {
         if (hatchInstance == null) {
             hatchInstance = new Hatch();
@@ -12,12 +20,21 @@ public class Hatch {
         return hatchInstance;
     }
 
-    WPI_TalonSRX wrist;
-
     private Hatch() {
 
     }
-    public void getWristAngle() {
-
+    public boolean zeroPosition(){
+        
     }
+    public double getPosition(){
+        
+    }
+    void configSensors() {
+		
+    }
+    void configActuators(){
+        hatchPopRight = new Solenoid(Constants.kHatchRightPcmPort);
+        hatchPopLeft = new Solenoid(Constants.kHatchLeftPcmPort);
+    }
+    
 }

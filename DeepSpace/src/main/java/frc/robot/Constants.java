@@ -15,7 +15,10 @@ public class Constants {
     //elevator TalonSRX 
     public static final int kTalonElevatorLeftCanId = 7;
     public static final int kTalonElevatorRightCanId = 8;
+    //cargo
     public static final int kTalonCargoIntakeCanId = 9;
+    //hatch
+    public static final int kTalonBobcatJointCanId = 10; //for raising and lowering hatch
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
@@ -26,6 +29,7 @@ public class Constants {
 	public static final boolean kLeftDriveEncoderPhase = false; // false = not inverted, true = inverted
     public static final boolean kRightDriveEncoderPhase = false; // TODO: Check this
     public static final boolean kTalonCargoIntakeEncoderPhase = true; //TODO: Check 
+    public static final boolean kTalonBobcatJointEncoderPhase = true; //TODO: check     for hatch raising and lowering
 	
 	public static final boolean kLeftDriveMotorPhase = false; // false = not inverted, true = inverted
     public static final boolean kRightDriveMotorPhase = true;
@@ -52,10 +56,17 @@ public class Constants {
     // PCM Solenoid Ports
     public static final int kMantisLeftPcmPort = 0;
     public static final int kMantisRightPcmPort = 1;  
+    public static final int kHatchRightPcmPort = 2;
+    public static final int kHatchLeftPcmPort = 3;
 
     // CargoIntake Contants
     /**degrees per second per second */
     public static final double kCargoIntakeMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
     public static final double kCargoIntakeMaxSpeed = 518.4;
     public static final double kCargoIntakeGain = 1;  //placeholder
+
+    //Bobcat squareroot compensation constants
+    public static final double kBobcatJointMotorMaxAccelerationDegrees = 300;       // do calculations, placeholders (double max speed (not true value))
+    public static final double kBobcatJointMotorMaxSpeed = 169.2;  //different degree number to cargo + gearing
+    public static final double kBobCatJointMotorGain = 1;  //placeholder
 }
