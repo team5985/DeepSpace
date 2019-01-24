@@ -73,4 +73,13 @@ public class Constants {
     public static final double kCargoIntakeMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
     public static final double kCargoIntakeMaxSpeed = 518.4;
     public static final double kCargoIntakeGain = 1;  //placeholder
+
+    // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)
+	public static final double kVisionTargetSideNearAngle = 0;
+	public static final double kVisionTargetSideLeftAngle = 90;
+	public static final double kVisionTargetSideRightAngle = 270;
+	public static final double kVisionTargetRocketFarLeftAngle = 208.75;
+	public static final double kVisionTargetRocketFarRightAngle = 151.25;
+	public static final double kVisionTargetRocketNearLeftAngle = 331.25;
+	public static final double kVisionTargetRocketNearRightAngle = 28.75;
 }

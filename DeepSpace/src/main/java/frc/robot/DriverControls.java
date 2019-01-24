@@ -7,15 +7,23 @@ import edu.wpi.first.wpilibj.Joystick;
  * The idea is that this class raises the button presses into conceptual "drive commands".
  */
 public class DriverControls {
-	Joystick stick;
+	public static DriverControls mDriverControlsInstance;
 	
+	public static DriverControls getInstance() {
+		if (mDriverControlsInstance == null) {
+			mDriverControlsInstance = new DriverControls();
+		}
+		return mDriverControlsInstance;
+	}
 
     /**
      * Initialise the driver's controllers.
      */
-    DriverControls() {
+    private DriverControls() {
 		stick = new Joystick(Constants.kJoystickPort);
     }
+
+	Joystick stick;
 
     /**
      * Returns true if the joystick has been jerked beyond 0.7.
