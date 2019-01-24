@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 import org.junit.runner.Description;
+import org.junit.runners.Parameterized.Parameters;
 
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Vision;
@@ -29,7 +30,12 @@ public class Robot extends TimedRobot {
    */
 
   
-  public boolean getOMMode() {
+  public long encoderToRevolutions(int input) {
+    @Parameters int input "Raw encoder counts";
+    return (input * 4 * 1024); //TODO: Verify 1024
+  }
+  
+   public boolean getOMMode() {
     @return "True for Hatch mode";
     return hatchMode;
   }
