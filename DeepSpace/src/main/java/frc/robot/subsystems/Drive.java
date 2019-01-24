@@ -1,15 +1,17 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
 
 /**
  * Drivetrain class. Contains actions and functions to operate the drivetrain.
@@ -17,7 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  * - 2 Drive Encoders (AMT-103)
  * - NavX
  * Actuators:
- * - 3*2 WPI_TalonSRX (MiniCIMs)
+ * - 2*2 CANSparkMax (REV NEOs)
  * @author Zac Hah
  *
  */
@@ -46,13 +48,14 @@ public class Drive extends Subsystem {
 	}
     
     // Class declarations
-    private WPI_TalonSRX leftDriveA; // Master
-	private WPI_TalonSRX leftDriveB; // Slave
-	private WPI_TalonSRX leftDriveC; // Slave
+    private CANSparkMax leftDriveA; // Master
+	private CANSparkMax leftDriveB; // Slave
 	
-	private WPI_TalonSRX rightDriveA; // Master
-	private WPI_TalonSRX rightDriveB; // Slave
-	private WPI_TalonSRX rightDriveC; // Slave
+	private CANSparkMax rightDriveA; // Master
+	private CANSparkMax rightDriveB; // Slave
+
+	private Encoder leftEncoder;
+	private Encoder rightEncoder;
 	
 	private AHRS imu; // Inertial Measurement Unit (navx)
 
@@ -63,7 +66,7 @@ public class Drive extends Subsystem {
 	double newTime = 0;
 
 	SquareRootControl gyroTurnController;
-    
+  
 	/**
 	 * Initialise drivetrain
 	 */
@@ -77,13 +80,13 @@ public class Drive extends Subsystem {
 	// Drive-Control
 	public void arcadeDrive(double power, double steering, double throttle) {
 		if (robotTipped == false){
-		if (stick.getRawButtonPressed(7)) {
-			reverse *= -1;
-	   }
-		double leftPower = (power + steering) * throttle * reverse;
-		double rightPower = (power - steering) * throttle * reverse;
-		setMotors(leftPower, rightPower);
-	}
+			if (stick.getRawButtonPressed(7)) {
+				reverse *= -1;
+			}
+			double leftPower = (power + steering) * throttle * reverse;
+			double rightPower = (power - steering) * throttle * reverse;
+			setMotors(leftPower, rightPower);
+		}
 
 	}
 
@@ -121,7 +124,7 @@ public class Drive extends Subsystem {
 	}
 
 	/**
-	 * Turn the robot on the spot based on gyro heading.
+	 * Turn the robot on the spot with square root ramping based on gyro heading.
 	 * @param gain Gain to use for square root ramping.
 	 * @param targetHeading Heading to aim at, in degrees.
 	 * @param maxRate Coast rotational rate, in deg/s.
@@ -161,61 +164,51 @@ public class Drive extends Subsystem {
      * @param rightPower
      */
     public void setMotors(double leftPower, double rightPower) {
-    	leftDriveA.set(ControlMode.PercentOutput, leftPower);
-    	rightDriveA.set(ControlMode.PercentOutput, rightPower);
+    	leftDriveA.set(leftPower);
+    	rightDriveA.set(rightPower);
     }
     
     @Override
     void configActuators() {
     	// Initialise motor controllers
-		leftDriveA = new WPI_TalonSRX(Constants.kLeftDriveACanId);
-		leftDriveB = new WPI_TalonSRX(Constants.kLeftDriveBCanId);
-		leftDriveC = new WPI_TalonSRX(Constants.kLeftDriveCCanId);
+		leftDriveA = new CANSparkMax(Constants.kLeftDriveACanId, MotorType.kBrushless);
+		leftDriveB = new CANSparkMax(Constants.kLeftDriveBCanId, MotorType.kBrushless);
 		
-		rightDriveA = new WPI_TalonSRX(Constants.kRightDriveACanId);
-		rightDriveB = new WPI_TalonSRX(Constants.kRightDriveBCanId);
-		rightDriveC = new WPI_TalonSRX(Constants.kRightDriveCCanId);
-		
-		// Reset to factory default, so we ensure all the settings are what's in this method.
-		leftDriveA.configFactoryDefault();
-		leftDriveB.configFactoryDefault();
-		leftDriveC.configFactoryDefault();
-		
-		rightDriveA.configFactoryDefault();
-		rightDriveB.configFactoryDefault();
-		rightDriveC.configFactoryDefault();
+		rightDriveA = new CANSparkMax(Constants.kRightDriveACanId, MotorType.kBrushless);
+		rightDriveB = new CANSparkMax(Constants.kRightDriveBCanId, MotorType.kBrushless);
 		
 		// Set follower controllers
 		leftDriveB.follow(leftDriveA);
-		leftDriveC.follow(leftDriveA);
-		
 		rightDriveB.follow(rightDriveA);
-		rightDriveC.follow(rightDriveA);
 		
 		// Set brake/coast
-		leftDriveA.setNeutralMode(Constants.kDriveNeutralMode);
-		leftDriveB.setNeutralMode(Constants.kDriveNeutralMode);
-		leftDriveC.setNeutralMode(Constants.kDriveNeutralMode);
+		leftDriveA.setIdleMode(Constants.kDriveIdleMode);
+		leftDriveB.setIdleMode(Constants.kDriveIdleMode);
 		
-		rightDriveA.setNeutralMode(Constants.kDriveNeutralMode);
-		rightDriveB.setNeutralMode(Constants.kDriveNeutralMode);
-		rightDriveC.setNeutralMode(Constants.kDriveNeutralMode);
+		rightDriveA.setIdleMode(Constants.kDriveIdleMode);
+		rightDriveB.setIdleMode(Constants.kDriveIdleMode);
 		
-		// Invert right side NOTE: this will make the right controllers green when driving forward
+		// Invert right side
 		leftDriveA.setInverted(Constants.kLeftDriveMotorPhase);
 		rightDriveA.setInverted(Constants.kRightDriveMotorPhase);
-	}
 
+		// Set current limit to PDP fuses
+		leftDriveA.setSmartCurrentLimit(40);
+		rightDriveA.setSmartCurrentLimit(40);
+	}
+		
 	@Override
 	void configSensors() {
 		imu = new AHRS(SPI.Port.kMXP); // Must be over SPI so the JeVois can communicate through UART Serial.
 		
-		leftDriveA.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-		leftDriveA.setSensorPhase(Constants.kLeftDriveEncoderPhase);
-		
-		rightDriveA.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-		rightDriveA.setSensorPhase(Constants.kRightDriveEncoderPhase);
+		leftEncoder = new Encoder(Constants.kDriveLeftEncoderAPort, Constants.kDriveLeftEncoderBPort, Constants.kLeftDriveEncoderPhase, EncodingType.k4X);
+		leftEncoder.setMaxPeriod(0.1); 
+		leftEncoder.setDistancePerPulse(Constants.kDriveEncoderDistancePerPulse);
+		leftEncoder.setSamplesToAverage(8);
 
-		stick = new Joystick(1);
+		rightEncoder = new Encoder(Constants.kDriveRightEncoderAPort, Constants.kDriveRightEncoderBPort, Constants.kRightDriveEncoderPhase, EncodingType.k4X);
+		rightEncoder.setMaxPeriod(0.1); 
+		rightEncoder.setDistancePerPulse(Constants.kDriveEncoderDistancePerPulse);
+		rightEncoder.setSamplesToAverage(8);
 	}
 }
