@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
+
     if (stick.getRawButtonPressed(2)) {
       machineVision.machineVision(); 
     }
@@ -63,6 +64,9 @@ public class Robot extends TimedRobot {
     }
 
     }
+
+  }
+
 
   @Override
   public void testInit() {
