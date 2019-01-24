@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import frc.robot.DriverControls;
 import frc.robot.subsystems.Drive;
 
@@ -7,6 +9,10 @@ import frc.robot.subsystems.Drive;
  * Manager of robot controls and movement during teleop period.
  */
 public class TeleopController {
+
+    WPI_TalonSRX bobcat;
+    WPI_TalonSRX encoderBobcat;
+
     public static TeleopController teleopInstance = null;
 
     public TeleopController getInstance() {
@@ -19,6 +25,15 @@ public class TeleopController {
     DriverControls _controls;
     Drive _drive;
 
+    public boolean heightControl(boolean on) {
+        boolean overrided = false;
+        if(on == false) {
+            
+        }else if(encoderBobcat.getSelectedSensorPosition >= Constants.kMaxHabEncoder) {
+            //Fire foward torpedo tubes OR kill arm
+        }
+    }
+    
     private TeleopController() {
         _drive = Drive.getInstance();
     }
