@@ -1,12 +1,40 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-// Prepare the Hatch-Intake Mechanisms
+import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.Constants;
 
-// Slap the Mechanism on the Ground for Ground-Pickup
+public class Hatch extends Subsystem {
 
-// Raise the Mechanism Upwards
+    public Hatch hatchInstance = null;
+    Solenoid hatchPopLeft;
+    Solenoid hatchPopRight;
+    
+    public Hatch getInstance() {
+        if (hatchInstance == null) {
+            hatchInstance = new Hatch();
+        }
+        return hatchInstance;
+    }
 
-// Stow the Current Mechanism at Current Height
+    private Hatch() {
 
-// Interface with Electromagnet/Beak
+    }
+    public boolean zeroPosition(){
+        
+    }
+    public double getPosition(){
+        
+    }
+    void configSensors() {
+		
+    }
+    void configActuators(){
+        hatchPopRight = new Solenoid(Constants.kHatchRightPcmPort);
+        hatchPopLeft = new Solenoid(Constants.kHatchLeftPcmPort);
+    }
+    
+}

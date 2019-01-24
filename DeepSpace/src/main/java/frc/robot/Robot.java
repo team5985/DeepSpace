@@ -9,12 +9,15 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
+
 import org.junit.runner.Description;
 import org.junit.runners.Parameterized.Parameters;
 
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Vision;
 import frc.robot.subsystems.Drive;
+=======
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,6 +32,7 @@ public class Robot extends TimedRobot {
    * for any initialization code.
    */
 
+
   
   public long encoderToRevolutions(int input) {
     return (input / 4 / 1024); //TODO: Verify 1024
@@ -42,10 +46,10 @@ public class Robot extends TimedRobot {
   Drive drive;
   boolean hatchMode = true;
   
+
+
   @Override
   public void robotInit() {
-    stick = new Joystick(0);
-    machineVision = new Vision();
   }
 
   @Override
