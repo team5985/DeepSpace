@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
 
   Vision machineVision;
   Drive drive;
+  boolean hatchMode = true;
   
   @Override
   public void robotInit() {
@@ -51,11 +52,17 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if (stick.getRawButtonPressed(7)) {
+    if (stick.getRawButtonPressed(2)) {
       machineVision.machineVision(); 
     }
       Drive.getInstance().testTip();
-  }
+    if (stick.getRawButtonPressed(3)) {
+      hatchMode = true;
+    }else if (stick.getRawButtonPressed(4)) {
+      hatchMode = false;
+    }
+
+    }
 
   @Override
   public void testInit() {
