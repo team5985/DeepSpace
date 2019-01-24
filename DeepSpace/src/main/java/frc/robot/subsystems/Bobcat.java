@@ -13,9 +13,12 @@ public class Bobcat extends Subsystem {
     public WPI_TalonSRX jointMotor;
     private double velocity = 0;
     private double feedback = 0;
-    private double lowAngle = 0;
-    private double midAngle = 0;
-    private double highAngle = 0;
+    private double lowAngleHatch = 10;
+    private double midAngleHatch = 45;
+    private double highAngleHatch = 90;
+    private double lowAngleCargo = 10;
+    private double midAngleCargo = 45;
+    private double highAngleCargo = 90;
     private double stowedAngle = 0;
     private Bobcat(){
         jointMotorControl = new SquareRootControl(Constants.kBobcatJointMotorMaxAccelerationDegrees, Constants.kBobcatJointMotorMaxSpeed, Constants.kBobCatJointMotorGain);   
@@ -23,9 +26,12 @@ public class Bobcat extends Subsystem {
 
     public enum IntakePositions {
         DOWN,
-        HIGH,
-        MID,
-        LOW,
+        HIGH_HATCH,
+        MID_HATCH,
+        LOW_HATCH,
+        HIGH_CARGO,
+        MID_CARGO,
+        LOW_CARGO,
     }
     public boolean actionMoveTo(IntakePositions positions){
         switch(positions){
@@ -36,23 +42,44 @@ public class Bobcat extends Subsystem {
                 } else{
                     return false;
                 }
-            case LOW:
-                setAngle(lowAngle);
-                if (lowAngle >= getPosition() - 2 && lowAngle <= getPosition() + 2){
+            case LOW_HATCH:
+                setAngle(lowAngleHatch);
+                if (lowAngleHatch >= getPosition() - 2 && lowAngleHatch <= getPosition() + 2){
                     return true;
                 } else{
                     return false;
                 }
-            case MID:
-                setAngle(0);
-                if (midAngle >= getPosition() - 2 && midAngle <= getPosition() + 2){
+            case MID_HATCH:
+                setAngle(midAngleHatch);
+                if (midAngleHatch >= getPosition() - 2 && midAngleHatch <= getPosition() + 2){
                     return true;
                 } else{
                     return false;
                 }
-            case HIGH:
-                setAngle(0);
-                    if (highAngle >= getPosition() - 2 && highAngle <= getPosition() + 2){
+            case HIGH_HATCH:
+                setAngle(highAngleHatch);
+                    if (highAngleHatch >= getPosition() - 2 && highAngleHatch <= getPosition() + 2){
+                        return true;
+                    } else{
+                        return false;
+                    }
+            case LOW_CARGO:
+                setAngle(lowAngleCargo);
+                if (lowAngleCargo >= getPosition() - 2 && lowAngleCargo <= getPosition() + 2){
+                    return true;
+                } else{
+                    return false;
+                }
+            case MID_CARGO:
+                setAngle(midAngleCargo);
+                if (midAngleCargo >= getPosition() - 2 && midAngleCargo <= getPosition() + 2){
+                    return true;
+                } else{
+                    return false;
+                }
+            case HIGH_CARGO:
+                setAngle(highAngleCargo);
+                    if (highAngleCargo >= getPosition() - 2 && highAngleCargo <= getPosition() + 2){
                         return true;
                     } else{
                         return false;
