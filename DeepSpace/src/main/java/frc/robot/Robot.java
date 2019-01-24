@@ -31,13 +31,10 @@ public class Robot extends TimedRobot {
 
   
   public long encoderToRevolutions(int input) {
-    return (input * 4 * 1024); //TODO: Verify 1024
+    return (input / 4 / 1024); //TODO: Verify 1024
   }
   
-   public boolean getOMMode() {
-    @return "True for Hatch mode";
-    return hatchMode;
-  }
+   
   
    Joystick stick;
 
