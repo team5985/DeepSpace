@@ -8,6 +8,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+
+import org.junit.runner.Description;
+
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Vision;
 import frc.robot.subsystems.Drive;
@@ -25,7 +28,13 @@ public class Robot extends TimedRobot {
    * for any initialization code.
    */
 
-  Joystick stick;
+  
+  public boolean getOMMode() {
+    @return "True for Hatch mode";
+    return hatchMode;
+  }
+  
+   Joystick stick;
 
   Vision machineVision;
   Drive drive;
