@@ -8,9 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.Vision;
-import frc.robot.subsystems.Drive;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -25,15 +22,8 @@ public class Robot extends TimedRobot {
    * for any initialization code.
    */
 
-  Joystick stick;
-
-  Vision machineVision;
-  Drive drive;
-  
   @Override
   public void robotInit() {
-    stick = new Joystick(0);
-    machineVision = new Vision();
   }
 
   @Override
@@ -50,11 +40,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-
-    if (stick.getRawButtonPressed(7)) {
-      machineVision.machineVision(); 
-    }
-      Drive.getInstance().testTip();
   }
 
   @Override

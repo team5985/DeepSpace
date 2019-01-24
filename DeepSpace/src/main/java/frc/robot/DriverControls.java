@@ -7,14 +7,23 @@ import edu.wpi.first.wpilibj.Joystick;
  * The idea is that this class raises the button presses into conceptual "drive commands".
  */
 public class DriverControls {
-    Joystick stick;
+	public static DriverControls mDriverControlsInstance;
+	
+	public static DriverControls getInstance() {
+		if (mDriverControlsInstance == null) {
+			mDriverControlsInstance = new DriverControls();
+		}
+		return mDriverControlsInstance;
+	}
 
     /**
      * Initialise the driver's controllers.
      */
-    DriverControls() {
-        stick = new Joystick(Constants.kJoystickPort);
+    private DriverControls() {
+		stick = new Joystick(Constants.kJoystickPort);
     }
+
+	Joystick stick;
 
     /**
      * Returns true if the joystick has been jerked beyond 0.7.
@@ -38,7 +47,129 @@ public class DriverControls {
 		}
 	
 	    return end;
+	
 	}
+
+//Trigger
+
+	public boolean getTriggerPress() {
+
+		return stick.getTriggerPressed();
+	}
+
+	public boolean getTriggerRelease() {
+
+		return stick.getTriggerReleased();
+	}
+//Thumb Button
+	public boolean getThumbPress() {
+
+		return stick.getRawButtonPressed(2);
+	}
+	public boolean getThumbRelease() {
+
+		return stick.getRawButtonReleased(2);
+	}
+//Hatch Mode
+	public boolean getButtonPress3() {
+
+		return stick.getRawButtonPressed(3);
+}
+
+	public boolean getButtonRelease3() {
+
+		return stick.getRawButtonReleased(3);
+}
+//Ball Mode
+	public boolean getButtonPress4() {
+
+		return stick.getRawButtonPressed(4);
+}
+
+	public boolean getButtonRelease4() {
+
+	return stick.getRawButtonReleased(4);
+}
+//Wrist down/up
+	public boolean getButtonPress5() {
+
+		return stick.getRawButtonPressed(5);
+}
+
+	public boolean getButtonRelease5() {
+
+		return stick.getRawButtonReleased(5);
+}
+//Begin HAB sequence
+	public boolean getButtonPress6() {
+
+		return stick.getRawButtonPressed(6);
+}
+
+	public boolean getButtonRelease6() {
+
+		return stick.getRawButtonReleased(6);
+}
+//Reverse Direction
+	public boolean getButtonPress7() {
+
+		return stick.getRawButtonPressed(7);
+}
+
+	public boolean getButtonRelease7() {
+
+		return stick.getRawButtonReleased(7);
+}
+//EM on/off
+	public boolean getButtonPress10() {
+
+		return stick.getRawButtonPressed(10);
+}
+
+	public boolean getButtonRelease10() {
+
+		return stick.getRawButtonReleased(10);
+}
+//Elevators deployed
+	public boolean getButtonPress8() {
+
+		return stick.getRawButtonPressed(8);
+}
+
+	public boolean getButtonRelease8() {
+
+		return stick.getRawButtonReleased(8);
+}
+//Mantis Arms deployed
+	public boolean getButtonPress11() {
+
+		return stick.getRawButtonPressed(11);
+}
+
+	public boolean getButtonRelease11() {
+
+		return stick.getRawButtonReleased(11);
+}
+//Elevators stowed
+	public boolean getButtonPressElevDown() {
+
+		return (stick.getRawButtonPressed(8) && stick.getRawButtonPressed(9) == true);
+	}
+	public boolean getButtonReleaseElevDown() {
+
+		return (stick.getRawButtonReleased(8) || stick.getRawButtonReleased(9) == true);
+	}
+//MA Stowed
+	public boolean getButtonPressMADown() {
+
+		return (stick.getRawButtonPressed(11) && stick.getRawButtonPressed(9) == true);
+}
+	public boolean getButtonReleaseMADown() {
+
+		return (stick.getRawButtonReleased(11) || stick.getRawButtonReleased(9) == true);
+}
+
+
 
 	/**
 	 * Get driver power command.
@@ -65,4 +196,5 @@ public class DriverControls {
 	}
 
 	
+
 }
