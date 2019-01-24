@@ -12,12 +12,19 @@ public class DriverControls {
 	Joystick stick;
 	XboxController xBox;
 
+	public static DriverControls mDriverControlsInstance;
 	
+	public static DriverControls getInstance() {
+		if (mDriverControlsInstance == null) {
+			mDriverControlsInstance = new DriverControls();
+		}
+		return mDriverControlsInstance;
+	}
 
     /**
      * Initialise the driver's controllers.
      */
-    DriverControls() {
+    private DriverControls() {
 		stick = new Joystick(Constants.kJoystickPort);
 		xBox = new XboxController(Constants.kXboxPort);
     }
