@@ -1,13 +1,17 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import frc.lib.SquareRootControl;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
 
 /**
  * Drivetrain class. Contains actions and functions to operate the drivetrain.
@@ -15,11 +19,20 @@ import frc.robot.Constants;
  * - 2 Drive Encoders (AMT-103)
  * - NavX
  * Actuators:
- * - 3*2 WPI_TalonSRX (MiniCIMs)
+ * - 2*2 CANSparkMax (REV NEOs)
  * @author Zac Hah
  *
  */
 public class Drive extends Subsystem {
+	public boolean zeroPosition(){
+		return false;
+	}
+	/**
+	 * returns z angle of Interial Measurement Unit
+	 */
+	public double getPosition(){
+		return imu.getYaw();
+	}
 	// Subsystems are singletons (only one instance of this class is possible)
     public static Drive driveInstance;
 
@@ -35,35 +48,71 @@ public class Drive extends Subsystem {
 	}
     
     // Class declarations
-    private WPI_TalonSRX leftDriveA; // Master
-	private WPI_TalonSRX leftDriveB; // Slave
-	private WPI_TalonSRX leftDriveC; // Slave
+    private CANSparkMax leftDriveA; // Master
+	private CANSparkMax leftDriveB; // Slave
 	
-	private WPI_TalonSRX rightDriveA; // Master
-	private WPI_TalonSRX rightDriveB; // Slave
-	private WPI_TalonSRX rightDriveC; // Slave
+	private CANSparkMax rightDriveA; // Master
+	private CANSparkMax rightDriveB; // Slave
+
+	private Encoder leftEncoder;
+	private Encoder rightEncoder;
 	
 	private AHRS imu; // Inertial Measurement Unit (navx)
 
 	Joystick stick;
 	int reverse = 1;
-    
+	private boolean robotTipped = false;
+	double oldTime = 0;
+	double newTime = 0;
+
+	SquareRootControl gyroTurnController;
+  
 	/**
 	 * Initialise drivetrain
 	 */
     private Drive() {
     	configActuators();
 		configSensors();
+		
+		gyroTurnController = new SquareRootControl(Constants.kDriveMaxRotationalAccel, Constants.kDriveMaxRotationalVel, Constants.kDriveGyroTurnGain);
 	}
 
 	// Drive-Control
 	public void arcadeDrive(double power, double steering, double throttle) {
-		if (stick.getRawButtonPressed(7)) {
-			reverse *= -1;
-	   }
-		double leftPower = (power + steering) * throttle * reverse;
-		double rightPower = (power - steering) * throttle * reverse;
-		setMotors(leftPower, rightPower);
+		if (robotTipped == false){
+			if (stick.getRawButtonPressed(7)) {
+				reverse *= -1;
+			}
+			double leftPower = (power + steering) * throttle * reverse;
+			double rightPower = (power - steering) * throttle * reverse;
+			setMotors(leftPower, rightPower);
+		}
+
+	}
+
+	public void testTip(){
+		double roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
+		double threshold = 10.0f;
+		if(roll > threshold || roll < -threshold){
+			newTime = DriverStation.getInstance().getMatchTime();
+			if (3 <= newTime - oldTime ){
+			robotTipped = true;
+			if (roll > threshold){
+				setMotors(-0.5, -0.5);
+			}
+			//TODO: fix
+			if (roll < -threshold){
+				setMotors(0.5, 0.5);
+			}
+			} else {
+				robotTipped = false;
+			}
+			//TODO: test 
+		}
+		else{
+			robotTipped = false;
+			oldTime = DriverStation.getInstance().getMatchTime();
+		}
 
 	}
 
@@ -71,6 +120,42 @@ public class Drive extends Subsystem {
 	public void straightDrive(double power, int direction, double throttle) {
 		reverse = direction;
 		arcadeDrive(power, 0 , throttle);
+		
+	}
+
+	/**
+	 * Turn the robot on the spot with square root ramping based on gyro heading.
+	 * @param gain Gain to use for square root ramping.
+	 * @param targetHeading Heading to aim at, in degrees.
+	 * @param maxRate Coast rotational rate, in deg/s.
+	 * @return True when heading and rate within target threshold.
+	 */
+	public boolean actionGyroTurn(double gain, double targetHeading, int maxRate) {
+		double currentHeading = imu.getYaw();
+		double currentRate = imu.getRate();
+
+		gyroTurnController.configK(gain);
+		gyroTurnController.configMaxSpeed(maxRate);
+		double rate = gyroTurnController.run(currentHeading, targetHeading);
+
+		double steering = (rate * Constants.kDriveGyroTurnKf) + (rate - currentRate) * Constants.kDriveGyroTurnKp;  // TODO: Find feedforward and tune compensation
+		arcadeDrive(0.0, steering, 1.0);
+
+		return (Math.abs(targetHeading - currentHeading) <= Constants.kDriveGyroTurnThresh) && (Math.abs(currentRate) <= Constants.kDriveGyroRateThresh);
+	}
+		
+	//Driver Heading Assist
+	public void headingAssist(double speed, double adjustAmmount) {
+	/** double speed, double adjustAmmount*/
+		float yaw = imu.getYaw();
+		if(yaw != 0) {
+			if((imu.getYaw()) > 0) {
+				arcadeDrive(0.0, (adjustAmmount * -1), speed);
+			}
+			else {
+				arcadeDrive(0.0, adjustAmmount, speed);
+			}	
+		}
 	}
     
     /**
@@ -79,102 +164,51 @@ public class Drive extends Subsystem {
      * @param rightPower
      */
     public void setMotors(double leftPower, double rightPower) {
-    	leftDriveA.set(ControlMode.PercentOutput, leftPower);
-    	rightDriveA.set(ControlMode.PercentOutput, rightPower);
+    	leftDriveA.set(leftPower);
+    	rightDriveA.set(rightPower);
     }
     
     @Override
     void configActuators() {
     	// Initialise motor controllers
-		leftDriveA = new WPI_TalonSRX(Constants.kLeftDriveACanId);
-		leftDriveB = new WPI_TalonSRX(Constants.kLeftDriveBCanId);
-		leftDriveC = new WPI_TalonSRX(Constants.kLeftDriveCCanId);
+		leftDriveA = new CANSparkMax(Constants.kLeftDriveACanId, MotorType.kBrushless);
+		leftDriveB = new CANSparkMax(Constants.kLeftDriveBCanId, MotorType.kBrushless);
 		
-		rightDriveA = new WPI_TalonSRX(Constants.kRightDriveACanId);
-		rightDriveB = new WPI_TalonSRX(Constants.kRightDriveBCanId);
-		rightDriveC = new WPI_TalonSRX(Constants.kRightDriveCCanId);
-		
-		// Reset to factory default, so we ensure all the settings are what's in this method.
-		leftDriveA.configFactoryDefault();
-		leftDriveB.configFactoryDefault();
-		leftDriveC.configFactoryDefault();
-		
-		rightDriveA.configFactoryDefault();
-		rightDriveB.configFactoryDefault();
-		rightDriveC.configFactoryDefault();
+		rightDriveA = new CANSparkMax(Constants.kRightDriveACanId, MotorType.kBrushless);
+		rightDriveB = new CANSparkMax(Constants.kRightDriveBCanId, MotorType.kBrushless);
 		
 		// Set follower controllers
 		leftDriveB.follow(leftDriveA);
-		leftDriveC.follow(leftDriveA);
-		
 		rightDriveB.follow(rightDriveA);
-		rightDriveC.follow(rightDriveA);
 		
 		// Set brake/coast
-		leftDriveA.setNeutralMode(Constants.kDriveNeutralMode);
-		leftDriveB.setNeutralMode(Constants.kDriveNeutralMode);
-		leftDriveC.setNeutralMode(Constants.kDriveNeutralMode);
+		leftDriveA.setIdleMode(Constants.kDriveIdleMode);
+		leftDriveB.setIdleMode(Constants.kDriveIdleMode);
 		
-		rightDriveA.setNeutralMode(Constants.kDriveNeutralMode);
-		rightDriveB.setNeutralMode(Constants.kDriveNeutralMode);
-		rightDriveC.setNeutralMode(Constants.kDriveNeutralMode);
+		rightDriveA.setIdleMode(Constants.kDriveIdleMode);
+		rightDriveB.setIdleMode(Constants.kDriveIdleMode);
 		
-		// Invert right side NOTE: this will make the right controllers green when driving forward
+		// Invert right side
 		leftDriveA.setInverted(Constants.kLeftDriveMotorPhase);
 		rightDriveA.setInverted(Constants.kRightDriveMotorPhase);
 
-		
+		// Set current limit to PDP fuses
+		leftDriveA.setSmartCurrentLimit(40);
+		rightDriveA.setSmartCurrentLimit(40);
 	}
-	//Gyro Turning
-	public boolean actionGyroTurn(double gain, double degrees, int speed) {
-
-		boolean completed = false;
-		boolean dirLeft = true;
-		double actualPos = imu.getYaw();
-
 		
-		var requiredMovement = (degrees - actualPos);
-		double setMovement = gain * requiredMovement;
-
-		
-			if (setMovement < 0) {
-				arcadeDrive(0.0, 1.0, speed);
-				completed = true;
-			}
-			else if (setMovement > 0) {
-				arcadeDrive(0.0, -1.0, speed);
-				completed = true;
-			}
-
-			return completed;
-		}
-		
-	//Driver Heading Assist
-			public void headingAssist(double speed, double adjustAmmount) {
-				float yaw = imu.getYaw();;
-				if(yaw != 0) {
-					if((imu.getYaw()) > 0) {
-						arcadeDrive(0.0, (adjustAmmount * -1), speed);
-					}
-					else {
-						arcadeDrive(0.0, adjustAmmount, speed);
-					}
-
-					
-				}
-			
-			}
-
 	@Override
 	void configSensors() {
 		imu = new AHRS(SPI.Port.kMXP); // Must be over SPI so the JeVois can communicate through UART Serial.
 		
-		leftDriveA.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-		leftDriveA.setSensorPhase(Constants.kLeftDriveEncoderPhase);
-		
-		rightDriveA.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-		rightDriveA.setSensorPhase(Constants.kRightDriveEncoderPhase);
+		leftEncoder = new Encoder(Constants.kDriveLeftEncoderAPort, Constants.kDriveLeftEncoderBPort, Constants.kLeftDriveEncoderPhase, EncodingType.k4X);
+		leftEncoder.setMaxPeriod(0.1); 
+		leftEncoder.setDistancePerPulse(Constants.kDriveEncoderDistancePerPulse);
+		leftEncoder.setSamplesToAverage(8);
 
-		stick = new Joystick(1);
+		rightEncoder = new Encoder(Constants.kDriveRightEncoderAPort, Constants.kDriveRightEncoderBPort, Constants.kRightDriveEncoderPhase, EncodingType.k4X);
+		rightEncoder.setMaxPeriod(0.1); 
+		rightEncoder.setDistancePerPulse(Constants.kDriveEncoderDistancePerPulse);
+		rightEncoder.setSamplesToAverage(8);
 	}
 }
