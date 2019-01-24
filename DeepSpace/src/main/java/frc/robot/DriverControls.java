@@ -1,13 +1,17 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 /**
- * This class receives raw joystick input and contains methods for TeleopController to get.
+ * This class receives raw joystick and Xbox input and contains methods for TeleopController to get.
  * The idea is that this class raises the button presses into conceptual "drive commands".
  */
 public class DriverControls {
 	Joystick stick;
+	XboxController xBox;
+
 	
 
     /**
@@ -15,6 +19,7 @@ public class DriverControls {
      */
     DriverControls() {
 		stick = new Joystick(Constants.kJoystickPort);
+		xBox = new XboxController(Constants.kXboxPort);
     }
 
     /**
@@ -160,8 +165,92 @@ public class DriverControls {
 
 		return (stick.getRawButtonReleased(11) || stick.getRawButtonReleased(9) == true);
 }
+/** 
+* Xbox Controller Buttons
+*/
+// OM Position Low
+	public boolean getButtonPressA() {
+		
+		return (xBox.getAButtonPressed());
+}
+ 	public boolean getButtonReleaseA() {
+		
+		return (xBox.getAButtonReleased());
+}
+// OM Position Middle
+	public boolean getButtonPressB() {
 
+		return (xBox.getBButtonPressed());
+}
+	public boolean getButtonReleaseB() {
 
+		return (xBox.getBButtonReleased());
+}
+// OM Position High
+	public boolean getButtonPressY() {
+
+		return (xBox.getYButtonPressed());
+}
+	public boolean getButtonReleaseY() {
+
+		return (xBox.getYButtonReleased());
+}
+// OM Position Stowed (Current Position)
+	public boolean getButtonPressX() {
+
+		return (xBox.getXButtonPressed());
+}
+	public boolean getButtonReleaseX() {
+
+		return (xBox.getXButtonReleased());
+}
+// OM at Cargo Height (Ball only)
+	public boolean getButtonPressCargoHeight() {
+
+		return (xBox.getAButtonPressed() && xBox.getStartButtonPressed());
+}
+	public boolean getButtonReleaseCargoHeight() {
+
+		return (xBox.getAButtonReleased() && xBox.getStartButtonReleased());
+}
+/* Bobcat Controls */
+// Bobcat UDown
+	public boolean getButtonPressBobcatDown() {
+
+		return (xBox.getTriggerAxis(Hand.kLeft) > 0.5);
+}
+	public boolean getButtonReleaseBobcatDown() {
+
+		return (xBox.getTriggerAxis(Hand.kLeft) <= 0.75 && xBox.getTriggerAxis(Hand.kLeft) >= 0.25 );
+}
+// Bobcat Up
+	public boolean getButtonPressBobcatUp() {
+
+		return (xBox.getTriggerAxis(Hand.kRight) > 0.5)
+}
+	public boolean getButonReleaseBobcatUp() {
+
+		return (xBox.getTriggerAxis(Hand.kRight) < 0.75 && xBox.getTriggerAxis(Hand.kRight) > 0.25);
+}
+/* Wrist Controls */
+// Wrist Down
+	public boolean getButtonPressWristDown() {
+
+		return (xBox.getBumperPressed(Hand.kLeft));
+}
+	public boolean getButtonReleaseWristDown() {
+
+		return (xBox.getBumperReleased(Hand.kLeft));
+}
+// Wrist Up
+	public boolean getButtonPressWristUp() {
+
+		return (xBox.getBumperPressed(Hand.kRight));
+}
+	public boolean getButtonReleaseWristUp() {
+
+		return (xBox.getBumperReleased(Hand.kRight));
+}
 
 	/**
 	 * Get driver power command.
