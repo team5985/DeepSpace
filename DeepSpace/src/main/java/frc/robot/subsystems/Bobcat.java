@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import frc.lib.SquareRootControl;
@@ -20,6 +19,14 @@ public class Bobcat extends Subsystem {
     private double midAngleCargo = 45;
     private double highAngleCargo = 90;
     private double stowedAngle = 0;
+    public static Bobcat bobcatInstance;
+
+    public Bobcat getInstance() {
+        if (bobcatInstance == null) {
+            bobcatInstance = new Bobcat();
+        }
+        return bobcatInstance;
+    }
     private Bobcat(){
         jointMotorControl = new SquareRootControl(Constants.kBobcatJointMotorMaxAccelerationDegrees, Constants.kBobcatJointMotorMaxSpeed, Constants.kBobCatJointMotorGain);   
     }
