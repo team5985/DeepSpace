@@ -28,9 +28,6 @@ public class Constants {
     public static final int kDriveRightEncoderAPort = 2;
     public static final int kDriveRightEncoderBPort = 3;
 
-    // PCM Ports
-    public static final byte kSolenoidMantisChannel = 0;
-
     // Driverstation Ports
     public static final int kJoystickPort = 0;
     public static final int kXboxPort = 1;
@@ -71,10 +68,10 @@ public class Constants {
     public static final double kYawErrorMin = kYawErrorMax * -1;
 
     // PCM Solenoid Ports
-    public static final int kMantisLeftPcmPort = 0;
-    public static final int kMantisRightPcmPort = 1;
-    public static final int kHatchRightPcmPort = 2;
-    public static final int kHatchLeftPcmPort = 3;
+    public static final int kHatchRightPcmPort = 0;
+    public static final int kHatchLeftPcmPort = 1;
+    public static final int kElevatorSolenoidControllerPcmPort = 2;
+    public static final byte kSolenoidMantisChannel = 3;
 
     // CargoIntake
     public static final int kVictorCargoIntakeLeftPwmPort = 0;   // ??????????
