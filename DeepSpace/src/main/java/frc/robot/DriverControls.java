@@ -24,7 +24,7 @@ public class DriverControls {
     /**
      * Initialise the driver's controllers.
      */
-    private DriverControls() {
+    public DriverControls() {
 		stick = new Joystick(Constants.kJoystickPort);
 		xBox = new XboxController(Constants.kXboxPort);
     }
@@ -172,6 +172,18 @@ public class DriverControls {
 
 		return (stick.getRawButtonReleased(11) || stick.getRawButtonReleased(9) == true);
 }
+
+//VICTORY
+	public boolean getButtonPress12() {
+
+		return stick.getRawButtonPressed(12);
+}
+
+	public boolean getButtonRelease12() {
+
+		return stick.getRawButtonReleased(12);
+	}
+
 /** 
 * Xbox Controller Buttons
 */
@@ -236,6 +248,7 @@ public class DriverControls {
 		return (xBox.getTriggerAxis(Hand.kRight) > 0.5)
 }
 	public boolean getButonReleaseBobcatUp() {
+
 
 		return (xBox.getTriggerAxis(Hand.kRight) < 0.75 && xBox.getTriggerAxis(Hand.kRight) > 0.25);
 }

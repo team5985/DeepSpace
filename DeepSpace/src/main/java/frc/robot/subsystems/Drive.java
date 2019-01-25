@@ -74,7 +74,7 @@ public class Drive extends Subsystem {
 	/**
 	 * Initialise drivetrain
 	 */
-    private Drive() {
+    public Drive() {
     	configActuators();
 		configSensors();
 		
