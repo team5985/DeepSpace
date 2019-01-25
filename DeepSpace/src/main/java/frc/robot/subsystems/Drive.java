@@ -74,7 +74,7 @@ public class Drive extends Subsystem {
 	/**
 	 * Initialise drivetrain
 	 */
-    public Drive() {
+    private Drive() {
     	configActuators();
 		configSensors();
 		
@@ -164,7 +164,7 @@ public class Drive extends Subsystem {
 		double driveSpeed = driveController.run(position, distance);
 		double drivePower = driveSpeed * Constants.kDrivePowerKf;
 		double yaw = imu.getYaw();
-		arcadeDrive(speed, (targetHeading - yaw) * Constants.kGain, 1);
+		arcadeDrive(speed, (targetHeading - yaw) * Constants.kGainGyroDriveTurn, 1);
 	}
 		
 	//Driver Heading Assist
