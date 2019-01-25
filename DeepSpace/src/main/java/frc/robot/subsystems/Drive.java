@@ -7,6 +7,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.Encoder;
  *
  */
 public class Drive extends Subsystem {
+
 	public boolean zeroPosition(){
 		return false;
 	}
@@ -60,6 +62,7 @@ public class Drive extends Subsystem {
 	private AHRS imu; // Inertial Measurement Unit (navx)
 
 	Joystick stick;
+	XboxController xBox = new XboxController(Constants.kXboxPort);
 	int reverse = 1;
 	private boolean robotTipped = false;
 	double oldTime = 0;
