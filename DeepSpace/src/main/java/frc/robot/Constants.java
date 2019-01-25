@@ -51,14 +51,21 @@ public class Constants {
 
     public static double kDriveMaxRotationalAccel = 0.0;  // TODO: Test this
     public static double kDriveMaxRotationalVel = 0.0;
+    public static double kDriveTopSpeed = 3.7795;
+
     public static double kDriveGyroTurnKf = 1 / kDriveMaxRotationalVel;  // Feedforward for power / turn rate
     public static double kDriveGyroTurnKp = 0.0;  // Compensation for error
     public static double kDriveGyroTurnGain = 1.0;  // K gain for square root controller.
     public static double kDriveGyroTurnThresh = 3.0;  // In degrees.
     public static double kDriveGyroRateThresh = 3.0;  // In deg/s.
 
+	public static final double kDrivePowerKf = 1 / kDriveTopSpeed;
+
     public static double kDriveWheelDiameter = 6.0;
 	public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kEncoderPpr;  // Metres per pulse
+
+    // Gain Constants
+    public static final double kGainGyroDriveTurn = 1;
 
     // Tilt Compensation Constants
     public static final double kRollErrorMax = 5;
