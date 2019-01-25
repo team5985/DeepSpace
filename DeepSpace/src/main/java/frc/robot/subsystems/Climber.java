@@ -10,16 +10,9 @@ public class Climber extends Subsystem {
 
 	boolean elevatorCompletedExtend = false;
 	boolean elevatorCompletedRetract = true;
-	boolean encoderArm = false;
 
-	boolean encoderElev = true;
-	boolean encoderArm = true;
 	private AHRS imu;
 	Solenoid sMantisArm;
-	WPI_TalonSRX elevator;
-
-	private AHRS imu;
-	Solenoid mantisSolenoid;
 
 	WPI_TalonSRX elevator; //sensor (left)
 	WPI_TalonSRX talonLeft;
