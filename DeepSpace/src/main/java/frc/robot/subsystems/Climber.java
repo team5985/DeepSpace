@@ -5,6 +5,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
+import jdk.jfr.Percentage;
 
 public class Climber extends Subsystem {
 
@@ -12,7 +13,7 @@ public class Climber extends Subsystem {
 	boolean elevatorCompletedRetract = true;
 
 	private AHRS imu;
-	Solenoid sMantisArm;
+	Solenoid mantisSolenoid;
 
 	WPI_TalonSRX elevator; //sensor (left)
 	WPI_TalonSRX talonLeft;
@@ -60,33 +61,35 @@ public class Climber extends Subsystem {
 	public boolean elevatorMove(boolean direction) {
 		if (direction = true) {
 			setMantisPosition(true);
-			if (imu.getPitch() >= 5.0) {        //TILT CONTROL
+			if (imu.getPitch() <= 0) {        //TILT CONTROL
+				elevatorMoveUP(1);
 				return elevatorCompletedExtend;
 			}
 			else {
-				elevatorMoveUP();
+				elevatorMoveUP((5-imu.getPitch())*0.2);
 				return elevatorCompletedExtend;
 			}
 		}
 		else {                                // move down
 			setMantisPosition(false);
-			if ((imu.getPitch()) <= -5.0) {         //TODO: fix jittering
+			if ((imu.getPitch()) >= 0) {         //TODO: fix jittering
+				elevatorMoveDown(-1);
 				return elevatorCompletedRetract;
 			}
 			else {
-				elevatorMoveDown();
+				elevatorMoveUP((-5-imu.getPitch())*0.2);
 				return elevatorCompletedRetract;
 			}
 		}
 	}
 
-	public void elevatorMoveUP(){
-		talonLeft.set(ControlMode.PercentOutput, 1);
-		talonRight.set(ControlMode.PercentOutput, 1);
+	public void elevatorMoveUP(double percent){
+		talonLeft.set(ControlMode.PercentOutput, percent);
+		talonRight.set(ControlMode.PercentOutput, percent);
 	}
-	public void elevatorMoveDown(){
-		talonLeft.set(ControlMode.PercentOutput, -1);
-		talonRight.set(ControlMode.PercentOutput, -1);          //TODO change to make less jittery (proportional)
+	public void elevatorMoveDown(double percent){
+		talonLeft.set(ControlMode.PercentOutput, percent);  //check negatives
+		talonRight.set(ControlMode.PercentOutput, percent);          //TODO change to make less jittery (proportional)
 	}
 
 	void configActuators() {
