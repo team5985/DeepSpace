@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.DriverControls;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive; 
 
 
@@ -11,8 +12,6 @@ import frc.robot.subsystems.Drive;
  * Manager of robot controls and movement during teleop period.
  */
 public class TeleopController {
-
-
 Timer gameTimer = new Timer();
     public enum States {
         IDLE,
@@ -78,7 +77,6 @@ public void stateMachine() {
             break;
     }
     }
-
         //Raw Transitions 
         
         private void trDriveRaw() {
@@ -146,14 +144,7 @@ public void stateMachine() {
         public void stIdle() {
             //The idle moooooooooooooooooooooooooooooooooooooooo
         }
-
-
-
-
-
-        
-    
-    
+               
     /**
      * To be called by Robot.teleopPeriodic() to run the teleop controller during the teleop mode.
      */
@@ -164,14 +155,14 @@ public void stateMachine() {
         
         if (DriverControls.getButtonPress3()) {
             hatchMode = true;
-          }else if (DriverConrols.getRawButtonPress4()) {
+        } else if (DriverConrols.getRawButtonPress4()) {
             hatchMode = false;
-          }
+        }
 
           public boolean getOMMode() {
             @return "True for Hatch mode";
             return hatchMode;
-          }
+        }
 
     }
 

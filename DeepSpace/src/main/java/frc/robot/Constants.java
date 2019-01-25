@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.sun.tools.classfile.StackMapTable_attribute.stack_map_frame;
 
 public class Constants {
 	// CAN IDs
@@ -16,7 +17,8 @@ public class Constants {
     public static final int kTalonElevatorLeftCanId = 7;
     public static final int kTalonElevatorRightCanId = 8;
     //cargo
-    public static final int kTalonCargoIntakeCanId = 9;
+    public static final int kTalonCargoWristCanId = 9;
+    
     //hatch
     public static final int kTalonBobcatJointCanId = 10; //for raising and lowering hatch
 
@@ -49,14 +51,21 @@ public class Constants {
 
     public static double kDriveMaxRotationalAccel = 0.0;  // TODO: Test this
     public static double kDriveMaxRotationalVel = 0.0;
+    public static double kDriveTopSpeed = 3.7795;
+
     public static double kDriveGyroTurnKf = 1 / kDriveMaxRotationalVel;  // Feedforward for power / turn rate
     public static double kDriveGyroTurnKp = 0.0;  // Compensation for error
     public static double kDriveGyroTurnGain = 1.0;  // K gain for square root controller.
     public static double kDriveGyroTurnThresh = 3.0;  // In degrees.
     public static double kDriveGyroRateThresh = 3.0;  // In deg/s.
 
+	public static final double kDrivePowerKf = 1 / kDriveTopSpeed;
+
     public static double kDriveWheelDiameter = 6.0;
 	public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kEncoderPpr;  // Metres per pulse
+
+    // Gain Constants
+    public static final double kGainGyroDriveTurn = 1;
 
     // Tilt Compensation Constants
     public static final double kRollErrorMax = 5;
@@ -74,7 +83,11 @@ public class Constants {
     public static final int kHatchRightPcmPort = 2;
     public static final int kHatchLeftPcmPort = 3;
 
-    // CargoIntake Contants
+    // CargoIntake
+    public static final int kVictorCargoIntakeLeftPwmPort = 0;   // ??????????
+    public static final int kVictorCargoIntakeRightPwmPort = 1;  //????????????????
+
+    // CargoWrist Contants
     /**degrees per second per second */
     public static final double kCargoIntakeMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
     public static final double kCargoIntakeMaxSpeed = 518.4;
@@ -91,5 +104,8 @@ public class Constants {
 	public static final double kVisionTargetRocketFarLeftAngle = 208.75;
 	public static final double kVisionTargetRocketFarRightAngle = 151.25;
 	public static final double kVisionTargetRocketNearLeftAngle = 331.25;
-	public static final double kVisionTargetRocketNearRightAngle = 28.75;
+    public static final double kVisionTargetRocketNearRightAngle = 28.75;
+    
+    //other
+    public static final double kCountsToDegrees = 0.087890625;
 }
