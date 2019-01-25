@@ -16,7 +16,8 @@ public class Constants {
     public static final int kTalonElevatorLeftCanId = 7;
     public static final int kTalonElevatorRightCanId = 8;
     //cargo
-    public static final int kTalonCargoIntakeCanId = 9;
+    public static final int kTalonCargoWristCanId = 9;
+    
     //hatch
     public static final int kTalonBobcatJointCanId = 10; //for raising and lowering hatch
 
@@ -74,7 +75,11 @@ public class Constants {
     public static final int kHatchRightPcmPort = 2;
     public static final int kHatchLeftPcmPort = 3;
 
-    // CargoIntake Contants
+    // CargoIntake
+    public static final int kVictorCargoIntakeLeftPwnPort = 0;   // ??????????
+    public static final int kVictorCargoIntakeRightPwnPort = 1;  //????????????????
+
+    // CargoWrist Contants
     /**degrees per second per second */
     public static final double kCargoIntakeMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
     public static final double kCargoIntakeMaxSpeed = 518.4;
