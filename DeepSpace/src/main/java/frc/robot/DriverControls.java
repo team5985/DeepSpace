@@ -19,7 +19,7 @@ public class DriverControls {
     /**
      * Initialise the driver's controllers.
      */
-    private DriverControls() {
+    public DriverControls() {
 		stick = new Joystick(Constants.kJoystickPort);
     }
 
@@ -168,7 +168,16 @@ public class DriverControls {
 
 		return (stick.getRawButtonReleased(11) || stick.getRawButtonReleased(9) == true);
 }
+//VICTORY
+	public boolean getButtonPress12() {
 
+		return stick.getRawButtonPressed(12);
+}
+
+	public boolean getButtonRelease12() {
+
+		return stick.getRawButtonReleased(12);
+	}
 
 
 	/**
