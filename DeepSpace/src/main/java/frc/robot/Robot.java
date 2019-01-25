@@ -9,6 +9,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
+
+import org.junit.runner.Description;
+import org.junit.runners.Parameterized.Parameters;
+
+import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.Vision;
+import frc.robot.subsystems.Drive;
+=======
+
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -21,6 +31,22 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
+
+
+  
+  public long encoderToRevolutions(int input) {
+    return (input / 4 / 1024); //TODO: Verify 1024
+  }
+  
+   
+  
+   Joystick stick;
+
+  Vision machineVision;
+  Drive drive;
+  boolean hatchMode = true;
+  
+
 
   @Override
   public void robotInit() {
@@ -40,7 +66,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-  }
+
+    if (stick.getRawButtonPressed(2)) {
+      machineVision.machineVision(); 
+    }
+      Drive.getInstance().testTip();
+    if (stick.getRawButtonPressed(3)) {
+      hatchMode = true;
+    }else if (stick.getRawButtonPressed(4)) {
+      hatchMode = false;
+    }
+
+    }
 
   @Override
   public void testInit() {

@@ -7,6 +7,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.Encoder;
  *
  */
 public class Drive extends Subsystem {
+	
 	public boolean zeroPosition(){
 		return false;
 	}
@@ -60,21 +62,24 @@ public class Drive extends Subsystem {
 	private AHRS imu; // Inertial Measurement Unit (navx)
 
 	Joystick stick;
-	int reverse = 1;
+	XboxController xBox = new XboxController(Constants.kXboxPort);
+	int reverse = 1; // 1: Forward, -1: Backward
 	private boolean robotTipped = false;
 	double oldTime = 0;
 	double newTime = 0;
 
 	SquareRootControl gyroTurnController;
+	SquareRootControl driveController;
   
 	/**
 	 * Initialise drivetrain
 	 */
-    private Drive() {
+    public Drive() {
     	configActuators();
 		configSensors();
 		
 		gyroTurnController = new SquareRootControl(Constants.kDriveMaxRotationalAccel, Constants.kDriveMaxRotationalVel, Constants.kDriveGyroTurnGain);
+		driveController = new SquareRootControl(maximumAcceleration, maximumSpeed, K);
 	}
 
 	// Drive-Control
@@ -89,7 +94,7 @@ public class Drive extends Subsystem {
 		}
 
 	}
-
+	
 	public void testTip(){
 		double roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
 		double threshold = 10.0f;
@@ -143,11 +148,29 @@ public class Drive extends Subsystem {
 
 		return (Math.abs(targetHeading - currentHeading) <= Constants.kDriveGyroTurnThresh) && (Math.abs(currentRate) <= Constants.kDriveGyroRateThresh);
 	}
+
+	/**
+	 * 
+	 * @param speed Maximum speed in m/s
+	 * @param targetHeading
+	 * @param distance
+	 * @param gain
+	 */
+	public void gyroDrive(double speed, double targetHeading, double distance) {
+		double distanceLeftEncoder = leftEncoder.getDistance();
+		double distanceRightEncoder = rightEncoder.getDistance();
+		double position = (distanceLeftEncoder + distanceRightEncoder) / 2;
+		driveController.configMaxSpeed(speed);
+		double driveSpeed = driveController.run(position, distance);
+		double drivePower = driveSpeed * Constants.kDrivePowerKf;
+		double yaw = imu.getYaw();
+		arcadeDrive(speed, (targetHeading - yaw) * Constants.kGain, 1);
+	}
 		
 	//Driver Heading Assist
 	public void headingAssist(double speed, double adjustAmmount) {
 	/** double speed, double adjustAmmount*/
-		float yaw = imu.getYaw();
+		double yaw = imu.getYaw();
 		if(yaw != 0) {
 			if((imu.getYaw()) > 0) {
 				arcadeDrive(0.0, (adjustAmmount * -1), speed);

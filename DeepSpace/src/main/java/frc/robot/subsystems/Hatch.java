@@ -1,12 +1,43 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.Constants;
 
-// Prepare the Hatch-Intake Mechanisms
+public class Hatch extends Subsystem {
 
-// Slap the Mechanism on the Ground for Ground-Pickup
+    public Hatch hatchInstance = null;
+    Solenoid hatchPopLeft;
+    Solenoid hatchPopRight;
+    
+    public Hatch getInstance() {
+        if (hatchInstance == null) {
+            hatchInstance = new Hatch();
+        }
+        return hatchInstance;
+    }
 
-// Raise the Mechanism Upwards
+    private Hatch() {
 
-// Stow the Current Mechanism at Current Height
-
-// Interface with Electromagnet/Beak
+    }
+    /**out or in (out is true) */
+    public void setPosition(boolean Position){
+        hatchPopLeft.set(Position);
+        hatchPopRight.set(Position);
+    }
+    public boolean zeroPosition(){
+        hatchPopLeft.set(false);
+        hatchPopRight.set(false);
+        return true;
+    }
+    public double getPosition(){
+        return 0;
+    }
+    void configSensors() {
+		
+    }
+    void configActuators(){
+        hatchPopRight = new Solenoid(Constants.kHatchRightPcmPort);
+        hatchPopLeft = new Solenoid(Constants.kHatchLeftPcmPort);
+    }
+    
+}
