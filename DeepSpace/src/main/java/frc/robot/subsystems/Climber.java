@@ -4,27 +4,35 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.kauailabs.navx.frc.AHRS;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.VictorSP;
 import frc.robot.Constants;
 import jdk.jfr.Percentage;
 
 public class Climber extends Subsystem {
 
-	boolean elevatorCompletedExtend = false;
-	boolean elevatorCompletedRetract = true;
+	private boolean elevatorCompletedExtend = false;
+	private boolean elevatorCompletedRetract = true;
 
 	private AHRS imu;
-	Solenoid mantisSolenoid;
+	private Solenoid mantisSolenoid;
 
-	WPI_TalonSRX elevator; //sensor (left)
-	WPI_TalonSRX talonLeft;
-	WPI_TalonSRX talonRight;
+	private WPI_TalonSRX elevator; //sensor (left)
+	private WPI_TalonSRX talonLeft;
+	private WPI_TalonSRX talonRight;
+
+	private VictorSP mantisLeft;
+	private VictorSP mantisRight;
 
 /**true = out, false = in */
 	private void setMantisPosition(Boolean direction) {
 		if(direction == true){
 			mantisSolenoid.set(true);
+			mantisLeft.set(1);
+			mantisRight.set(1);
 		}else {
 			mantisSolenoid.set(false);
+			mantisLeft.set(0);
+			mantisLeft.set(0);
 		}
 	}
 	private void checkCompleted(){
@@ -95,6 +103,10 @@ public class Climber extends Subsystem {
 	void configActuators() {
 		talonLeft = new WPI_TalonSRX(Constants.kTalonElevatorLeftCanId);
 		talonRight = new WPI_TalonSRX(Constants.kTalonElevatorLeftCanId);
+		mantisLeft = new VictorSP(Constants.kVictorMantisLeftPwnPort);
+		mantisLeft.setInverted(false);										//TODO: check
+		mantisRight = new VictorSP(Constants.kVictorMantisRightPwmPort);
+		mantisRight.setInverted(false);										//TODO: check
 		mantisSolenoid = new Solenoid(Constants.kSolenoidMantisChannel);
 	}
 
