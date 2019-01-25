@@ -112,6 +112,6 @@ public class Bobcat extends Subsystem {
     }
     public double getPosition(){ //angle
         feedback = jointMotor.getSelectedSensorPosition();
-        return feedback * 0.087890625;
+        return feedback * Constants.kCountsToDegrees;
     }
 }

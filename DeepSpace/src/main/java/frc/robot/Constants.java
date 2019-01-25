@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.sun.tools.classfile.StackMapTable_attribute.stack_map_frame;
 
 public class Constants {
 	// CAN IDs
@@ -96,5 +97,8 @@ public class Constants {
 	public static final double kVisionTargetRocketFarLeftAngle = 208.75;
 	public static final double kVisionTargetRocketFarRightAngle = 151.25;
 	public static final double kVisionTargetRocketNearLeftAngle = 331.25;
-	public static final double kVisionTargetRocketNearRightAngle = 28.75;
+    public static final double kVisionTargetRocketNearRightAngle = 28.75;
+    
+    //other
+    public static final double kCountsToDegrees = 0.087890625;
 }

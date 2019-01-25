@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.VictorSP;
 
 import frc.lib.SquareRootControl;
@@ -122,8 +121,7 @@ public class CargoIntake extends Subsystem {
     }
 	public double getPosition(){
         feedBack = wristMotor.getSelectedSensorPosition();   //1024 Pulses per rotation -  4 counts per pulse   - 4096
-        angle = feedBack * 0.087890625;
-        return angle;
+        return feedBack * Constants.kCountsToDegrees;
     }
     void configSensors() {
 		wristMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
@@ -131,13 +129,13 @@ public class CargoIntake extends Subsystem {
     }
     void configActuators(){
         wristMotor = new WPI_TalonSRX(Constants.kTalonCargoWristCanId);
-        leftIntakeMotor= new VictorSP(Constants.kVictorCargoIntakeLeftPwnPort);
+        leftIntakeMotor= new VictorSP(Constants.kVictorCargoIntakeLeftPwmPort);
         leftIntakeMotor.setInverted(true);
-        rightIntakeMotor = new VictorSP(Constants.kVictorCargoIntakeRightPwnPort);
+        rightIntakeMotor = new VictorSP(Constants.kVictorCargoIntakeRightPwmPort);
         rightIntakeMotor.setInverted(false);
     }
     public double changeDegreesToCounts(double degrees){
-        return degrees / 0.087890625;
+        return degrees / Constants.kCountsToDegrees;
     }
     public void setPosition(double angle){
         velocity = wristMotorControl.run(getPosition(), angle);
