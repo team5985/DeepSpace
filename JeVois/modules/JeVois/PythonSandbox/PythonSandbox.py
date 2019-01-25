@@ -203,6 +203,11 @@ class PythonSandbox:
             contourNum = len(conts) # Gets number of contours
             sortedBy = sorted(conts, key=getArea) # sortedBy now has all the contours sorted by area
             return sortedBy
+
+        def sortByX(conts):
+            contourNum = len(conts)
+            sortedBy = sorted(conts, key=getXcoord)
+            return sortedBy
         
 ##################################################################################################
         
@@ -216,13 +221,20 @@ class PythonSandbox:
         # Gets number of contours
         contourNum = len(self.filter_contours_output)
 
-        # Sorts contours by the smallest area first
-        newContours = sortByArea(self.filter_contours_output)       
-
+        # Sorts contours from left to right first
+        newContours = sortByX(self.filter_contours_output)
+        targetOrientations = []
+        targetPairs = []
+        
         # Send the contour data over Serial
         for i in range (contourNum):
             cnt = newContours[i]
             x,y,w,h = cv2.boundingRect(cnt) # Get the stats of the contour including width and height
+            angled_box = cv2.minAreaRect(cnt)
+            if (angled_box[2] < -45):  # Slanted right
+                targetOrientations.append(["r", x])
+            elif (angled_box[2] > -45):  # Slanted left
+                targetOrientations.append(["l", x])
             
             # which contour, 0 is first
             """toSend = ("CON" + str(i) +  
@@ -231,14 +243,25 @@ class PythonSandbox:
                      "y" + str(round(375-getYcoord(cnt)*750/240, 2)) +  # y-coordinate of contour, -375 to 375 rounded to 2 decimal
                      "h" + str(round(h*750/240, 2)) +  # Height of contour, 0-750 rounded to 2 decimal
                      "w" + str(round(w*1000/320, 2))) # Width of contour, 0-1000 rounded to 2 decimal"""
-            toSend = {"Contour": i, "x": round((getXcoord(cnt)*1000/320)-500, 2)}
-            json_toSend = json.dumps(toSend)
-            jevois.sendSerial(json_toSend)
+        
+        for i in range(targetOrientations):
+            if targetOrientations[i][0] == "l" and targetOrientations[i+1][0] == "r":
+                targetPairs.append(((targetOrientations[i][1] + targetOrientations[i+1][1]) / 2) - 160)  # Add the average of the target pairs' position to list of targetPairs
 
+        angleToTarget = min(targetPairs)  # Use the target pair closest to the middle of view.
+
+        kDegsPerPixel = 65 / 320  # Number of degrees per pixel, for simple conversion
+        angleToTarget = round(angleToTarget * kDegsPerPixel, 2)
+        
         if (contourNum == 0):  # if there are no contours, send a no targets message
             toSend = {"Contour": -1, "x": 1000}
             json_toSend = json.dumps(toSend)
             jevois.sendSerial(json_toSend)
+        else:
+            toSend = {"Contour": i, "x": angleToTarget}
+            json_toSend = json.dumps(toSend)
+            jevois.sendSerial(json_toSend)
+
             
         # Write a title:
         cv2.putText(outimg, "Vision output", (3, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
@@ -248,6 +271,7 @@ class PythonSandbox:
         #height, width, channels = outimg.shape # if outimg is grayscale, change to: height, width = outimg.shape
         height, width, channels = outimg.shape
         cv2.putText(outimg, fps, (3, height - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+        cv2.circle(outimg, ())
 
         # Convert our BGR output image to video output format and send to host over USB. If your output image is not
         # BGR, you can use sendCvGRAY(), sendCvRGB(), or sendCvRGBA() as appropriate:
