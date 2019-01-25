@@ -8,6 +8,7 @@ import frc.robot.Constants;
 
 public class Climber extends Subsystem {
 
+
 	boolean encoderElev = true;
 	boolean encoderArm = true;
 	private AHRS imu;
@@ -25,13 +26,13 @@ public class Climber extends Subsystem {
 		return elevator.getSelectedSensorPosition() * 0.000244140625; //change values when robot built
 	}
 
-	private void mantisArmManual(Boolean direction) {
+	public void mantisArmManual(Boolean direction) {
 	/**Boolean direction-True = Up */
 	boolean completed = false;
-		if(direction == true){
+		if (direction == true){
 			sMantisArm.set(true);
 			completed = true;
-		}else {
+		} else {
 			sMantisArm.set(false);
 			completed = true;
 		}
@@ -138,12 +139,12 @@ public class Climber extends Subsystem {
 	}
 
 	double getPosition() {
-		//TODO: Change 0.0
+		// TODO: Change 0.0
 		return getEncoderHeight();
 	}
 
 	boolean zeroPosition() {
-		//TODO: Change 0.0
+		// TODO: Change 0.0
 		return false;
 	}
 }	
