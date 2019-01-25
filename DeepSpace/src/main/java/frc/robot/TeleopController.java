@@ -12,7 +12,7 @@ import frc.robot.subsystems.Drive;
  */
 public class TeleopController {
 
-DriverControls thumbPress = new DriverControls();
+
 Timer gameTimer = new Timer();
     public enum States {
         IDLE,
@@ -41,6 +41,7 @@ Timer gameTimer = new Timer();
 
     private TeleopController() {
         _drive = Drive.getInstance();
+        _controls = DriverControls.getInstance();
     }
 
     //State Machine
@@ -102,12 +103,12 @@ public void stateMachine() {
         //ADV Transitions
 
         private void trVision() {
-            if(thumbPress.getThumbPress() == true) {
+            if(_Controls.getThumbPress() == true) {
                 trVisionRaw();
             }
         } 
         private void trHab() {
-            if(thumbPress.getButtonPress6()) {
+            if((_Controls.getButtonPress6()) && /*Arm is down*/ {
                 trHABRaw();
             }
         }  
@@ -120,7 +121,7 @@ public void stateMachine() {
             trDriveRaw();
         }
         public void trVictory() {
-            if(thumbPress.getButtonPress12()) {
+            if(_Controls.getButtonPress12()) {
                 trVictoryRaw();
             }
         }
@@ -128,6 +129,7 @@ public void stateMachine() {
         //States
         public void stDrive() {
             //VroomVroom
+            _drive.arcadeDrive(_Controls.getDrivePower(), _Controls.getDriveSteering(), _Controls.getDriveThrottle());
         }
         public void stVision() {
             //I've got my i on you
