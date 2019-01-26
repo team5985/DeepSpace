@@ -23,21 +23,28 @@ public class CargoIntake extends Subsystem {
     private double grabIntakePercent = 0.8;
     private double holdIntakePercent = 0.2;
     private double shootIntakePercent = 1;
+    public static CargoIntake cargoInstance;
 
-    public enum IntakePositions {
+    public enum IntakePositionsCargo {
         STOWED,
         HIGH,
         MID,
         LOW,
     }
-    public enum IntakeModes {
+    public enum IntakeModesCargo {
         OFF,
         GRAB,
         HOLD,
         SHOOT,
     }
+    public static CargoIntake getInstance(){
+        if(cargoInstance == null){
+            cargoInstance = new CargoIntake();
+        } 
+        return cargoInstance;
+    }
     
-    public boolean actionSetMode(IntakeModes mode){
+    public boolean actionSetMode(IntakeModesCargo mode){
         switch (mode){
             case OFF:
                 setIntakeMode(mode);
@@ -56,7 +63,7 @@ public class CargoIntake extends Subsystem {
         }
     }
 //**set to angles 30 degrees down, 30 degrees up, centre and stowed for picking up balls */
-    public boolean actionMoveTo(IntakePositions position) {
+    public boolean actionMoveTo(IntakePositionsCargo position) {
         switch (position){
             case STOWED:
                 setPosition(stowedAngle);
@@ -97,20 +104,20 @@ public class CargoIntake extends Subsystem {
 	/**
 	 * returns z angle of Interial Measurement Unit
 	 */
-    public void setIntakeMode(IntakeModes mode){
-        if (mode == IntakeModes.OFF) {
+    public void setIntakeMode(IntakeModesCargo mode){
+        if (mode == IntakeModesCargo.OFF) {
             leftIntakeMotor.set(0);
             rightIntakeMotor.set(0);
         }
-        if (mode == IntakeModes.GRAB) {
+        if (mode == IntakeModesCargo.GRAB) {
             leftIntakeMotor.set(grabIntakePercent);
             rightIntakeMotor.set(grabIntakePercent);
         }
-        if (mode == IntakeModes.HOLD) {
+        if (mode == IntakeModesCargo.HOLD) {
             leftIntakeMotor.set(holdIntakePercent);
             rightIntakeMotor.set(holdIntakePercent);
         }
-        if (mode == IntakeModes.SHOOT) {
+        if (mode == IntakeModesCargo.SHOOT) {
             leftIntakeMotor.set(shootIntakePercent);     //dont know which negative which positive
             rightIntakeMotor.set(shootIntakePercent);
         }

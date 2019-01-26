@@ -5,11 +5,13 @@ import frc.robot.Constants;
 import frc.robot.DriverControls;
 
 public class Hatch extends Subsystem {
+    boolean extendBeak = true;
     DriverControls DriverControls = new DriverControls();
-    Constants  Constants = new Constants();
+    Constants Constants = new Constants();
     public Hatch hatchInstance = null;
     Solenoid hatchPopLeft;
     Solenoid hatchPopRight;
+    Solenoid beakSolenoid;
     
     public Hatch getInstance() {
         if (hatchInstance == null) {
@@ -17,6 +19,11 @@ public class Hatch extends Subsystem {
         }
         return hatchInstance;
     }
+
+    public void beakToggleState() {
+        beakSolenoid.set(extendBeak);
+        extendBeak = extendBeak == false;
+    } 
 
     /**out or in (out is true) */
     public void setPosition(boolean Position){
@@ -37,6 +44,7 @@ public class Hatch extends Subsystem {
     void configActuators(){
         hatchPopRight = new Solenoid(Constants.kHatchRightPcmPort);
         hatchPopLeft = new Solenoid(Constants.kHatchLeftPcmPort);
+        beakSolenoid = new Solenoid(Constants.kbeakSolenoidChannel);
     }
     
 }

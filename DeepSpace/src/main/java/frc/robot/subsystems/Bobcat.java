@@ -16,16 +16,18 @@ public class Bobcat extends Subsystem {
     public WPI_TalonSRX jointMotor;
     private double velocity = 0;
     private double feedback = 0;
-    private double lowAngleHatch = 10; //TODO: Test and change value
-    private double midAngleHatch = 45; //TODO: Test and change value
-    private double highAngleHatch = 90; //TODO: Test and change value
-    private double lowAngleCargo = 10; //TODO: Test and change value
-    private double midAngleCargo = 45; //TODO: Test and change value
-    private double highAngleCargo = 90; //TODO: Test and change value
-    private double stowedAngle = 0; //TODO: Test and change value
+     //TODO: Test and change value below
+    private double lowAngleHatch = 10;
+    private double midAngleHatch = 45;
+    private double highAngleHatch = 90;
+    private double lowAngleCargo = 10;
+    private double midAngleCargo = 45;
+    private double highAngleCargo = 90;
+    private double cargoShipCargoAngle = 20;
+    private double stowedAngle = 0;
     public static Bobcat bobcatInstance;
 
-    public Bobcat getInstance() {
+    public static Bobcat getInstance() {
         if (bobcatInstance == null) {
             bobcatInstance = new Bobcat();
         }
@@ -53,6 +55,7 @@ public class Bobcat extends Subsystem {
         HIGH_CARGO,
         MID_CARGO,
         LOW_CARGO,
+        CARGOSHIP_BALL_POSITION;
     }
     public boolean actionMoveTo(IntakePositions positions){
         switch(positions){
@@ -119,6 +122,13 @@ public class Bobcat extends Subsystem {
                         boolean returnValue = false;
                         return returnValue;
                     }
+            case CARGOSHIP_BALL_POSITION:
+                setAngle(cargoShipCargoAngle);
+                if (cargoShipCargoAngle >= getPosition() - 2 && cargoShipCargoAngle <= getPosition() + 2){
+                    return true;
+                } else{
+                    return false;
+                } 
             default:
             boolean returnValue = false;
             return returnValue;
