@@ -22,7 +22,7 @@ public class Hatch extends Subsystem {
 
     public void beakToggleState() {
         beakSolenoid.set(extendBeak);
-        extendBeak = extendBeak == false;
+        extendBeak = extendBeak != true;
     } 
 
     /**out or in (out is true) */
