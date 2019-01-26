@@ -2,6 +2,7 @@ import libjevois as jevois
 import cv2
 import numpy as np
 import json
+import math
 
 ## Simple example of image processing using OpenCV in Python on JeVois
 #
@@ -70,9 +71,9 @@ class PythonSandbox:
         self.normalize_output = None
 
         self.__hsv_threshold_input = self.normalize_output
-        self.__hsv_threshold_hue = [69.49152542372877, 99.65820012195888]
-        self.__hsv_threshold_saturation = [57.6271186440678, 255.0]
-        self.__hsv_threshold_value = [235.31073446327682, 255.0]
+        self.__hsv_threshold_hue = [62.71186440677964, 104.4033670815371]
+        self.__hsv_threshold_saturation = [93.64406779661016, 255.0]
+        self.__hsv_threshold_value = [0.0, 255.0]
 
         self.hsv_threshold_output = None
 
@@ -102,9 +103,9 @@ class PythonSandbox:
         self.__filter_contours_contours = self.find_contours_output
         self.__filter_contours_min_area = 25.0
         self.__filter_contours_min_perimeter = 0.0
-        self.__filter_contours_min_width = 4.0
+        self.__filter_contours_min_width = 8.0
         self.__filter_contours_max_width = 140.0
-        self.__filter_contours_min_height = 8.0
+        self.__filter_contours_min_height = 16.0
         self.__filter_contours_max_height = 240.0
         self.__filter_contours_solidity = [70.62146892655366, 100]
         self.__filter_contours_max_vertices = 1000000.0
@@ -216,7 +217,7 @@ class PythonSandbox:
 ##################################################################################################
         
         # Draws all contours on original image in red
-        # cv2.drawContours(outimg, self.filter_contours_output, -1, (0, 0, 255), 1)
+        cv2.drawContours(outimg, self.filter_contours_output, -1, (0, 0, 255), 1)
         
         # Gets number of contours
         contourNum = len(self.filter_contours_output)
@@ -234,14 +235,14 @@ class PythonSandbox:
             print("Angled box: " + str(angled_box[2]))
             box = cv2.boxPoints(angled_box)
             box = np.int0(box)
-            # cv2.drawContours(outimg,[box],0,(0,0,255),2)
+            cv2.drawContours(outimg,[box],0,(0,0,255),2)
 
             # cv2.putText(outimg, angled_box[2], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
 
             if (angled_box[2] < -45):  # Slanted right
-                targetOrientations.append(["r", x])
+                targetOrientations.append(["r", x, y])
             elif (angled_box[2] > -45):  # Slanted left
-                targetOrientations.append(["l", x])
+                targetOrientations.append(["l", x, y])
                        
             # which contour, 0 is first
             """toSend = ("CON" + str(i) +  
@@ -256,7 +257,8 @@ class PythonSandbox:
             for target in targetOrientations:
                 print("Target: " + str(target))
                 if targetOrientations[idx][0] == "r" and targetOrientations[idx+1][0] == "l":
-                    targetPairs.append(((targetOrientations[idx][1] + targetOrientations[idx+1][1]) / 2) - 160)  # Add the average of the target pairs' position to list of targetPairs
+                    pairInfo = [((targetOrientations[idx][1] + targetOrientations[idx+1][1]) / 2) - 160, (targetOrientations[idx][2] + targetOrientations[idx+1][2]) / 2]
+                    targetPairs.append(pairInfo)  # Add the average of the target pairs' position to list of targetPairs
                 idx += 1
         except:
             pass
@@ -268,11 +270,16 @@ class PythonSandbox:
         else:
             cv2.putText(outimg, str(targetOrientations), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
 
-            angleToTarget = min(targetPairs)  # Use the target pair closest to the middle of view.
+            angleToTarget = min(targetPairs[0])  # Use the target pair closest to the middle of view.
 
             kDegsPerPixel = 65 / 320  # Number of degrees per pixel, for simple conversion
-            angleToTarget = round(angleToTarget * kDegsPerPixel, 2)
-            toSend = {"Contour": i, "x": angleToTarget}
+            angleToTarget = angleToTarget * kDegsPerPixel, 2
+
+            kVertDegsPerPixel = 48.75 / 240
+            vertAngleToTarget = (-(y - 240) - 120) * kVertDegsPerPixel
+            distanceToTarget = round(0.63 / math.tan(math.radians(vertAngleToTarget)), 2)
+
+            toSend = {"Contour": i, "x": angleToTarget[0], "distance": distanceToTarget}
             json_toSend = json.dumps(toSend)
             jevois.sendSerial(json_toSend)
             
