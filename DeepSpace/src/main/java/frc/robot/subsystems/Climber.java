@@ -10,8 +10,8 @@ import jdk.jfr.Percentage;
 
 public class Climber extends Subsystem {
 
-	private boolean elevatorCompletedExtend = false;
-	private boolean elevatorCompletedRetract = true;
+	public boolean elevatorCompletedExtend = false;
+	public boolean elevatorCompletedRetract = true;
 
 	private AHRS imu;
 	private Solenoid mantisSolenoid;
@@ -23,7 +23,16 @@ public class Climber extends Subsystem {
 	private VictorSP mantisLeft;
 	private VictorSP mantisRight;
 
+	public static Climber climberInstance = null;
+
+
 /**true = out, false = in */
+	public static Climber getInstance(){
+		if (climberInstance == null){
+			climberInstance = new Climber();
+		}
+		return climberInstance;
+	}
 	private void setMantisPosition(Boolean direction) {
 		if(direction == true){
 			mantisSolenoid.set(true);
@@ -91,11 +100,11 @@ public class Climber extends Subsystem {
 		}
 	}
 
-	public void elevatorMoveUP(double percent){
+	private void elevatorMoveUP(double percent){
 		talonLeft.set(ControlMode.PercentOutput, percent);
 		talonRight.set(ControlMode.PercentOutput, percent);
 	}
-	public void elevatorMoveDown(double percent){
+	private void elevatorMoveDown(double percent){
 		talonLeft.set(ControlMode.PercentOutput, percent);  //check negatives
 		talonRight.set(ControlMode.PercentOutput, percent);          //TODO change to make less jittery (proportional)
 	}
