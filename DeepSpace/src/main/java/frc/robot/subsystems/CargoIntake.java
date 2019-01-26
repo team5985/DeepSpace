@@ -43,7 +43,6 @@ public class CargoIntake extends Subsystem {
         } 
         return cargoInstance;
     }
-    
     public boolean actionSetMode(IntakeModesCargo mode){
         switch (mode){
             case OFF:
@@ -124,7 +123,9 @@ public class CargoIntake extends Subsystem {
     }
 
     private CargoIntake(){
-        wristMotorControl = new SquareRootControl(Constants.kCargoIntakeMaxAccelerationDegrees, Constants.kCargoIntakeMaxSpeed, Constants.kCargoIntakeGain);   
+        wristMotorControl = new SquareRootControl(Constants.kCargoIntakeMaxAccelerationDegrees, Constants.kCargoIntakeMaxSpeed, Constants.kCargoIntakeGain); 
+        configActuators();
+        configSensors();  
     }
 	public double getPosition(){
         feedBack = wristMotor.getSelectedSensorPosition();   //1024 Pulses per rotation -  4 counts per pulse   - 4096

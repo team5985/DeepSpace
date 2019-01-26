@@ -20,11 +20,10 @@ public class Hatch extends Subsystem {
         return hatchInstance;
     }
 
-    public void beakToggleState() {
-        beakSolenoid.set(extendBeak);
-        extendBeak = extendBeak != true;
-    } 
-
+    private Hatch() {
+        configActuators();
+        configSensors();
+    }
     /**out or in (out is true) */
     public void setPosition(boolean Position){
         hatchPopLeft.set(Position);
