@@ -4,14 +4,19 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
+import frc.robot.DriverControls;
 
 public class Bobcat extends Subsystem {
+    boolean hatchCollected = false;
+    DriverControls DriverControls = new DriverControls();
     public SquareRootControl jointMotorControl;
     public WPI_TalonSRX jointMotor;
     private double velocity = 0;
     private double feedback = 0;
+     //TODO: Test and change value below
     private double lowAngleHatch = 10;
     private double midAngleHatch = 45;
     private double highAngleHatch = 90;
@@ -33,7 +38,7 @@ public class Bobcat extends Subsystem {
         configActuators();
         configSensors();  
     }
-
+    
     public enum IntakePositions {
         DOWN,
         HIGH_HATCH,
@@ -48,51 +53,51 @@ public class Bobcat extends Subsystem {
         switch(positions){
             case DOWN:
                 setAngle(stowedAngle);
-                if (stowedAngle >= getPosition() - 2 && stowedAngle <= getPosition() + 2){
+                if (stowedAngle >= getPosition() - 2 && stowedAngle <= getPosition() + 2) {
                     return true;
-                } else{
+                } else {
                     return false;
                 }
             case LOW_HATCH:
                 setAngle(lowAngleHatch);
-                if (lowAngleHatch >= getPosition() - 2 && lowAngleHatch <= getPosition() + 2){
+                if (lowAngleHatch >= getPosition() - 2 && lowAngleHatch <= getPosition() + 2) {
                     return true;
-                } else{
+                } else {
                     return false;
                 }
             case MID_HATCH:
                 setAngle(midAngleHatch);
-                if (midAngleHatch >= getPosition() - 2 && midAngleHatch <= getPosition() + 2){
+                if (midAngleHatch >= getPosition() - 2 && midAngleHatch <= getPosition() + 2) {
                     return true;
-                } else{
+                } else {
                     return false;
                 }
             case HIGH_HATCH:
                 setAngle(highAngleHatch);
-                    if (highAngleHatch >= getPosition() - 2 && highAngleHatch <= getPosition() + 2){
+                    if (highAngleHatch >= getPosition() - 2 && highAngleHatch <= getPosition() + 2) {
                         return true;
-                    } else{
+                    } else {
                         return false;
                     }
             case LOW_CARGO:
                 setAngle(lowAngleCargo);
-                if (lowAngleCargo >= getPosition() - 2 && lowAngleCargo <= getPosition() + 2){
+                if (lowAngleCargo >= getPosition() - 2 && lowAngleCargo <= getPosition() + 2) {
                     return true;
-                } else{
+                } else {
                     return false;
                 }
             case MID_CARGO:
                 setAngle(midAngleCargo);
-                if (midAngleCargo >= getPosition() - 2 && midAngleCargo <= getPosition() + 2){
+                if (midAngleCargo >= getPosition() - 2 && midAngleCargo <= getPosition() + 2) {
                     return true;
-                } else{
+                } else {
                     return false;
                 }
             case HIGH_CARGO:
                 setAngle(highAngleCargo);
-                    if (highAngleCargo >= getPosition() - 2 && highAngleCargo <= getPosition() + 2){
+                    if (highAngleCargo >= getPosition() - 2 && highAngleCargo <= getPosition() + 2) {
                         return true;
-                    } else{
+                    } else {
                         return false;
                     }
             case CARGOSHIP_BALL_POSITION:
@@ -103,7 +108,7 @@ public class Bobcat extends Subsystem {
                     return false;
                 } 
             default:
-                return false;
+            return false;
         }
     }
 
