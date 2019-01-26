@@ -29,7 +29,9 @@ public class Bobcat extends Subsystem {
         return bobcatInstance;
     }
     private Bobcat(){
-        jointMotorControl = new SquareRootControl(Constants.kBobcatJointMotorMaxAccelerationDegrees, Constants.kBobcatJointMotorMaxSpeed, Constants.kBobCatJointMotorGain);   
+        jointMotorControl = new SquareRootControl(Constants.kBobcatJointMotorMaxAccelerationDegrees, Constants.kBobcatJointMotorMaxSpeed, Constants.kBobCatJointMotorGain); 
+        configActuators();
+        configSensors();  
     }
 
     public enum IntakePositions {

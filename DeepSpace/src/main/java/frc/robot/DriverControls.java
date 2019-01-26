@@ -66,16 +66,20 @@ public class DriverControls {
 		return stick.getRawButtonReleased(2);
 	}
 //Hatch Mode
-	public boolean getButtonPress3() {
-		return stick.getRawButtonPressed(3);
+	public boolean getPressHatchMode() {
+		 return stick.getRawButtonPressed(3);
 }
 	public boolean getButtonRelease3() {
 		return stick.getRawButtonReleased(3);
 }
 //Ball Mode
-	public boolean getButtonPress4() {
+	public boolean getPressBallMode() {
 		return stick.getRawButtonPressed(4);
 }
+	public boolean getChangeGamePieceMode(){ //xbox
+		return xBox.getBackButtonPressed();
+	}
+
 	public boolean getButtonRelease4() {
 	return stick.getRawButtonReleased(4);
 }

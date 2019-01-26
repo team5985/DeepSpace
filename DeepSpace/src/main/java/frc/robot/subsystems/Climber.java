@@ -27,6 +27,10 @@ public class Climber extends Subsystem {
 
 
 /**true = out, false = in */
+	private Climber(){
+		configActuators();
+		configSensors();
+	}
 	public static Climber getInstance(){
 		if (climberInstance == null){
 			climberInstance = new Climber();
