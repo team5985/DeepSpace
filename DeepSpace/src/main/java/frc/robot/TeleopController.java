@@ -22,6 +22,11 @@ public class TeleopController {
     States robotState;
     boolean cargoMode = true;
     public static TeleopController teleopInstance = null;
+    CargoWristAngleStates cargoWristAngleStates;
+    CargoWristPowerStates cargoWristPowerStates;
+    BobcatStates bobcatStates;
+    HatchStates hatchStates;
+    ElevatorStates elevatorStates;
 
 Timer gameTimer = new Timer();
     public enum States {
@@ -30,6 +35,36 @@ Timer gameTimer = new Timer();
         VISION,
         HAB,
         VICTORY,
+    }
+    public enum CargoWristAngleStates{
+        LOW,
+        MID,
+        HIGH,
+        STOWED,
+    }
+    public enum CargoWristPowerStates{
+        GRAB,
+        HOLD,
+        SHOOT,
+        OFF,
+    }
+    public enum BobcatStates{
+        LOW_CARGO,
+        MID_CARGO,
+        HIGH_CARGO,
+        CARGOSHIP_CARGO,
+        LOW_HATCH,
+        MID_HATCH,
+        HIGH_HATCH,
+        STOWED,
+    }
+    public enum HatchStates{
+        BEAK_OUT,
+        BEAK_IN,
+    }
+    public enum ElevatorStates{
+        Extended,
+        Retracted,
     }
 
     public static TeleopController getInstance() {
@@ -49,24 +84,166 @@ Timer gameTimer = new Timer();
 
     //State Machine
         
-public void stateMachine() {
-    switch (robotState) {
-            case TELEOP:
-                trVision();
-                runTeleop();
-                trHab();
-            case VISION:
-                stVision();
-            case HAB:
-                stHab();
-                trVictory();
-            case  VICTORY:
-                stVictory();
-                //HORAY 5985
-            break;
+    public void stateMachine() {
+        switch (robotState) {
+                case TELEOP:
+                    trVision();
+                    runTeleop();
+                    trHab();
+                case VISION:
+                    stVision();
+                case HAB:
+                    stHab();
+                    trVictory();
+                case VICTORY:
+                    stVictory();
+                default:
+        }
+    }
+    public void wristAngleStateMachine(){
+        switch(cargoWristAngleStates){
+            case LOW:
+            cargoWristAngleLowState();
+            case MID:
+            cargoWristAngleMidState();
+            case HIGH:
+            cargoWristAngleHighState();
+            case STOWED: 
+            cargoWristAngleStowedState();
             default:
+            cargoWristAngleStowedState();
+        }
     }
+    public void wristPowerStateMachine(){
+        switch(cargoWristPowerStates){
+            case GRAB:
+            cargoWristPowerGrabState();
+            case HOLD:
+            cargoWristPowerHoldState();
+            case SHOOT:
+            cargoWristPowerShootState();
+            case OFF:
+            cargoWristPowerOffState();
+            default:
+            cargoWristPowerOffState();
+        }
     }
+    public void bobcatHeightStateMachine(){
+        switch(bobcatStates){
+            case LOW_CARGO:
+            bobcatCargoLowRocketState();
+            case MID_CARGO:
+            bobcatCargoMidRocketState();
+            case HIGH_CARGO:
+            bobcatCargoHighRocketState();
+            case CARGOSHIP_CARGO:
+            bobcatCargoShipRocketState();
+            case LOW_HATCH:
+            bobcatHatchLowRocketState();
+            case MID_HATCH:
+            bobcatHatchMidRocketState();
+            case HIGH_HATCH:
+            bobcatHatchHighRocketState();
+            case STOWED:
+            bobcatStowedState();
+            default:
+            bobcatStowedState();
+
+        }
+    }
+    public void hatchStateMachine(){
+        switch(hatchStates){
+            case BEAK_OUT: 
+            hatchOutState();
+            case BEAK_IN:
+            hatchInState();
+            default:
+            hatchInState();
+        }
+    }
+    public void elevatorStateMachine(){
+        switch(elevatorStates){
+            case Extended:
+            elevatorExtendedState();
+            case Retracted:
+            elevatorRetractedState();
+            default:
+            elevatorRetractedState();
+        }
+    }
+
+    //angle states
+    private void cargoWristAngleLowState(){
+        _cargo.actionMoveTo(IntakePositionsCargo.LOW);
+    }
+    private void cargoWristAngleMidState(){
+        _cargo.actionMoveTo(IntakePositionsCargo.MID);
+    }
+    private void cargoWristAngleHighState(){
+        _cargo.actionMoveTo(IntakePositionsCargo.HIGH);
+    }
+    private void cargoWristAngleStowedState(){
+        _cargo.actionMoveTo(IntakePositionsCargo.STOWED);
+    }
+
+    //power states
+    private void cargoWristPowerGrabState(){
+        _cargo.setIntakeMode(IntakeModesCargo.GRAB);
+    }
+    private void cargoWristPowerHoldState(){
+        _cargo.setIntakeMode(IntakeModesCargo.HOLD);
+    }
+    private void cargoWristPowerShootState(){
+        _cargo.setIntakeMode(IntakeModesCargo.SHOOT);
+    }
+    private void cargoWristPowerOffState(){
+        _cargo.setIntakeMode(IntakeModesCargo.OFF);
+    }
+    
+    //bobcat states
+    private void bobcatCargoLowRocketState(){
+        _bobcat.actionMoveTo(IntakePositions.LOW_CARGO);
+    }
+    private void bobcatCargoMidRocketState(){
+        _bobcat.actionMoveTo(IntakePositions.MID_CARGO);
+    }
+    private void bobcatCargoHighRocketState(){
+        _bobcat.actionMoveTo(IntakePositions.HIGH_CARGO);
+    }
+    private void bobcatCargoShipRocketState(){
+        _bobcat.actionMoveTo(IntakePositions.CARGOSHIP_BALL_POSITION);
+    }
+    private void bobcatHatchLowRocketState(){
+        _bobcat.actionMoveTo(IntakePositions.LOW_HATCH);   
+    }
+    private void bobcatHatchMidRocketState(){
+        _bobcat.actionMoveTo(IntakePositions.MID_HATCH); 
+    }
+    private void bobcatHatchHighRocketState(){
+        _bobcat.actionMoveTo(IntakePositions.HIGH_HATCH); 
+    }
+    private void bobcatStowedState(){
+        _bobcat.actionMoveTo(IntakePositions.DOWN); 
+    }
+
+    //hatch states
+    private void hatchOutState(){
+
+    }
+    private void hatchInState(){
+
+    }
+    //elevator states
+    private void elevatorExtendedState(){
+        _climb.elevatorMove(true);
+    }
+    private void elevatorRetractedState(){
+        _climb.elevatorMove(false);
+    }
+
+
+
+
         //tr for transition
         private void trVision() {
             if(_controls.getThumbPress() == true) {
@@ -96,11 +273,11 @@ public void stateMachine() {
         }
         public void stHab() {
             if (_climb.elevatorCompletedExtend == false){
-                _climb.elevatorMove(true);
+                elevatorStates = ElevatorStates.Extended;
             }
             else{
                 if (_controls.getButtonElevatorRetract()){
-                    _climb.elevatorMove(false);
+                    elevatorStates = ElevatorStates.Retracted;
                 }
             }
         }
@@ -112,73 +289,83 @@ public void stateMachine() {
         }
 
         public void gamePieceMode() {
-            if (_controls.getButtonPress3()) {
-                cargoMode = true;
-            } 
-            else if (_controls.getButtonPress4()) {
-                cargoMode = false;
+            if (_controls.getChangeGamePieceMode()){
+                if (cargoMode == true){
+                    cargoMode = false;
+                } else{
+                    cargoMode = true;
+                }
             }
+            else {
+                if (_controls.getPressHatchMode()) {
+                    cargoMode = true;
+                } 
+                else if (_controls.getPressBallMode()) {
+                    cargoMode = false;
+                }
+            }      
         }
         public boolean getGamePieceMode() {
             return cargoMode;
         }
 
+        public void setState(){
+
+        }
     /**
      * To be called by Robot.teleopPeriodic() to run the teleop controller during the teleop mode.
      */
     public void runTeleop() {
-        _drive.arcadeDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
-
         if (getGamePieceMode()){
             if(_controls.getButtonPressWristUp()){               //set buttons for 30 degrees down and up and mid
-                _cargo.actionMoveTo(IntakePositionsCargo.HIGH);
+                cargoWristAngleStates = CargoWristAngleStates.HIGH;
             }
             if (_controls.getButtonPressWristMid()){
-                _cargo.actionMoveTo(IntakePositionsCargo.MID);
+                cargoWristAngleStates = CargoWristAngleStates.MID;
                 //TODO: if up shoot, if detect ball go mid
             }
             if (_controls.getPressCargoWristDown()){
-                _cargo.actionMoveTo(IntakePositionsCargo.LOW);   //TODO: change so no need to hold buttons
+                cargoWristAngleStates = CargoWristAngleStates.LOW;   //TODO: change so no need to hold buttons
             }
             if (_controls.getPressStowCargo()){
-                _cargo.actionMoveTo(IntakePositionsCargo.STOWED);  //TODO: light sensor stuff
+                cargoWristAngleStates = CargoWristAngleStates.STOWED;  //TODO: light sensor stuff
             }
     }
     if (getGamePieceMode()){
         if (_controls.getPressLowRocketPosition()){
-            _bobcat.actionMoveTo(IntakePositions.LOW_CARGO);
+            bobcatStates = bobcatStates.LOW_CARGO;
         }
         if (_controls.getPressMidRocketPosition()){
-            _bobcat.actionMoveTo(IntakePositions.MID_CARGO);  //TODO: fix mixture with shooting and positions
+            bobcatStates = bobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
         }
         if (_controls.getPressHighRocketPosition()){
-            _bobcat.actionMoveTo(IntakePositions.HIGH_CARGO);
+            bobcatStates = bobcatStates.HIGH_CARGO;
         }
-        if (_controls.getPressLowRocketPosition()){
-            _bobcat.actionMoveTo(IntakePositions.CARGOSHIP_BALL_POSITION);
+        if (_controls.getPressCargoShipBallPosition()){
+            bobcatStates = bobcatStates.CARGOSHIP_CARGO;
         }
     }
     else if (getGamePieceMode() == false){
-        _cargo.actionMoveTo(IntakePositionsCargo.STOWED);
-        _cargo.setIntakeMode(IntakeModesCargo.OFF);
+        cargoWristAngleStates = CargoWristAngleStates.STOWED;
+        cargoWristPowerStates = CargoWristPowerStates.OFF;
         if (_controls.getPressLowRocketPosition()){
-            _bobcat.actionMoveTo(IntakePositions.LOW_HATCH);
+            bobcatStates = bobcatStates.LOW_HATCH;
         }
         if (_controls.getPressMidRocketPosition()){
-            _bobcat.actionMoveTo(IntakePositions.MID_HATCH);
+            bobcatStates = bobcatStates.MID_HATCH;
         }
         if (_controls.getPressHighRocketPosition()){
-            _bobcat.actionMoveTo(IntakePositions.HIGH_HATCH);
+            bobcatStates = bobcatStates.HIGH_HATCH;
         }
     }
     //put stow here
     if (_controls.getPressStowCargo()){
-        _bobcat.actionMoveTo(IntakePositions.DOWN);
-        _cargo.actionMoveTo(IntakePositionsCargo.STOWED);
-        _cargo.setIntakeMode(IntakeModesCargo.OFF);
+        bobcatStates = bobcatStates.STOWED;
+        cargoWristAngleStates = CargoWristAngleStates.STOWED;
+        cargoWristPowerStates = CargoWristPowerStates.OFF;
     }
     if (_controls.getPressShootCargo()){
-        _cargo.setIntakeMode(IntakeModesCargo.SHOOT);  //TODO: light sensor stuff
+        cargoWristPowerStates = CargoWristPowerStates.SHOOT;  //TODO: light sensor stuff
     } 
 }
 }

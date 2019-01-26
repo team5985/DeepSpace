@@ -17,7 +17,8 @@ public class Hatch extends Subsystem {
     }
 
     private Hatch() {
-
+        configActuators();
+        configSensors();
     }
     /**out or in (out is true) */
     public void setPosition(boolean Position){
