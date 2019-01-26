@@ -14,7 +14,7 @@ public class Constants {
     public static final int kRightDriveCCanId = 6;
 
     // Elevator TalonSRX
-    public static final int kTalonElevatorLeftCanId = 7;
+    public static final int kTalonElevatorLeftCanId = 7;   //Also elevator encoder
     public static final int kTalonElevatorRightCanId = 8;
     //cargo
     public static final int kTalonCargoWristCanId = 9;
@@ -27,9 +27,6 @@ public class Constants {
     public static final int kDriveLeftEncoderBPort = 1;
     public static final int kDriveRightEncoderAPort = 2;
     public static final int kDriveRightEncoderBPort = 3;
-
-    // PCM Ports
-    public static final byte kSolenoidMantisChannel = 0;
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
@@ -51,21 +48,14 @@ public class Constants {
 
     public static double kDriveMaxRotationalAccel = 0.0;  // TODO: Test this
     public static double kDriveMaxRotationalVel = 0.0;
-    public static double kDriveTopSpeed = 3.7795;
-
     public static double kDriveGyroTurnKf = 1 / kDriveMaxRotationalVel;  // Feedforward for power / turn rate
     public static double kDriveGyroTurnKp = 0.0;  // Compensation for error
     public static double kDriveGyroTurnGain = 1.0;  // K gain for square root controller.
     public static double kDriveGyroTurnThresh = 3.0;  // In degrees.
     public static double kDriveGyroRateThresh = 3.0;  // In deg/s.
 
-	public static final double kDrivePowerKf = 1 / kDriveTopSpeed;
-
     public static double kDriveWheelDiameter = 6.0;
 	public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kEncoderPpr;  // Metres per pulse
-
-    // Gain Constants
-    public static final double kGainGyroDriveTurn = 1;
 
     // Tilt Compensation Constants
     public static final double kRollErrorMax = 5;
@@ -78,14 +68,16 @@ public class Constants {
     public static final double kYawErrorMin = kYawErrorMax * -1;
 
     // PCM Solenoid Ports
-    public static final int kMantisLeftPcmPort = 0;
-    public static final int kMantisRightPcmPort = 1;
-    public static final int kHatchRightPcmPort = 2;
-    public static final int kHatchLeftPcmPort = 3;
+    public static final int kHatchRightPcmPort = 0;
+    public static final int kHatchLeftPcmPort = 1;
+    public static final int kElevatorSolenoidControllerPcmPort = 2;
+    public static final byte kSolenoidMantisChannel = 3;
 
     // CargoIntake
     public static final int kVictorCargoIntakeLeftPwmPort = 0;   // ??????????
     public static final int kVictorCargoIntakeRightPwmPort = 1;  //????????????????
+    public static final int kVictorMantisRightPwmPort = 2;
+    public static final int kVictorMantisLeftPwnPort = 3;
 
     // CargoWrist Contants
     /**degrees per second per second */
