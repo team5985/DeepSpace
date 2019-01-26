@@ -28,7 +28,7 @@ import json
 # @restrictions None
 # @ingroup modules
 
-class PythonSandbox:
+class PythonSandboxDisplay:
     # ###################################################################################################
     ## Constructor
     def __init__(self):
@@ -70,9 +70,9 @@ class PythonSandbox:
         self.normalize_output = None
 
         self.__hsv_threshold_input = self.normalize_output
-        self.__hsv_threshold_hue = [69.49152542372877, 99.65820012195888]
-        self.__hsv_threshold_saturation = [57.6271186440678, 255.0]
-        self.__hsv_threshold_value = [235.31073446327682, 255.0]
+        self.__hsv_threshold_hue = [62.71186440677964, 104.4033670815371]
+        self.__hsv_threshold_saturation = [93.64406779661016, 255.0]
+        self.__hsv_threshold_value = [0.0, 255.0]
 
         self.hsv_threshold_output = None
 
@@ -102,9 +102,9 @@ class PythonSandbox:
         self.__filter_contours_contours = self.find_contours_output
         self.__filter_contours_min_area = 25.0
         self.__filter_contours_min_perimeter = 0.0
-        self.__filter_contours_min_width = 4.0
+        self.__filter_contours_min_width = 8.0
         self.__filter_contours_max_width = 140.0
-        self.__filter_contours_min_height = 8.0
+        self.__filter_contours_min_height = 16.0
         self.__filter_contours_max_height = 240.0
         self.__filter_contours_solidity = [70.62146892655366, 100]
         self.__filter_contours_max_vertices = 1000000.0
@@ -119,7 +119,7 @@ class PythonSandbox:
 
     ## Process function with USB output
 
-    def process(self, inframe):
+    def process(self, inframe, outframe):
         # Get the next camera image (may block until it is captured) and here convert it to OpenCV BGR by default. If
         # you need a grayscale image instead, just use getCvGRAY() instead of getCvBGR(). Also supported are getCvRGB()
         # and getCvRGBA():
@@ -216,7 +216,7 @@ class PythonSandbox:
 ##################################################################################################
         
         # Draws all contours on original image in red
-        # cv2.drawContours(outimg, self.filter_contours_output, -1, (0, 0, 255), 1)
+        cv2.drawContours(outimg, self.filter_contours_output, -1, (0, 0, 255), 1)
         
         # Gets number of contours
         contourNum = len(self.filter_contours_output)
@@ -234,7 +234,7 @@ class PythonSandbox:
             print("Angled box: " + str(angled_box[2]))
             box = cv2.boxPoints(angled_box)
             box = np.int0(box)
-            # cv2.drawContours(outimg,[box],0,(0,0,255),2)
+            cv2.drawContours(outimg,[box],0,(0,0,255),2)
 
             # cv2.putText(outimg, angled_box[2], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
 
@@ -288,7 +288,7 @@ class PythonSandbox:
 
         # Convert our BGR output image to video output format and send to host over USB. If your output image is not
         # BGR, you can use sendCvGRAY(), sendCvRGB(), or sendCvRGBA() as appropriate:
-        # outframe.sendCvBGR(outimg)
+        outframe.sendCvBGR(outimg)
         # outframe.sendCvGRAY(outimg)
         
 ##################################################################################################
