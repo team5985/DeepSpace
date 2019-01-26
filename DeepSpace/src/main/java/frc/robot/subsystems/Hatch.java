@@ -2,9 +2,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
+import frc.robot.DriverControls;
 
 public class Hatch extends Subsystem {
-
+    DriverControls DriverControls = new DriverControls();
+    Constants  Constants = new Constants();
     public Hatch hatchInstance = null;
     Solenoid hatchPopLeft;
     Solenoid hatchPopRight;
@@ -16,9 +18,6 @@ public class Hatch extends Subsystem {
         return hatchInstance;
     }
 
-    private Hatch() {
-
-    }
     /**out or in (out is true) */
     public void setPosition(boolean Position){
         hatchPopLeft.set(Position);
