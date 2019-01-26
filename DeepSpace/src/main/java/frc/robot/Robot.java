@@ -68,12 +68,6 @@ public class Robot extends TimedRobot {
     teleopController.stateMachine();
     teleopController.callDrive();
     teleopController.getGamePieceMode();
-    teleopController.setState();
-    teleopController.wristAngleStateMachine();
-    teleopController.wristPowerStateMachine();
-    teleopController.bobcatHeightStateMachine();
-    teleopController.hatchStateMachine();
-    teleopController.elevatorStateMachine();
   }
 
   @Override

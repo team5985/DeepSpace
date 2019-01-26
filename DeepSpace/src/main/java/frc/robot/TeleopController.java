@@ -82,8 +82,16 @@ Timer gameTimer = new Timer();
         _bobcat = Bobcat.getInstance();
     }
 
+    public void callStateMachines(){
+    setState();
+    wristAngleStateMachine();
+    wristPowerStateMachine();
+    bobcatHeightStateMachine();
+    hatchStateMachine();
+    elevatorStateMachine();
+    }
+
     //State Machine
-        
     public void stateMachine() {
         switch (robotState) {
                 case TELEOP:
@@ -228,7 +236,7 @@ Timer gameTimer = new Timer();
 
     //hatch states
     private void hatchOutState(){
-
+     
     }
     private void hatchInState(){
 
