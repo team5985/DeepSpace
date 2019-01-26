@@ -43,7 +43,7 @@ public class Hatch extends Subsystem {
     void configActuators(){
         hatchPopRight = new Solenoid(Constants.kHatchRightPcmPort);
         hatchPopLeft = new Solenoid(Constants.kHatchLeftPcmPort);
-        beakSolenoid = new Solenoid(Constants.kbeakSolenoidChannel);
+        beakSolenoid = new Solenoid(Constants.kBeakSolenoidChannel);
     }
     
 }

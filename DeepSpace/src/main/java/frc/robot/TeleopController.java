@@ -235,7 +235,7 @@ Timer gameTimer = new Timer();
     }
     //elevator states
     private void elevatorExtendedState(){
-        _climb.elevatorMove(true);
+        _climb.elevatorMove(true);               //TODO: add mantis arms
     }
     private void elevatorRetractedState(){
         _climb.elevatorMove(false);

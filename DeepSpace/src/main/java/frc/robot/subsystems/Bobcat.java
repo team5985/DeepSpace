@@ -39,16 +39,6 @@ public class Bobcat extends Subsystem {
         configSensors();  
     }
     
-    public void bobcatPickup() {
-        if (DriverControls.getButtonPressBobcatUp()) {
-            if (getPosition() > 2 || getPosition() < 2) {
-                actionMoveTo(IntakePositions.DOWN);
-            }
-            setAngle(stowedAngle + 1);
-            actionMoveTo(IntakePositions.LOW_HATCH);
-        }
-    }   
-
     public enum IntakePositions {
         DOWN,
         HIGH_HATCH,
@@ -64,65 +54,51 @@ public class Bobcat extends Subsystem {
             case DOWN:
                 setAngle(stowedAngle);
                 if (stowedAngle >= getPosition() - 2 && stowedAngle <= getPosition() + 2) {
-                    boolean returnValue = true;
-                    return returnValue;
+                    return true;
                 } else {
-                    boolean returnValue = false;
-                    return returnValue;
+                    return false;
                 }
             case LOW_HATCH:
                 setAngle(lowAngleHatch);
                 if (lowAngleHatch >= getPosition() - 2 && lowAngleHatch <= getPosition() + 2) {
-                    boolean returnValue = true;
-                    return returnValue;
+                    return true;
                 } else {
-                    boolean returnValue = false;
-                    return returnValue;
+                    return false;
                 }
             case MID_HATCH:
                 setAngle(midAngleHatch);
                 if (midAngleHatch >= getPosition() - 2 && midAngleHatch <= getPosition() + 2) {
-                    boolean returnValue = true;
-                    return returnValue;
+                    return true;
                 } else {
-                    boolean returnValue = false;
-                    return returnValue;
+                    return false;
                 }
             case HIGH_HATCH:
                 setAngle(highAngleHatch);
                     if (highAngleHatch >= getPosition() - 2 && highAngleHatch <= getPosition() + 2) {
-                        boolean returnValue = true;
-                        return returnValue;
+                        return true;
                     } else {
-                        boolean returnValue = false;
-                        return returnValue;
+                        return false;
                     }
             case LOW_CARGO:
                 setAngle(lowAngleCargo);
                 if (lowAngleCargo >= getPosition() - 2 && lowAngleCargo <= getPosition() + 2) {
-                    boolean returnValue = true;
-                    return returnValue;
+                    return true;
                 } else {
-                    boolean returnValue = false;
-                    return returnValue;
+                    return false;
                 }
             case MID_CARGO:
                 setAngle(midAngleCargo);
                 if (midAngleCargo >= getPosition() - 2 && midAngleCargo <= getPosition() + 2) {
-                    boolean returnValue = true;
-                    return returnValue;
+                    return true;
                 } else {
-                    boolean returnValue = false;
-                    return returnValue;
+                    return false;
                 }
             case HIGH_CARGO:
                 setAngle(highAngleCargo);
                     if (highAngleCargo >= getPosition() - 2 && highAngleCargo <= getPosition() + 2) {
-                        boolean returnValue = true;
-                        return returnValue;
+                        return true;
                     } else {
-                        boolean returnValue = false;
-                        return returnValue;
+                        return false;
                     }
             case CARGOSHIP_BALL_POSITION:
                 setAngle(cargoShipCargoAngle);
@@ -132,8 +108,7 @@ public class Bobcat extends Subsystem {
                     return false;
                 } 
             default:
-            boolean returnValue = false;
-            return returnValue;
+            return false;
         }
     }
 
