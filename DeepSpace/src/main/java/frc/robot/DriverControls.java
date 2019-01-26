@@ -49,226 +49,154 @@ public class DriverControls {
 		} else if(stick.getZ() <= -0.7) {
 			end = true;
 		}
-	
 	    return end;
-	
 	}
-
 //Trigger
-
 	public boolean getTriggerPress() {
-
 		return stick.getTriggerPressed();
 	}
-
 	public boolean getTriggerRelease() {
-
 		return stick.getTriggerReleased();
 	}
 //Thumb Button
 	public boolean getThumbPress() {
-
 		return stick.getRawButtonPressed(2);
 	}
 	public boolean getThumbRelease() {
-
 		return stick.getRawButtonReleased(2);
 	}
 //Hatch Mode
 	public boolean getButtonPress3() {
-
 		return stick.getRawButtonPressed(3);
 }
-
 	public boolean getButtonRelease3() {
-
 		return stick.getRawButtonReleased(3);
 }
 //Ball Mode
 	public boolean getButtonPress4() {
-
 		return stick.getRawButtonPressed(4);
 }
-
 	public boolean getButtonRelease4() {
-
 	return stick.getRawButtonReleased(4);
 }
-//Wrist down/up
+//??
 	public boolean getButtonPress5() {
-
 		return stick.getRawButtonPressed(5);
 }
-
 	public boolean getButtonRelease5() {
-
 		return stick.getRawButtonReleased(5);
 }
-//Begin HAB sequence
+//?
 	public boolean getButtonPress6() {
-
 		return stick.getRawButtonPressed(6);
 }
-
 	public boolean getButtonRelease6() {
-
 		return stick.getRawButtonReleased(6);
 }
 //Reverse Direction
 	public boolean getButtonPress7() {
-
 		return stick.getRawButtonPressed(7);
 }
 
 	public boolean getButtonRelease7() {
-
 		return stick.getRawButtonReleased(7);
 }
-//EM on/off
+//free
 	public boolean getButtonPress10() {
-
 		return stick.getRawButtonPressed(10);
 }
 
 	public boolean getButtonRelease10() {
-
 		return stick.getRawButtonReleased(10);
 }
-//Elevators deployed
-	public boolean getButtonPress8() {
-
+//Elevators extend
+	public boolean getButtonElevatorExtend() {
 		return stick.getRawButtonPressed(8);
 }
 
-	public boolean getButtonRelease8() {
-
+	public boolean getReleaseElevatorExtend() {
 		return stick.getRawButtonReleased(8);
 }
-//Mantis Arms deployed
-	public boolean getButtonPress11() {
-
+//Elevators retract
+	public boolean getButtonElevatorRetract() {
 		return stick.getRawButtonPressed(11);
 }
 
-	public boolean getButtonRelease11() {
-
+	public boolean getReleaseElevatorRetract() {
 		return stick.getRawButtonReleased(11);
 }
-//Elevators stowed
-	public boolean getButtonPressElevDown() {
-
-		return (stick.getRawButtonPressed(8) && stick.getRawButtonPressed(9) == true);
-	}
-	public boolean getButtonReleaseElevDown() {
-
-		return (stick.getRawButtonReleased(8) || stick.getRawButtonReleased(9) == true);
-	}
-//MA Stowed
-	public boolean getButtonPressMADown() {
-
-		return (stick.getRawButtonPressed(11) && stick.getRawButtonPressed(9) == true);
-}
-	public boolean getButtonReleaseMADown() {
-
-		return (stick.getRawButtonReleased(11) || stick.getRawButtonReleased(9) == true);
-}
-
 //VICTORY
 	public boolean getButtonPress12() {
-
 		return stick.getRawButtonPressed(12);
 }
-
 	public boolean getButtonRelease12() {
-
 		return stick.getRawButtonReleased(12);
 	}
-
 /** 
 * Xbox Controller Buttons
 */
-// OM Position Low
-	public boolean getButtonPressA() {
-		
+// low rocket bobcat position
+	public boolean getPressLowRocketPosition() {
 		return (xBox.getAButtonPressed());
 }
- 	public boolean getButtonReleaseA() {
-		
+ 	public boolean getReleaseLowRocketPosition() {
 		return (xBox.getAButtonReleased());
 }
-// OM Position Middle
-	public boolean getButtonPressB() {
-
+// mid rocket bobcat position
+	public boolean getPressMidRocketPosition() {
 		return (xBox.getBButtonPressed());
 }
-	public boolean getButtonReleaseB() {
-
+	public boolean getReleaseMidRocketPosition() {
 		return (xBox.getBButtonReleased());
 }
-// OM Position High
-	public boolean getButtonPressY() {
-
+// high rocket bobcat position
+	public boolean getPressHighRocketPosition() {
 		return (xBox.getYButtonPressed());
 }
-	public boolean getButtonReleaseY() {
-
+	public boolean getReleaseHighRocketPosition() {
 		return (xBox.getYButtonReleased());
 }
-// OM Position Stowed (Current Position)
-	public boolean getButtonPressX() {
-
+// cargoship height (for ball) bobcat position
+	public boolean getPressCargoShipBallPosition() {
 		return (xBox.getXButtonPressed());
 }
-	public boolean getButtonReleaseX() {
-
+	public boolean getReleaseCargoShipBallPosition() {
 		return (xBox.getXButtonReleased());
 }
-// OM at Cargo Height (Ball only)
-	public boolean getButtonPressCargoHeight() {
-
-		return (xBox.getAButtonPressed() && xBox.getStartButtonPressed());
+public boolean getPressShootCargo() {
+	return (xBox.getStartButtonPressed());
 }
-	public boolean getButtonReleaseCargoHeight() {
-
-		return (xBox.getAButtonReleased() && xBox.getStartButtonReleased());
+public boolean getReleaseShootCargo() {
+	return (xBox.getStartButtonReleased());
 }
 /* Bobcat Controls */
 // Bobcat UDown
-	public boolean getButtonPressBobcatDown() {
-
+	public boolean getPressStowCargo() {
 		return (xBox.getTriggerAxis(Hand.kLeft) > 0.5);
 }
-	public boolean getButtonReleaseBobcatDown() {
-
+	public boolean getReleaseStowCargo() {
 		return (xBox.getTriggerAxis(Hand.kLeft) <= 0.75 && xBox.getTriggerAxis(Hand.kLeft) >= 0.25 );
 }
 // Bobcat Up
-	public boolean getButtonPressBobcatUp() {
-
-		return (xBox.getTriggerAxis(Hand.kRight) > 0.5)
+	public boolean getPressCargoWristDown() {
+		return (xBox.getTriggerAxis(Hand.kRight) > 0.5);
 }
-	public boolean getButonReleaseBobcatUp() {
-
-
+	public boolean getReleaseCargoWristDown() {
 		return (xBox.getTriggerAxis(Hand.kRight) < 0.75 && xBox.getTriggerAxis(Hand.kRight) > 0.25);
 }
 /* Wrist Controls */
 // Wrist Down
-	public boolean getButtonPressWristDown() {
-
+	public boolean getButtonPressWristMid() {
 		return (xBox.getBumperPressed(Hand.kLeft));
 }
-	public boolean getButtonReleaseWristDown() {
-
+	public boolean getButtonReleaseWristMid() {
 		return (xBox.getBumperReleased(Hand.kLeft));
 }
 // Wrist Up
 	public boolean getButtonPressWristUp() {
-
 		return (xBox.getBumperPressed(Hand.kRight));
 }
 	public boolean getButtonReleaseWristUp() {
-
 		return (xBox.getBumperReleased(Hand.kRight));
 }
 
@@ -296,6 +224,6 @@ public class DriverControls {
 		return (-stick.getThrottle() + 1) / 2;
 	}
 
-	
+	//TODO: add two buttons for 30 degrees down and up for cargo intake angles and mid
 
 }

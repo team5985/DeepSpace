@@ -26,31 +26,7 @@ import edu.wpi.first.wpilibj.Encoder;
  */
 public class Drive extends Subsystem {
 	
-	public boolean zeroPosition(){
-		return false;
-	}
-	/**
-	 * returns z angle of Interial Measurement Unit
-	 */
-	public double getPosition(){
-		return imu.getYaw();
-	}
-	// Subsystems are singletons (only one instance of this class is possible)
-    public static Drive driveInstance;
-
-    /**
-     * Get instance of the drive subsystem
-     * @return Drive instance
-     */
-    public static Drive getInstance() {
-    	if (driveInstance == null) {
-			driveInstance = new Drive();
-		}
-		return driveInstance;
-	}
-    
-    // Class declarations
-    private CANSparkMax leftDriveA; // Master
+	private CANSparkMax leftDriveA; // Master
 	private CANSparkMax leftDriveB; // Slave
 	
 	private CANSparkMax rightDriveA; // Master
@@ -70,6 +46,30 @@ public class Drive extends Subsystem {
 
 	SquareRootControl gyroTurnController;
 	SquareRootControl driveController;
+
+	public static Drive driveInstance;
+
+	public boolean zeroPosition(){
+		return false;
+	}
+	/**
+	 * returns z angle of Interial Measurement Unit
+	 */
+	public double getPosition(){
+		return imu.getYaw();
+	}
+	// Subsystems are singletons (only one instance of this class is possible)
+
+    /**
+     * Get instance of the drive subsystem
+     * @return Drive instance
+     */
+    public static Drive getInstance() {
+    	if (driveInstance == null) {
+			driveInstance = new Drive();
+		}
+		return driveInstance;
+	}
   
 	/**
 	 * Initialise drivetrain
