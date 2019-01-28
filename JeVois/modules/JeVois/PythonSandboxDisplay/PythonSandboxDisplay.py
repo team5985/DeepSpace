@@ -2,7 +2,6 @@ import libjevois as jevois
 import cv2
 import numpy as np
 import json
-import math
 
 ## Simple example of image processing using OpenCV in Python on JeVois
 #
@@ -29,7 +28,7 @@ import math
 # @restrictions None
 # @ingroup modules
 
-class PythonSandbox:
+class PythonSandboxDisplay:
     # ###################################################################################################
     ## Constructor
     def __init__(self):
@@ -120,7 +119,7 @@ class PythonSandbox:
 
     ## Process function with USB output
 
-    def process(self, inframe):
+    def process(self, inframe, outframe):
         # Get the next camera image (may block until it is captured) and here convert it to OpenCV BGR by default. If
         # you need a grayscale image instead, just use getCvGRAY() instead of getCvBGR(). Also supported are getCvRGB()
         # and getCvRGBA():
@@ -240,9 +239,9 @@ class PythonSandbox:
             # cv2.putText(outimg, angled_box[2], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
 
             if (angled_box[2] < -45):  # Slanted right
-                targetOrientations.append(["r", x, y])
+                targetOrientations.append(["r", x])
             elif (angled_box[2] > -45):  # Slanted left
-                targetOrientations.append(["l", x, y])
+                targetOrientations.append(["l", x])
                        
             # which contour, 0 is first
             """toSend = ("CON" + str(i) +  
@@ -257,8 +256,7 @@ class PythonSandbox:
             for target in targetOrientations:
                 print("Target: " + str(target))
                 if targetOrientations[idx][0] == "r" and targetOrientations[idx+1][0] == "l":
-                    pairInfo = [((targetOrientations[idx][1] + targetOrientations[idx+1][1]) / 2) - 160, (targetOrientations[idx][2] + targetOrientations[idx+1][2]) / 2]
-                    targetPairs.append(pairInfo)  # Add the average of the target pairs' position to list of targetPairs
+                    targetPairs.append(((targetOrientations[idx][1] + targetOrientations[idx+1][1]) / 2) - 160)  # Add the average of the target pairs' position to list of targetPairs
                 idx += 1
         except:
             pass
@@ -270,16 +268,11 @@ class PythonSandbox:
         else:
             cv2.putText(outimg, str(targetOrientations), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
 
-            angleToTarget = min(targetPairs[0])  # Use the target pair closest to the middle of view.
+            angleToTarget = min(targetPairs)  # Use the target pair closest to the middle of view.
 
             kDegsPerPixel = 65 / 320  # Number of degrees per pixel, for simple conversion
-            angleToTarget = angleToTarget * kDegsPerPixel, 2
-
-            kVertDegsPerPixel = 48.75 / 240
-            vertAngleToTarget = (-(y - 240) - 120) * kVertDegsPerPixel
-            distanceToTarget = round(0.63 / math.tan(math.radians(vertAngleToTarget)), 2)
-
-            toSend = {"Contour": i, "x": angleToTarget[0], "distance": distanceToTarget}
+            angleToTarget = round(angleToTarget * kDegsPerPixel, 2)
+            toSend = {"Contour": i, "x": angleToTarget}
             json_toSend = json.dumps(toSend)
             jevois.sendSerial(json_toSend)
             
@@ -295,7 +288,7 @@ class PythonSandbox:
 
         # Convert our BGR output image to video output format and send to host over USB. If your output image is not
         # BGR, you can use sendCvGRAY(), sendCvRGB(), or sendCvRGBA() as appropriate:
-        # outframe.sendCvBGR(outimg)
+        outframe.sendCvBGR(outimg)
         # outframe.sendCvGRAY(outimg)
         
 ##################################################################################################
