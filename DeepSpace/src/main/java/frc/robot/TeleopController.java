@@ -338,44 +338,44 @@ Timer gameTimer = new Timer();
             if (_controls.getPressStowCargo()){
                 cargoWristAngleStates = CargoWristAngleStates.STOWED;  //TODO: light sensor stuff
             }
+        }
+        if (getGamePieceMode()){
+            if (_controls.getPressLowRocketPosition()){
+                bobcatStates = bobcatStates.LOW_CARGO;
+            }
+            if (_controls.getPressMidRocketPosition()){
+                bobcatStates = bobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
+            }
+            if (_controls.getPressHighRocketPosition()){
+                bobcatStates = bobcatStates.HIGH_CARGO;
+            }
+            if (_controls.getPressCargoShipBallPosition()){
+                bobcatStates = bobcatStates.CARGOSHIP_CARGO;
+            }
+        }
+        else if (getGamePieceMode() == false){
+            cargoWristAngleStates = CargoWristAngleStates.STOWED;
+            cargoWristPowerStates = CargoWristPowerStates.OFF;
+            if (_controls.getPressLowRocketPosition()){
+                bobcatStates = bobcatStates.LOW_HATCH;
+            }
+            if (_controls.getPressMidRocketPosition()){
+                bobcatStates = bobcatStates.MID_HATCH;
+            }
+            if (_controls.getPressHighRocketPosition()){
+                bobcatStates = bobcatStates.HIGH_HATCH;
+            }
+        }
+        //put stow here
+        if (_controls.getPressStowCargo()){
+            bobcatStates = bobcatStates.STOWED;
+            cargoWristAngleStates = CargoWristAngleStates.STOWED;
+            cargoWristPowerStates = CargoWristPowerStates.OFF;
+        }
+        if (_controls.getPressShootCargo()){
+            cargoWristPowerStates = CargoWristPowerStates.SHOOT;  //TODO: light sensor stuff
+        } 
     }
-    if (getGamePieceMode()){
-        if (_controls.getPressLowRocketPosition()){
-            bobcatStates = bobcatStates.LOW_CARGO;
-        }
-        if (_controls.getPressMidRocketPosition()){
-            bobcatStates = bobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
-        }
-        if (_controls.getPressHighRocketPosition()){
-            bobcatStates = bobcatStates.HIGH_CARGO;
-        }
-        if (_controls.getPressCargoShipBallPosition()){
-            bobcatStates = bobcatStates.CARGOSHIP_CARGO;
-        }
-    }
-    else if (getGamePieceMode() == false){
-        cargoWristAngleStates = CargoWristAngleStates.STOWED;
-        cargoWristPowerStates = CargoWristPowerStates.OFF;
-        if (_controls.getPressLowRocketPosition()){
-            bobcatStates = bobcatStates.LOW_HATCH;
-        }
-        if (_controls.getPressMidRocketPosition()){
-            bobcatStates = bobcatStates.MID_HATCH;
-        }
-        if (_controls.getPressHighRocketPosition()){
-            bobcatStates = bobcatStates.HIGH_HATCH;
-        }
-    }
-    //put stow here
-    if (_controls.getPressStowCargo()){
-        bobcatStates = bobcatStates.STOWED;
-        cargoWristAngleStates = CargoWristAngleStates.STOWED;
-        cargoWristPowerStates = CargoWristPowerStates.OFF;
-    }
-    if (_controls.getPressShootCargo()){
-        cargoWristPowerStates = CargoWristPowerStates.SHOOT;  //TODO: light sensor stuff
-    } 
-}
 }
 
    
