@@ -79,7 +79,7 @@ public class Drive extends Subsystem {
 		configSensors();
 		
 		gyroTurnController = new SquareRootControl(Constants.kDriveMaxRotationalAccel, Constants.kDriveMaxRotationalVel, Constants.kDriveGyroTurnGain);
-		driveController = new SquareRootControl(maximumAcceleration, maximumSpeed, K);
+		driveController = new SquareRootControl(Constants.kDriveMaxDriveAccel, Constants.kDriveMaxDriveVel, Constants.kDriveEncoderDriveGain);
 	}
 
 	// Drive-Control
@@ -97,7 +97,7 @@ public class Drive extends Subsystem {
 	
 	public void testTip(){
 		double roll = imu.getRoll(); // returns -180 to 180 degress    (xx)
-		double threshold = 10.0f;
+		double threshold = 10.0;
 		if(roll > threshold || roll < -threshold){
 			newTime = DriverStation.getInstance().getMatchTime();
 			if (3 <= newTime - oldTime ){
@@ -150,21 +150,23 @@ public class Drive extends Subsystem {
 	}
 
 	/**
-	 * 
+	 * Drive at a given distance and gyro heading.
 	 * @param speed Maximum speed in m/s
-	 * @param targetHeading
-	 * @param distance
-	 * @param gain
+	 * @param targetHeading in degrees.
+	 * @param distance in metres.
+	 * @return True when driven to given distance, within a threshold. @see getEncoderWithinDistance()
 	 */
-	public void gyroDrive(double speed, double targetHeading, double distance) {
-		double distanceLeftEncoder = leftEncoder.getDistance();
-		double distanceRightEncoder = rightEncoder.getDistance();
-		double position = (distanceLeftEncoder + distanceRightEncoder) / 2;
+	public boolean actionSensorDrive(double speed, double targetHeading, double distance) {
+		double position = getAvgEncoderDistance();
 		driveController.configMaxSpeed(speed);
 		double driveSpeed = driveController.run(position, distance);
 		double drivePower = driveSpeed * Constants.kDrivePowerKf;
+
 		double yaw = imu.getYaw();
-		arcadeDrive(speed, (targetHeading - yaw) * Constants.kGainGyroDriveTurn, 1);
+		double steering = (targetHeading - yaw) * Constants.kGainGyroDriveTurn;
+		arcadeDrive(drivePower, steering, 1);
+
+		return encoderIsWithinDistance(distance, 0.1);
 	}
 		
 	//Driver Heading Assist
@@ -179,6 +181,24 @@ public class Drive extends Subsystem {
 				arcadeDrive(0.0, adjustAmmount, speed);
 			}	
 		}
+	}
+
+	/**
+	 * Returns true if the average of the two encoders are within a certain range.
+	 * @param distance is metres
+	 * @param threshRange +/- in metres
+	 * @return Boolean true when within range.
+	 */
+	public boolean encoderIsWithinDistance(double distance, double threshRange) {
+		return Math.abs(distance - getAvgEncoderDistance()) < threshRange;
+	}
+
+	/**
+	 * Returns the average of the two drive encoders.
+	 * @return average distance since reset in metres.
+	 */
+	public double getAvgEncoderDistance() {
+		return (leftEncoder.getDistance() + rightEncoder.getDistance()) / 2;
 	}
     
     /**

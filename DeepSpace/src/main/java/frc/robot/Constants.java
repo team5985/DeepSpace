@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.sun.tools.classfile.StackMapTable_attribute.stack_map_frame;
 
 public class Constants {
 	// CAN IDs
@@ -53,6 +52,13 @@ public class Constants {
     public static double kDriveGyroTurnGain = 1.0;  // K gain for square root controller.
     public static double kDriveGyroTurnThresh = 3.0;  // In degrees.
     public static double kDriveGyroRateThresh = 3.0;  // In deg/s.
+    
+	public static final double kDrivePowerKf = 1 / 3.6;
+    public static final double kGainGyroDriveTurn = 0;
+    
+	public static final double kDriveMaxDriveAccel = 0;  // m/s/s TODO: Find this
+	public static final double kDriveMaxDriveVel = 3.6;  // m/s
+	public static final double kDriveEncoderDriveGain = 0;  // Used in square root controller
 
     public static double kDriveWheelDiameter = 6.0;
 	public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kEncoderPpr;  // Metres per pulse

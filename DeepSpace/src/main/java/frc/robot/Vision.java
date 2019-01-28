@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Vision {
 	public static Vision mVisionInstance;
 
-	public Vision getInstance() {
+	public static Vision getInstance() {
 		if (mVisionInstance == null) {
 			mVisionInstance = new Vision();
 		}
@@ -56,14 +56,15 @@ public class Vision {
 	 */
 	public void updateVision() {
 		String json = mxp.readString();
-		// System.out.println(json);
+		System.out.println(json);
 		try {
 			JsonObject data = Json.parse(json).asObject();
 			// System.out.println("Parsed! ");
 			targetAngle = data.get("x").asDouble();
 			// System.out.println("X Value Parsed! ");
+			targetDistance = data.get("distance").asDouble();
 		} catch (ParseException invalidJson) {
-			// System.out.print("Invalid Json!");
+			System.out.println("Invalid Json!");
 		} catch (UnsupportedOperationException invalidNumber) {
 			System.out.println("JSON data not a number!");
 		} catch (Exception e) {
