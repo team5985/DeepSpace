@@ -16,6 +16,7 @@ import org.junit.runners.Parameterized.Parameters;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Vision;
 import frc.robot.subsystems.Drive;
+import frc.robot.DriverControls;
 
 
 /**
@@ -26,20 +27,9 @@ import frc.robot.subsystems.Drive;
  * project.
  */
 public class Robot extends TimedRobot {
-  /**
-   * This function is run when the robot is first started up and should be used
-   * for any initialization code.
-   */
   TeleopController teleopController = TeleopController.getInstance();
-
-  
-  public long encoderToRevolutions(int input) {
-    return (input / 4 / 1024); //TODO: Verify 1024
-  }
-  
-   
-  
-   Joystick stick;
+  DriverControls driverControls = DriverControls.getInstance();
+  Joystick stick;
 
   Vision machineVision;
   Drive drive;
@@ -57,6 +47,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
+    if (driverControls.getStickInterupt() == false){
+      
+    }
   }
 
   @Override
