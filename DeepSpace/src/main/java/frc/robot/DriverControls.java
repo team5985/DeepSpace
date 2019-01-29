@@ -161,10 +161,10 @@ public class DriverControls {
 		return (xBox.getYButtonReleased());
 }
 // cargoship height (for ball) bobcat position
-	public boolean getPressCargoShipBallPosition() {
+	public boolean getPressXButton() {
 		return (xBox.getXButtonPressed());
 }
-	public boolean getReleaseCargoShipBallPosition() {
+	public boolean getReleaseXButton() {
 		return (xBox.getXButtonReleased());
 }
 public boolean getPressShootCargo() {
