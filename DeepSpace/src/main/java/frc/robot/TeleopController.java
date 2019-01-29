@@ -7,6 +7,7 @@ import frc.robot.subsystems.CargoIntake;
 import frc.robot.subsystems.CargoIntake.*;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Hatch;
 
 
 /**
@@ -18,6 +19,7 @@ public class TeleopController {
     Drive _drive;
     Climber _climb;
     Bobcat _bobcat;
+    Hatch _hatch;
 
     States robotState;
     boolean cargoMode = true;
@@ -80,6 +82,7 @@ Timer gameTimer = new Timer();
         _cargo = CargoIntake.getInstance();
         _climb = Climber.getInstance();
         _bobcat = Bobcat.getInstance();
+        _hatch = Hatch.getInstance();
     }
 
     //State Machine
@@ -228,10 +231,10 @@ Timer gameTimer = new Timer();
 
     //hatch states
     private void hatchOutState(){
-
+        _hatch.moveBeak(true);
     }
     private void hatchInState(){
-
+        _hatch.moveBeak(false);
     }
     //elevator states
     private void elevatorExtendedState(){
@@ -309,9 +312,6 @@ Timer gameTimer = new Timer();
             return cargoMode;
         }
 
-        public void setState(){
-
-        }
     /**
      * To be called by Robot.teleopPeriodic() to run the teleop controller during the teleop mode.
      */
@@ -330,21 +330,20 @@ Timer gameTimer = new Timer();
             if (_controls.getPressStowCargo()){
                 cargoWristAngleStates = CargoWristAngleStates.STOWED;  //TODO: light sensor stuff
             }
+            if (_controls.getPressLowRocketPosition()){
+                bobcatStates = bobcatStates.LOW_CARGO;
+            }
+            if (_controls.getPressMidRocketPosition()){
+                bobcatStates = bobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
+            }
+            if (_controls.getPressHighRocketPosition()){
+                bobcatStates = bobcatStates.HIGH_CARGO;
+            }
+            if (_controls.getPressXButton()){
+                bobcatStates = bobcatStates.CARGOSHIP_CARGO;
+            }
     }
-    if (getGamePieceMode()){
-        if (_controls.getPressLowRocketPosition()){
-            bobcatStates = bobcatStates.LOW_CARGO;
-        }
-        if (_controls.getPressMidRocketPosition()){
-            bobcatStates = bobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
-        }
-        if (_controls.getPressHighRocketPosition()){
-            bobcatStates = bobcatStates.HIGH_CARGO;
-        }
-        if (_controls.getPressCargoShipBallPosition()){
-            bobcatStates = bobcatStates.CARGOSHIP_CARGO;
-        }
-    }
+
     else if (getGamePieceMode() == false){
         cargoWristAngleStates = CargoWristAngleStates.STOWED;
         cargoWristPowerStates = CargoWristPowerStates.OFF;
@@ -356,6 +355,13 @@ Timer gameTimer = new Timer();
         }
         if (_controls.getPressHighRocketPosition()){
             bobcatStates = bobcatStates.HIGH_HATCH;
+        }
+        if (_controls.getPressXButton()){
+            if (_hatch.getBeakPosition()){
+                hatchStates = hatchStates.BEAK_IN;
+            } else {
+                hatchStates = hatchStates.BEAK_OUT;
+            }
         }
     }
     //put stow here
