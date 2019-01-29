@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 public class DriverControls {
 	Joystick stick;
 	XboxController xBox;
-
+	boolean end = false;
 	public static DriverControls mDriverControlsInstance;
 	
 	public static DriverControls getInstance() {
@@ -34,7 +34,6 @@ public class DriverControls {
      * @return Driver interrupt command.
      */
     public boolean getStickInterupt() {
-		boolean end = false;
 
 		if(stick.getX() >= 0.7) {
 			end = true;
@@ -47,6 +46,22 @@ public class DriverControls {
 		} else if(stick.getZ() >= 0.7) {
 			end = true;
 		} else if(stick.getZ() <= -0.7) {
+			end = true;
+		} else if(xBox.getX(Hand.kLeft) < -0.7){
+			end = true;
+		} else if(xBox.getX(Hand.kLeft) > 0.7){
+			end = true;
+		} else if(xBox.getX(Hand.kRight) < -0.7){
+			end = true;
+		} else if(xBox.getX(Hand.kRight) > 0.7){
+			end = true;
+		} else if(xBox.getY(Hand.kLeft) < -0.7){
+			end = true;
+		} else if(xBox.getY(Hand.kLeft) > 0.7){
+			end = true;
+		} else if(xBox.getY(Hand.kRight) < -0.7){
+			end = true;
+		} else if(xBox.getY(Hand.kRight) > 0.7){
 			end = true;
 		}
 	    return end;
