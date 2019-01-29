@@ -78,7 +78,7 @@ public class Constants {
     public static final int kHatchLeftPcmPort = 1;
     public static final int kElevatorSolenoidControllerPcmPort = 2;
     public static final int kSolenoidMantisChannel = 3;
-    public static final int kBeakSolenoidChannel = 4;
+    public static final int kBeakPlusCargoSolenoidChannel = 4;
 
     // CargoIntake
     public static final int kVictorCargoIntakeLeftPwmPort = 0;   // ??????????

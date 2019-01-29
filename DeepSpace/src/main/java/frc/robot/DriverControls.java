@@ -203,6 +203,12 @@ public boolean getReleaseShootCargo() {
 	public boolean getButtonReleaseWristUp() {
 		return (xBox.getBumperReleased(Hand.kRight));
 }
+	public boolean getCargoGrabPress(){
+		return (xBox.getStickButtonPressed(Hand.kRight));
+	}
+	public boolean leftStickPress(){
+		return (xBox.getStickButtonPressed(Hand.kLeft));
+	}
 
 	/**
 	 * Get driver power command.

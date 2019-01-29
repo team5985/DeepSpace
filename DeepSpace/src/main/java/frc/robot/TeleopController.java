@@ -86,7 +86,7 @@ Timer gameTimer = new Timer();
     }
 
     public void callStateMachines(){
-    setState();
+    stateMachine();
     wristAngleStateMachine();
     wristPowerStateMachine();
     bobcatHeightStateMachine();
@@ -305,6 +305,7 @@ Timer gameTimer = new Timer();
                     cargoMode = false;
                 } else{
                     cargoMode = true;
+                    hatchStates = HatchStates.BEAK_IN;
                 }
             }
             else {
@@ -339,46 +340,51 @@ Timer gameTimer = new Timer();
                 cargoWristAngleStates = CargoWristAngleStates.STOWED;  //TODO: light sensor stuff
             }
             if (_controls.getPressLowRocketPosition()){
-                bobcatStates = bobcatStates.LOW_CARGO;
+                bobcatStates = BobcatStates.LOW_CARGO;
             }
             if (_controls.getPressMidRocketPosition()){
-                bobcatStates = bobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
+                bobcatStates = BobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
             }
             if (_controls.getPressHighRocketPosition()){
-                bobcatStates = bobcatStates.HIGH_CARGO;
+                bobcatStates = BobcatStates.HIGH_CARGO;
             }
             if (_controls.getPressXButton()){
-                bobcatStates = bobcatStates.CARGOSHIP_CARGO;
+                bobcatStates = BobcatStates.CARGOSHIP_CARGO;
+            }
+            if (_controls.getPressShootCargo()){
+                hatchStates = HatchStates.BEAK_OUT;
+                cargoWristPowerStates = CargoWristPowerStates.SHOOT;  //TODO: light sensor stuff
+            }
+            if (_controls.getCargoGrabPress()){
+                cargoWristPowerStates = CargoWristPowerStates.GRAB;
+                hatchStates = HatchStates.BEAK_IN;
             }
         }
         else if (getGamePieceMode() == false){
             cargoWristAngleStates = CargoWristAngleStates.STOWED;
             cargoWristPowerStates = CargoWristPowerStates.OFF;
             if (_controls.getPressLowRocketPosition()){
-                bobcatStates = bobcatStates.LOW_HATCH;
+                bobcatStates = BobcatStates.LOW_HATCH;
             }
             if (_controls.getPressMidRocketPosition()){
-                bobcatStates = bobcatStates.MID_HATCH;
+                bobcatStates = BobcatStates.MID_HATCH;
             }
             if (_controls.getPressHighRocketPosition()){
-                bobcatStates = bobcatStates.HIGH_HATCH;
+                bobcatStates = BobcatStates.HIGH_HATCH;
+            }
+            if (_controls.getPressXButton()){
+                if (_hatch.getBeakPosition()){
+                    hatchStates = HatchStates.BEAK_IN;
+                } else {
+                    hatchStates = HatchStates.BEAK_OUT;
+                }
             }
         }
         //put stow here
         if (_controls.getPressStowCargo()){
-            bobcatStates = bobcatStates.STOWED;
+            bobcatStates = BobcatStates.STOWED;
             cargoWristAngleStates = CargoWristAngleStates.STOWED;
             cargoWristPowerStates = CargoWristPowerStates.OFF;
-        }
-        if (_controls.getPressShootCargo()){
-            cargoWristPowerStates = CargoWristPowerStates.SHOOT;  //TODO: light sensor stuff
-        }
-        if (_controls.getPressXButton()){
-            if (_hatch.getBeakPosition()){
-                hatchStates = hatchStates.BEAK_IN;
-            } else {
-                hatchStates = hatchStates.BEAK_OUT;
-            }
         }
     }
 }
