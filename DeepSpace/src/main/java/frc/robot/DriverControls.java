@@ -167,8 +167,8 @@ public class DriverControls {
 	public boolean getReleaseXButton() {
 		return (xBox.getXButtonReleased());
 }
-public boolean getPressShootCargo() {
-	return (xBox.getStartButtonPressed());
+public boolean getShootCargo() {
+	return (xBox.getStartButton());
 }
 public boolean getReleaseShootCargo() {
 	return (xBox.getStartButtonReleased());
@@ -203,8 +203,8 @@ public boolean getReleaseShootCargo() {
 	public boolean getButtonReleaseWristUp() {
 		return (xBox.getBumperReleased(Hand.kRight));
 }
-	public boolean getCargoGrabPress(){
-		return (xBox.getStickButtonPressed(Hand.kRight));
+	public boolean getCargoGrab(){
+		return (xBox.getStickButton(Hand.kRight));
 	}
 	public boolean leftStickPress(){
 		return (xBox.getStickButtonPressed(Hand.kLeft));

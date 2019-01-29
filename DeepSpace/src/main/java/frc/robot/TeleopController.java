@@ -25,7 +25,6 @@ public class TeleopController {
     boolean cargoMode = true;
     public static TeleopController teleopInstance = null;
     CargoWristAngleStates cargoWristAngleStates;
-    CargoWristPowerStates cargoWristPowerStates;
     BobcatStates bobcatStates;
     HatchStates hatchStates;
     ElevatorStates elevatorStates;
@@ -43,12 +42,6 @@ Timer gameTimer = new Timer();
         MID,
         HIGH,
         STOWED,
-    }
-    public enum CargoWristPowerStates{
-        GRAB,
-        HOLD,
-        SHOOT,
-        OFF,
     }
     public enum BobcatStates{
         LOW_CARGO,
@@ -88,7 +81,6 @@ Timer gameTimer = new Timer();
     public void callStateMachines(){
     stateMachine();
     wristAngleStateMachine();
-    wristPowerStateMachine();
     bobcatHeightStateMachine();
     hatchStateMachine();
     elevatorStateMachine();
@@ -123,20 +115,6 @@ Timer gameTimer = new Timer();
             cargoWristAngleStowedState();
             default:
             cargoWristAngleStowedState();
-        }
-    }
-    public void wristPowerStateMachine(){
-        switch(cargoWristPowerStates){
-            case GRAB:
-            cargoWristPowerGrabState();
-            case HOLD:
-            cargoWristPowerHoldState();
-            case SHOOT:
-            cargoWristPowerShootState();
-            case OFF:
-            cargoWristPowerOffState();
-            default:
-            cargoWristPowerOffState();
         }
     }
     public void bobcatHeightStateMachine(){
@@ -197,20 +175,6 @@ Timer gameTimer = new Timer();
         _cargo.actionMoveTo(IntakePositionsCargo.STOWED);
     }
 
-    //power states
-    private void cargoWristPowerGrabState(){
-        _cargo.setIntakeMode(IntakeModesCargo.GRAB);
-    }
-    private void cargoWristPowerHoldState(){
-        _cargo.setIntakeMode(IntakeModesCargo.HOLD);
-    }
-    private void cargoWristPowerShootState(){
-        _cargo.setIntakeMode(IntakeModesCargo.SHOOT);
-    }
-    private void cargoWristPowerOffState(){
-        _cargo.setIntakeMode(IntakeModesCargo.OFF);
-    }
-
     //bobcat states
     private void bobcatCargoLowRocketState(){
         _bobcat.actionMoveTo(IntakePositions.LOW_CARGO);
@@ -251,9 +215,6 @@ Timer gameTimer = new Timer();
     private void elevatorRetractedState(){
         _climb.elevatorMove(false);
     }
-
-
-
 
         //tr for transition
         private void trVision() {
@@ -351,18 +312,17 @@ Timer gameTimer = new Timer();
             if (_controls.getPressXButton()){
                 bobcatStates = BobcatStates.CARGOSHIP_CARGO;
             }
-            if (_controls.getPressShootCargo()){
+            if (_controls.getShootCargo()){
                 hatchStates = HatchStates.BEAK_OUT;
-                cargoWristPowerStates = CargoWristPowerStates.SHOOT;  //TODO: light sensor stuff
+                _cargo.setIntakeMode(IntakeModesCargo.SHOOT);
             }
-            if (_controls.getCargoGrabPress()){
-                cargoWristPowerStates = CargoWristPowerStates.GRAB;
+            if (_controls.getCargoGrab()){
+                _cargo.setIntakeMode(IntakeModesCargo.GRAB);
                 hatchStates = HatchStates.BEAK_IN;
             }
         }
         else if (getGamePieceMode() == false){
             cargoWristAngleStates = CargoWristAngleStates.STOWED;
-            cargoWristPowerStates = CargoWristPowerStates.OFF;
             if (_controls.getPressLowRocketPosition()){
                 bobcatStates = BobcatStates.LOW_HATCH;
             }
@@ -384,7 +344,6 @@ Timer gameTimer = new Timer();
         if (_controls.getPressStowCargo()){
             bobcatStates = BobcatStates.STOWED;
             cargoWristAngleStates = CargoWristAngleStates.STOWED;
-            cargoWristPowerStates = CargoWristPowerStates.OFF;
         }
     }
 }
