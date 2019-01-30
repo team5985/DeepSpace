@@ -8,12 +8,12 @@ public class Hatch extends Subsystem {
     boolean extendBeak = true;
     DriverControls DriverControls = new DriverControls();
     Constants Constants = new Constants();
-    public Hatch hatchInstance = null;
+    public static Hatch hatchInstance = null;
     Solenoid hatchPopLeft;
     Solenoid hatchPopRight;
     Solenoid beakSolenoid;
     
-    public Hatch getInstance() {
+    public static Hatch getInstance() {
         if (hatchInstance == null) {
             hatchInstance = new Hatch();
         }
@@ -29,6 +29,13 @@ public class Hatch extends Subsystem {
         hatchPopLeft.set(Position);
         hatchPopRight.set(Position);
     }
+    public void moveBeak(boolean Position){
+        beakSolenoid.set(Position);
+        extendBeak = Position;
+    }
+    public boolean getBeakPosition(){
+        return extendBeak;
+    }
     public boolean zeroPosition(){
         hatchPopLeft.set(false);
         hatchPopRight.set(false);
@@ -43,7 +50,7 @@ public class Hatch extends Subsystem {
     void configActuators(){
         hatchPopRight = new Solenoid(Constants.kHatchRightPcmPort);
         hatchPopLeft = new Solenoid(Constants.kHatchLeftPcmPort);
-        beakSolenoid = new Solenoid(Constants.kBeakSolenoidChannel);
+        beakSolenoid = new Solenoid(Constants.kBeakPlusCargoSolenoidChannel);
     }
     
 }

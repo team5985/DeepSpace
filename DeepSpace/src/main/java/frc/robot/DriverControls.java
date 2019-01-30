@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 public class DriverControls {
 	Joystick stick;
 	XboxController xBox;
-
+	boolean end = false;
 	public static DriverControls mDriverControlsInstance;
 	
 	public static DriverControls getInstance() {
@@ -34,7 +34,6 @@ public class DriverControls {
      * @return Driver interrupt command.
      */
     public boolean getStickInterupt() {
-		boolean end = false;
 
 		if(stick.getX() >= 0.7) {
 			end = true;
@@ -47,6 +46,22 @@ public class DriverControls {
 		} else if(stick.getZ() >= 0.7) {
 			end = true;
 		} else if(stick.getZ() <= -0.7) {
+			end = true;
+		} else if(xBox.getX(Hand.kLeft) < -0.7){
+			end = true;
+		} else if(xBox.getX(Hand.kLeft) > 0.7){
+			end = true;
+		} else if(xBox.getX(Hand.kRight) < -0.7){
+			end = true;
+		} else if(xBox.getX(Hand.kRight) > 0.7){
+			end = true;
+		} else if(xBox.getY(Hand.kLeft) < -0.7){
+			end = true;
+		} else if(xBox.getY(Hand.kLeft) > 0.7){
+			end = true;
+		} else if(xBox.getY(Hand.kRight) < -0.7){
+			end = true;
+		} else if(xBox.getY(Hand.kRight) > 0.7){
 			end = true;
 		}
 	    return end;
@@ -161,14 +176,14 @@ public class DriverControls {
 		return (xBox.getYButtonReleased());
 }
 // cargoship height (for ball) bobcat position
-	public boolean getPressCargoShipBallPosition() {
+	public boolean getPressXButton() {
 		return (xBox.getXButtonPressed());
 }
-	public boolean getReleaseCargoShipBallPosition() {
+	public boolean getReleaseXButton() {
 		return (xBox.getXButtonReleased());
 }
-public boolean getPressShootCargo() {
-	return (xBox.getStartButtonPressed());
+public boolean getShootCargo() {
+	return (xBox.getStartButton());
 }
 public boolean getReleaseShootCargo() {
 	return (xBox.getStartButtonReleased());
@@ -203,6 +218,12 @@ public boolean getReleaseShootCargo() {
 	public boolean getButtonReleaseWristUp() {
 		return (xBox.getBumperReleased(Hand.kRight));
 }
+	public boolean getCargoGrab(){
+		return (xBox.getStickButton(Hand.kRight));
+	}
+	public boolean leftStickPress(){
+		return (xBox.getStickButtonPressed(Hand.kLeft));
+	}
 
 	/**
 	 * Get driver power command.
