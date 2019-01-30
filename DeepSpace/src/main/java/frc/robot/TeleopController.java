@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.Bobcat;
-import frc.robot.subsystems.Bobcat.IntakePositions;
+import frc.robot.subsystems.Bobcat.ArmPositions;
 import frc.robot.subsystems.CargoIntake;
 import frc.robot.subsystems.CargoIntake.*;
 import frc.robot.subsystems.Climber;
@@ -177,28 +177,28 @@ Timer gameTimer = new Timer();
 
     //bobcat states
     private void bobcatCargoLowRocketState(){
-        _bobcat.actionMoveTo(IntakePositions.LOW_CARGO);
+        _bobcat.actionMoveTo(ArmPositions.LOW_CARGO);
     }
     private void bobcatCargoMidRocketState(){
-        _bobcat.actionMoveTo(IntakePositions.MID_CARGO);
+        _bobcat.actionMoveTo(ArmPositions.MID_CARGO);
     }
     private void bobcatCargoHighRocketState(){
-        _bobcat.actionMoveTo(IntakePositions.HIGH_CARGO);
+        _bobcat.actionMoveTo(ArmPositions.HIGH_CARGO);
     }
     private void bobcatCargoShipRocketState(){
-        _bobcat.actionMoveTo(IntakePositions.CARGOSHIP_BALL_POSITION);
+        _bobcat.actionMoveTo(ArmPositions.CARGOSHIP_BALL_POSITION);
     }
     private void bobcatHatchLowRocketState(){
-        _bobcat.actionMoveTo(IntakePositions.LOW_HATCH);
+        _bobcat.actionMoveTo(ArmPositions.LOW_HATCH);   
     }
     private void bobcatHatchMidRocketState(){
-        _bobcat.actionMoveTo(IntakePositions.MID_HATCH);
+        _bobcat.actionMoveTo(ArmPositions.MID_HATCH); 
     }
     private void bobcatHatchHighRocketState(){
-        _bobcat.actionMoveTo(IntakePositions.HIGH_HATCH);
+        _bobcat.actionMoveTo(ArmPositions.HIGH_HATCH); 
     }
     private void bobcatStowedState(){
-        _bobcat.actionMoveTo(IntakePositions.DOWN);
+        _bobcat.actionMoveTo(ArmPositions.DOWN); 
     }
 
     //hatch states

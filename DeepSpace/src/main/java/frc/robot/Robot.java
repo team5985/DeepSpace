@@ -9,16 +9,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
-
-import org.junit.runner.Description;
-import org.junit.runners.Parameterized.Parameters;
-
-import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.Vision;
-import frc.robot.subsystems.Drive;
-import frc.robot.DriverControls;
-
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -29,14 +19,7 @@ import frc.robot.DriverControls;
 public class Robot extends TimedRobot {
   TeleopController teleopController = TeleopController.getInstance();
   DriverControls driverControls = DriverControls.getInstance();
-  Joystick stick;
-
-  Vision machineVision;
-  Drive drive;
-  boolean hatchMode = true;
   
-
-
   @Override
   public void robotInit() {
   }
