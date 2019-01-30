@@ -26,6 +26,7 @@ public class Constants {
     public static final int kDriveLeftEncoderBPort = 1;
     public static final int kDriveRightEncoderAPort = 2;
     public static final int kDriveRightEncoderBPort = 3;
+    public static final int kBobcatHallEffectPort = 4;
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;

@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
@@ -11,9 +12,11 @@ import frc.robot.DriverControls;
 
 public class Bobcat extends Subsystem {
     boolean hatchCollected = false;
-    DriverControls DriverControls = new DriverControls();
-    public SquareRootControl jointMotorControl;
-    public WPI_TalonSRX jointMotor;
+    DriverControls driverControls = new DriverControls();
+    private SquareRootControl jointMotorControl;
+    private WPI_TalonSRX jointMotor;
+    private DigitalInput hallEffect;
+
     private double velocity = 0;
     private double feedback = 0;
      //TODO: Test and change value below
@@ -39,7 +42,7 @@ public class Bobcat extends Subsystem {
         configSensors();  
     }
     
-    public enum IntakePositions {
+    public enum ArmPositions {
         DOWN,
         HIGH_HATCH,
         MID_HATCH,
@@ -49,7 +52,8 @@ public class Bobcat extends Subsystem {
         LOW_CARGO,
         CARGOSHIP_BALL_POSITION;
     }
-    public boolean actionMoveTo(IntakePositions positions){
+
+    public boolean actionMoveTo(ArmPositions positions){
         switch(positions){
             case DOWN:
                 setAngle(stowedAngle);
@@ -116,16 +120,37 @@ public class Bobcat extends Subsystem {
         velocity = jointMotorControl.run(getPosition(), desiredAngle);
         jointMotor.set(ControlMode.Velocity, velocity);
     }
-    void configSensors() {
-		jointMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-		jointMotor.setSensorPhase(Constants.kTalonBobcatJointEncoderPhase); 
-    }
-    void configActuators() {
-		jointMotor = new WPI_TalonSRX(Constants.kTalonBobcatJointCanId);
-    }
+
+    /**
+     * Drives the arm downwards slowly until the hall effect sensor gets triggered.
+     * @return True when zeroed.
+     */
     public boolean zeroPosition(){
+        if (!hallEffect.get()) {  // When hall effect sensor is triggered
+            jointMotor.setSelectedSensorPosition(0, 0, 0);
+        }
+        if (jointMotor.getSelectedSensorPosition() != 0) {
+            jointMotor.set(ControlMode.PercentOutput, -0.2);
+        } else {
+            jointMotor.set(ControlMode.PercentOutput, 0.0);
+            return true;
+        }
+        
         return false;
     }
+
+    void configSensors() {
+        hallEffect = new DigitalInput(Constants.kBobcatHallEffectPort);
+        
+		jointMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+		jointMotor.setSensorPhase(Constants.kTalonBobcatJointEncoderPhase);
+    }
+    
+    void configActuators() {
+        jointMotor = new WPI_TalonSRX(Constants.kTalonBobcatJointCanId);
+        jointMotor.config_kF(0, Constants.k);
+    }
+    
     public double getPosition(){ //angle
         feedback = jointMotor.getSelectedSensorPosition();
         return feedback * Constants.kCountsToDegrees;
