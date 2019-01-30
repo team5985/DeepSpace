@@ -18,12 +18,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public class Robot extends TimedRobot {
   TeleopController teleopController = TeleopController.getInstance();
-
+  DriverControls driverControls = DriverControls.getInstance();
   
-  public long encoderToRevolutions(int input) {
-    return (input / 4 / 1024); //TODO: Verify 1024
-  }
-
   @Override
   public void robotInit() {
   }

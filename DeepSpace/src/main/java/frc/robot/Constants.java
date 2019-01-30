@@ -97,6 +97,10 @@ public class Constants {
     public static final double kBobcatJointMotorMaxAccelerationDegrees = 300;       // do calculations, placeholders (double max speed (not true value))
     public static final double kBobcatJointMotorMaxSpeed = 169.2;  //different degree number to cargo + gearing
     public static final double kBobCatJointMotorGain = 1;  //placeholder
+    public static final double kBobcatJointKv = 1 / 169.2;  // deg/s^-1
+
+    public static final double kBobcatJointAngleTolerance = 2;  // +/- Degrees
+    
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)
 	public static final double kVisionTargetSideNearAngle = 0;
 	public static final double kVisionTargetSideLeftAngle = 90;

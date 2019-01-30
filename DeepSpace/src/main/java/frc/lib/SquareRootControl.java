@@ -45,6 +45,7 @@ public class SquareRootControl {
      */
     public void reset() {
         dt = 0;
+        vUp = 0;
     }
 
     double lastTarget = 0.0;
@@ -62,7 +63,7 @@ public class SquareRootControl {
 
         double error = target - position;
 
-        vUp += _maxAccel * dt;
+        vUp = _maxAccel * dt;
         vCoast = _maxSpeed;
         vDown = _K * Math.sqrt(error);
 
