@@ -17,9 +17,7 @@ public class CargoIntake extends Subsystem {
     private DigitalInput hallEffect;
 
     private double feedBack = 0;
-    private double angle = 0;
     public SquareRootControl wristMotorControl;
-    private double velocity = 0;
     private double stowedAngle = 0;
     private double highAngle = 60;
     private double midAngle = 90;

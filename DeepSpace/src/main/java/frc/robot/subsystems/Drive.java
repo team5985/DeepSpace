@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.kauailabs.navx.frc.AHRS;
@@ -11,7 +10,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 
 /**
@@ -38,7 +36,6 @@ public class Drive extends Subsystem {
 	Joystick stick;
 	XboxController xBox = new XboxController(Constants.kXboxPort);
 	int reverse = 1; // 1: Forward, -1: Backward
-	private boolean robotTipped = false;
 	double oldTime = 0;
 	double newTime = 0;
 

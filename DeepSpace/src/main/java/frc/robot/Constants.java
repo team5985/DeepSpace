@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 public class Constants {
@@ -76,8 +75,8 @@ public class Constants {
     public static final double kElevatorHoldingPower = 0.17;  // TODO: Check all of these
 	public static final double kElevatorLiftFeedforward = 1.0;
 	public static final double kElevatorTiltCompGain = 0.05;  // Motor controller units (-1:1) per degree  
-    
     public static final double kElevatorHeightTolerance = 0.05;  // Metres
+    public static final double kElevatorClimbHeight = 0.4826;
 
     public static final boolean kTalonElevatorDirection = false;
 	public static final boolean kVictorMantisDirection = false;
