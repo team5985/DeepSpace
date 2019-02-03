@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.wpilibj.VictorSP;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.VictorSP;
+import frc.lib.Calcs;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
 
@@ -12,6 +14,8 @@ public class CargoIntake extends Subsystem {
     private WPI_TalonSRX wristMotor;
     private VictorSP leftIntakeMotor;
     private VictorSP rightIntakeMotor;
+    private DigitalInput hallEffect;
+
     private double feedBack = 0;
     private double angle = 0;
     public SquareRootControl wristMotorControl;
@@ -31,75 +35,65 @@ public class CargoIntake extends Subsystem {
         MID,
         LOW,
     }
+
     public enum IntakeModesCargo {
         OFF,
         GRAB,
         HOLD,
         SHOOT,
     }
+
     public static CargoIntake getInstance(){
         if(cargoInstance == null){
             cargoInstance = new CargoIntake();
         } 
         return cargoInstance;
     }
-    public boolean actionSetMode(IntakeModesCargo mode){
-        switch (mode){
-            case OFF:
-                setIntakeMode(mode);
-                return true;
-            case GRAB:
-                setIntakeMode(mode);
-                return true;
-            case HOLD:
-                setIntakeMode(mode);
-                return true;
-            case SHOOT:
-                setIntakeMode(mode);
-                return true;
+
+    private CargoIntake(){
+        wristMotorControl = new SquareRootControl(Constants.kCargoWristMaxAccelerationDegrees, Constants.kCargoWristMaxSpeed, Constants.kCargoWristGain); 
+        configActuators();
+        configSensors();  
+    }
+    
+    /**
+     * Set to angles 30 degrees down, 30 degrees up, centre and stowed for picking up balls.
+     * @param position
+     * @return True when action completed.
+     */
+    public boolean actionMoveTo(IntakePositionsCargo position) {
+        if (!hallEffect.get()) {
+            wristMotor.setSelectedSensorPosition(0);
+        }
+        
+        switch (position){
+            case STOWED:
+                return setAngle(stowedAngle);
+            case HIGH:
+                return setAngle(highAngle);
+            case MID:
+                return setAngle(midAngle);
+            case LOW:
+                return setAngle(lowAngle);
             default:
                 return false;
         }
     }
-//**set to angles 30 degrees down, 30 degrees up, centre and stowed for picking up balls */
-    public boolean actionMoveTo(IntakePositionsCargo position) {
-        switch (position){
-            case STOWED:
-                setPosition(stowedAngle);
-                if (stowedAngle >= getPosition() - 2 && stowedAngle <= getPosition() + 2){
-                    return true;
-                } else {
-                    return false;
-                }
-            case HIGH:
-                setPosition(highAngle);
-                if (highAngle >= getPosition() - 2 && highAngle <= getPosition() + 2){
-                    return true;
-                } else {
-                    return false;
-                }
-            case MID:
-                setPosition(midAngle);
-                if (midAngle >= getPosition() - 2 && midAngle <= getPosition() + 2){
-                    return true;
-                } else {
-                    return false;
-                }
-            case LOW:
-                setPosition(lowAngle);
-                if (lowAngle >= getPosition() - 2 && lowAngle <= getPosition() + 2){
-                    return true;
-                } else {
-                    return false;
-                }
-            default:
-                return true;
-        }
-    }
 
     public boolean zeroPosition(){
-		return false; //TODO: fix
-	}
+        if (!hallEffect.get()) {  // When hall effect sensor is triggered
+            wristMotor.setSelectedSensorPosition(0);
+        }
+        if (wristMotor.getSelectedSensorPosition() != 0) {
+            wristMotor.set(ControlMode.PercentOutput, -0.2);
+        } else {
+            wristMotor.set(ControlMode.PercentOutput, 0.0);
+            return true;
+        }
+        
+        return false;
+    }
+    
 	/**
 	 * returns z angle of Interial Measurement Unit
 	 */
@@ -122,41 +116,46 @@ public class CargoIntake extends Subsystem {
         }
     }
 
-    private CargoIntake(){
-        wristMotorControl = new SquareRootControl(Constants.kCargoIntakeMaxAccelerationDegrees, Constants.kCargoIntakeMaxSpeed, Constants.kCargoIntakeGain); 
-        configActuators();
-        configSensors();  
-    }
 	public double getPosition(){
         feedBack = wristMotor.getSelectedSensorPosition();   //1024 Pulses per rotation -  4 counts per pulse   - 4096
         return feedBack * Constants.kCountsToDegrees;
     }
-    void configSensors() {
-		wristMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-		wristMotor.setSensorPhase(Constants.kTalonCargoIntakeEncoderPhase); 
-    }
-    void configActuators(){
-        wristMotor = new WPI_TalonSRX(Constants.kTalonCargoWristCanId);
-        leftIntakeMotor= new VictorSP(Constants.kVictorCargoIntakeLeftPwmPort);
-        leftIntakeMotor.setInverted(true);
-        rightIntakeMotor = new VictorSP(Constants.kVictorCargoIntakeRightPwmPort);
-        rightIntakeMotor.setInverted(false);
-    }
+
     public double changeDegreesToCounts(double degrees){
         return degrees / Constants.kCountsToDegrees;
     }
-    public void setPosition(double angle){
-        velocity = wristMotorControl.run(getPosition(), angle);
-        wristMotor.set(ControlMode.Velocity, velocity);
+
+    public boolean setAngle(double angle){
+        double velocity = wristMotorControl.run(getPosition(), angle);
+        double power = Constants.kCargoWristMaxSpeed / velocity;
+        wristMotor.set(ControlMode.PercentOutput, power);
+        return Calcs.isWithinThreshold(getPosition(), angle, Constants.kCargoWristAngleTolerance);
     }
-    
 
+    /**
+     * Calculate the feedforward gain required to keep the intake level at steady state. Does not configure the Talon.
+     * @return Units (-1:1)
+     */
+    // private double calculateHoldingFeedforward() {
+    //     double horizDist = Constants.kIntakePhysicalLength * Math.sin(Constants.kIntakeStowedPhysicalAngle + getPosition());
+    //     double gravityTorque = Constants.kIntakePhysicalWeight * horizDist;
+    //     double feedforward = Constants.kIntakeWristMaxTorque / gravityTorque;
+    //     return feedforward;
+    // }
 
-    //public void lowerArms(){
-      //  velocity = wristMotorControl.run(getPosition(), 120);
-        //wristMotor.set(ControlMode.Velocity, velocity);
-    //}
-    //public void raiseArms(){
-      //  wristMotor.set(ControlMode.Position, 300);
-   // }
+    void configActuators(){
+        wristMotor = new WPI_TalonSRX(Constants.kTalonCargoWristCanId);
+
+        leftIntakeMotor = new VictorSP(Constants.kVictorCargoIntakeLeftPwmPort);
+        leftIntakeMotor.setInverted(Constants.kVictorCargoIntakeDirection);
+        rightIntakeMotor = new VictorSP(Constants.kVictorCargoIntakeRightPwmPort);
+        rightIntakeMotor.setInverted(!Constants.kVictorCargoIntakeDirection);
+    } 
+   
+    void configSensors() {
+        wristMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+        wristMotor.setSensorPhase(Constants.kTalonCargoIntakeEncoderPhase); 
+
+        hallEffect = new DigitalInput(Constants.kIntakeHallEffectPort);
+    }
 }   

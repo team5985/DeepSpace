@@ -53,6 +53,10 @@ public class Bobcat extends Subsystem {
     }
 
     public boolean actionMoveTo(ArmPositions positions){
+        if (!hallEffect.get()) {
+            jointMotor.setSelectedSensorPosition(0);
+        }
+
         switch(positions){
             case DOWN:
                 return setAngle(stowedAngle);
@@ -112,7 +116,7 @@ public class Bobcat extends Subsystem {
      */
     public boolean zeroPosition(){
         if (!hallEffect.get()) {  // When hall effect sensor is triggered
-            jointMotor.setSelectedSensorPosition(0, 0, 0);
+            jointMotor.setSelectedSensorPosition(0);
         }
         if (jointMotor.getSelectedSensorPosition() != 0) {
             jointMotor.set(ControlMode.PercentOutput, -0.2);

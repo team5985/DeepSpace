@@ -27,6 +27,7 @@ public class Constants {
     public static final int kDriveRightEncoderAPort = 2;
     public static final int kDriveRightEncoderBPort = 3;
     public static final int kBobcatHallEffectPort = 4;
+	public static final int kIntakeHallEffectPort = 5;
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
@@ -89,9 +90,10 @@ public class Constants {
 
     // CargoWrist Contants
     /**degrees per second per second */
-    public static final double kCargoIntakeMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
-    public static final double kCargoIntakeMaxSpeed = 518.4;
-    public static final double kCargoIntakeGain = 1;  //placeholder
+    public static final double kCargoWristMaxAccelerationDegrees = 1000;       // do calculations, placeholders (double max speed (not true value))
+    public static final double kCargoWristMaxSpeed = 518.4;
+    public static final double kCargoWristGain = 1;  //placeholder
+    public static final double kCargoWristAngleTolerance = 2;
 
     //Bobcat squareroot compensation constants
     public static final double kBobcatJointMotorMaxAccelerationDegrees = 300;       // do calculations, placeholders (double max speed (not true value))
@@ -112,4 +114,5 @@ public class Constants {
     
     //other
     public static final double kCountsToDegrees = 0.087890625;
+	public static final boolean kVictorCargoIntakeDirection = false;
 }
