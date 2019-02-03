@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 public class Constants {
@@ -12,13 +13,11 @@ public class Constants {
     public static final int kRightDriveBCanId = 5;
     public static final int kRightDriveCCanId = 6;
 
-    // Elevator TalonSRX
     public static final int kTalonElevatorLeftCanId = 7;   //Also elevator encoder
     public static final int kTalonElevatorRightCanId = 8;
-    //cargo
+    
     public static final int kTalonCargoWristCanId = 9;
     
-    //hatch
     public static final int kTalonBobcatJointCanId = 10; //for raising and lowering hatch
 
     // RoboRIO DIO Ports
@@ -27,7 +26,13 @@ public class Constants {
     public static final int kDriveRightEncoderAPort = 2;
     public static final int kDriveRightEncoderBPort = 3;
     public static final int kBobcatHallEffectPort = 4;
-	public static final int kIntakeHallEffectPort = 5;
+    public static final int kIntakeHallEffectPort = 5;
+    
+    // RoboRIO PWM Ports
+    public static final int kVictorCargoIntakeLeftPwmPort = 0;   // ??????????
+    public static final int kVictorCargoIntakeRightPwmPort = 1;  //????????????????
+    public static final int kVictorMantisRightPwmPort = 2;
+    public static final int kVictorMantisLeftPwnPort = 3;
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
@@ -35,14 +40,13 @@ public class Constants {
 
     // Encoder Constants
     public static final int kEncoderPpr = 1024;  // Number of pulses per revolution of the encoder. Settable by the DIP switches on the AMT-103, should be checked.
+    public static final double kCountsToDegrees = 0.087890625;
 
     // Drivetrain Constants
     public static IdleMode kDriveIdleMode = IdleMode.kBrake;
 
 	public static final boolean kLeftDriveEncoderPhase = false; // false = not inverted, true = inverted
     public static final boolean kRightDriveEncoderPhase = false; // TODO: Check this
-    public static final boolean kTalonCargoIntakeEncoderPhase = true; //TODO: Check
-    public static final boolean kTalonBobcatJointEncoderPhase = true; //TODO: check     for hatch raising and lowering
 
 	public static final boolean kLeftDriveMotorPhase = false; // false = not inverted, true = inverted
     public static final boolean kRightDriveMotorPhase = true;
@@ -65,6 +69,16 @@ public class Constants {
     public static double kDriveWheelDiameter = 6.0;
 	public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kEncoderPpr;  // Metres per pulse
 
+    // Climber constants
+    public static final double kElevatorHoldingPower = 0.17;  // TODO: Check all of these
+	public static final double kElevatorLiftFeedforward = 1.0;
+	public static final double kElevatorTiltCompGain = 0.05;  // Motor controller units (-1:1) per degree  
+    
+    public static final double kElevatorHeightTolerance = 0.05;  // Metres
+
+    public static final boolean kTalonElevatorDirection = false;
+	public static final boolean kVictorMantisDirection = false;
+    
     // Tilt Compensation Constants
     public static final double kRollErrorMax = 5;
     public static final double kRollErrorMin = kRollErrorMax * -1;
@@ -83,10 +97,7 @@ public class Constants {
     public static final int kBeakPlusCargoSolenoidChannel = 4;
 
     // CargoIntake
-    public static final int kVictorCargoIntakeLeftPwmPort = 0;   // ??????????
-    public static final int kVictorCargoIntakeRightPwmPort = 1;  //????????????????
-    public static final int kVictorMantisRightPwmPort = 2;
-    public static final int kVictorMantisLeftPwnPort = 3;
+    public static final boolean kVictorCargoIntakeDirection = false;
 
     // CargoWrist Contants
     /**degrees per second per second */
@@ -94,14 +105,17 @@ public class Constants {
     public static final double kCargoWristMaxSpeed = 518.4;
     public static final double kCargoWristGain = 1;  //placeholder
     public static final double kCargoWristAngleTolerance = 2;
+    public static final boolean kTalonCargoIntakeEncoderPhase = true; //TODO: Check
 
-    //Bobcat squareroot compensation constants
+    //Bobcat Constants
     public static final double kBobcatJointMotorMaxAccelerationDegrees = 300;       // do calculations, placeholders (double max speed (not true value))
     public static final double kBobcatJointMotorMaxSpeed = 169.2;  //different degree number to cargo + gearing
     public static final double kBobCatJointMotorGain = 1;  //placeholder
     public static final double kBobcatJointKv = 1 / 169.2;  // deg/s^-1
 
     public static final double kBobcatJointAngleTolerance = 2;  // +/- Degrees
+
+    public static final boolean kTalonBobcatJointEncoderPhase = true; //TODO: check     for hatch raising and lowering
     
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)
 	public static final double kVisionTargetSideNearAngle = 0;
@@ -110,9 +124,5 @@ public class Constants {
 	public static final double kVisionTargetRocketFarLeftAngle = 208.75;
 	public static final double kVisionTargetRocketFarRightAngle = 151.25;
 	public static final double kVisionTargetRocketNearLeftAngle = 331.25;
-    public static final double kVisionTargetRocketNearRightAngle = 28.75;
-    
-    //other
-    public static final double kCountsToDegrees = 0.087890625;
-	public static final boolean kVictorCargoIntakeDirection = false;
+    public static final double kVisionTargetRocketNearRightAngle = 28.75;  
 }

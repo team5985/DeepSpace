@@ -15,6 +15,8 @@ public class SquareRootControl {
     private double vCoast;
     private double vDown;
 
+    double lastTarget = 0.0;
+
     /**
      * Initialise controller.
      * @param maximumAcceleration in units of m/s/s or deg/s/s
@@ -47,8 +49,6 @@ public class SquareRootControl {
         dt = 0;
         vUp = 0;
     }
-
-    double lastTarget = 0.0;
 
     /**
      * Run a controller step.

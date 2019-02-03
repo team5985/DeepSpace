@@ -1,22 +1,31 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.kauailabs.navx.frc.AHRS;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
+import frc.lib.Calcs;
 import frc.robot.Constants;
-import jdk.jfr.Percentage;
 
+/**
+ * Mantis Arms & Elevators.
+ * Sensors:
+ * - 1 Encoder (AMT-103)
+ * - Gyro from Drive (NavX)
+ * Actuators:
+ * - 2 TalonSRX (Elevator 775s)
+ * - 1 Solenoid (plumbed to both mantis arm cylinders)
+ */
 public class Climber extends Subsystem {
 
 	public boolean elevatorCompletedExtend = false;
 	public boolean elevatorCompletedRetract = true;
 
-	private AHRS imu;
 	private Solenoid mantisSolenoid;
 
-	private WPI_TalonSRX elevator; //sensor (left)
+	private WPI_TalonSRX elevator; //sensor
 	private WPI_TalonSRX talonLeft;
 	private WPI_TalonSRX talonRight;
 
@@ -25,115 +34,78 @@ public class Climber extends Subsystem {
 
 	public static Climber climberInstance = null;
 
+	private static AHRS imu;
 
-/**true = out, false = in */
 	private Climber(){
 		configActuators();
 		configSensors();
 	}
+
 	public static Climber getInstance(){
 		if (climberInstance == null){
 			climberInstance = new Climber();
 		}
 		return climberInstance;
 	}
-	private void setMantisPosition(Boolean direction) {
+
+	/**
+	 * Sets the solenoid to extend or retract the mantis arms.
+	 * @param direction True is extend, false is retract.
+	 */
+	public void setMantisPosition(Boolean direction) {
 		if(direction == true){
 			mantisSolenoid.set(true);
-			mantisLeft.set(1);
-			mantisRight.set(1);
-		}else {
+		} else {
 			mantisSolenoid.set(false);
-			mantisLeft.set(0);
-			mantisLeft.set(0);
-		}
-	}
-	private void checkCompleted(){
-		if (getPosition() >= 18){
-			elevatorCompletedExtend = true;
-		}
-		else{
-			elevatorCompletedExtend = false;
-		}
-		if (getPosition() <= 2){
-			elevatorCompletedRetract = true;
-		}
-		else{
-			elevatorCompletedRetract = false;
 		}
 	}
 
 	/**
-	 * Set the Mantis Arms position.
-	 * @param direction where true is extended and false is retracted.
+	 * Move the elevators to a given height, also using the gyro to attempt to keep level.
+	 * @param height in metres, where 0 is the starting configuration and increases as the elevators extend.
+	 * @return True when close to the target height.
 	 */
-	private boolean manualExtendMantisArms(boolean direction) {
-		boolean completed = false;
-		if(direction == true){
-			completed = true;
-		} else {
-			//Arm down
-			completed = true;
-		}
+	public boolean actionMoveTo(double height) {
+		boolean completed = Calcs.isWithinThreshold(height, getPosition(), Constants.kElevatorHeightTolerance);
+		double pitch = imu.getPitch();  // Where positive is tipping back
+		double feedforward = Math.min(Constants.kElevatorLiftFeedforward, Constants.kElevatorHoldingPower);
+		double power = feedforward + (Constants.kElevatorTiltCompGain * pitch);  // Set the tilt compensation gain to 0 to remove software levelling
+		talonLeft.set(ControlMode.PercentOutput, power);
 		return completed;
-	}
-
-	/**Boolean direction-True = Up */
-	public boolean elevatorMove(boolean direction) {
-		if (direction = true) {
-			setMantisPosition(true);
-			if (imu.getPitch() <= 0) {        //TILT CONTROL
-				elevatorMoveUP(1);
-				return elevatorCompletedExtend;
-			}
-			else {
-				elevatorMoveUP((5-imu.getPitch())*0.2);
-				return elevatorCompletedExtend;
-			}
-		}
-		else {                                // move down
-			setMantisPosition(false);
-			if ((imu.getPitch()) >= 0) {         //TODO: fix jittering
-				elevatorMoveDown(-1);
-				return elevatorCompletedRetract;
-			}
-			else {
-				elevatorMoveUP((-5-imu.getPitch())*0.2);
-				return elevatorCompletedRetract;
-			}
-		}
-	}
-
-	private void elevatorMoveUP(double percent){
-		talonLeft.set(ControlMode.PercentOutput, percent);
-		talonRight.set(ControlMode.PercentOutput, percent);
-	}
-	private void elevatorMoveDown(double percent){
-		talonLeft.set(ControlMode.PercentOutput, percent);  //check negatives
-		talonRight.set(ControlMode.PercentOutput, percent);          //TODO change to make less jittery (proportional)
 	}
 
 	void configActuators() {
 		talonLeft = new WPI_TalonSRX(Constants.kTalonElevatorLeftCanId);
+		talonLeft.setInverted(Constants.kTalonElevatorDirection);  //TODO: check
+
 		talonRight = new WPI_TalonSRX(Constants.kTalonElevatorLeftCanId);
+		talonRight.setInverted(Constants.kTalonElevatorDirection);  //TODO: check
+		talonRight.follow(talonLeft);
+
 		mantisLeft = new VictorSP(Constants.kVictorMantisLeftPwnPort);
-		mantisLeft.setInverted(false);										//TODO: check
+		mantisLeft.setInverted(Constants.kVictorMantisDirection);  //TODO: check
+		
 		mantisRight = new VictorSP(Constants.kVictorMantisRightPwmPort);
-		mantisRight.setInverted(false);										//TODO: check
+		mantisRight.setInverted(!Constants.kVictorMantisDirection);
 		mantisSolenoid = new Solenoid(Constants.kSolenoidMantisChannel);
 	}
 
 	void configSensors() {
 		elevator = new WPI_TalonSRX(Constants.kTalonElevatorLeftCanId);   //same as talonleft (encoder plugged into left TalonSRX)
+		imu = Drive.getInstance().getImuInstance();
 	}
 
-	/**in inches */
-	double getPosition() {
+	/**
+	 * Gets the estimated height of the elevators.
+	 * @return Height in metres.
+	 */
+	public double getPosition() {
 		return elevator.getSelectedSensorPosition() * 0.000244140625; //change values when robot built
 	}
 
-	boolean zeroPosition() {
+	public boolean zeroPosition() {
 		setMantisPosition(false); //TODO: elevator
+
 		return true;
 	}
 }
