@@ -83,43 +83,29 @@ public class Drive extends Subsystem {
 
 	// Drive-Control
 	public void arcadeDrive(double power, double steering, double throttle) {
-		if (robotTipped == false){
-			if (stick.getRawButtonPressed(7)) {
-				reverse *= -1;
-			}
-			double leftPower = (power + steering) * throttle * reverse;
-			double rightPower = (power - steering) * throttle * reverse;
-			setMotors(leftPower, rightPower);
-		}
+		double leftPower = (power + steering) * throttle * reverse;
+		double rightPower = (power - steering) * throttle * reverse;
+		setMotors(leftPower, rightPower);
+	}
 
+	/**
+	 * Drives the robot, also including tip protection which overrides the parameter inputs.
+	 * @param power
+	 * @param steering
+	 * @param throttle
+	 */
+	public void teleopDrive(double power, double steering, double throttle) {
+		double pitch = _imu.getPitch(); // returns -180 to 180 degress
+		double threshold = Constants.kDriveTipThreshold;
+		if (pitch > threshold) {
+			setMotors(Constants.kDriveTipCorrectionPower, Constants.kDriveTipCorrectionPower);
+		} else if (pitch < -threshold) {
+			setMotors(-Constants.kDriveTipCorrectionPower, -Constants.kDriveTipCorrectionPower);
+		} else {
+			arcadeDrive(power, steering, throttle);  // Normal driving.
+		}
 	}
 	
-	public void testTip(){
-		double roll = _imu.getRoll(); // returns -180 to 180 degress    (xx)
-		double threshold = 10.0;
-		if(roll > threshold || roll < -threshold){
-			newTime = DriverStation.getInstance().getMatchTime();
-			if (3 <= newTime - oldTime ){
-			robotTipped = true;
-			if (roll > threshold){
-				setMotors(-0.5, -0.5);
-			}
-			//TODO: fix
-			if (roll < -threshold){
-				setMotors(0.5, 0.5);
-			}
-			} else {
-				robotTipped = false;
-			}
-			//TODO: test 
-		}
-		else{
-			robotTipped = false;
-			oldTime = DriverStation.getInstance().getMatchTime();
-		}
-
-	}
-
 	/**
 	 * Turn the robot on the spot with square root ramping based on gyro heading.
 	 * @param gain Gain to use for square root ramping.
@@ -172,6 +158,26 @@ public class Drive extends Subsystem {
 			else {
 				arcadeDrive(0.0, adjustAmmount, speed);
 			}	
+		}
+	}
+
+	/**
+	 * Sets the drivebase to switch where forwards is. @see arcadeDrive
+	 */
+	public void setReversed() {
+		reverse *= -1;
+	}
+
+	/**
+	 * Sets the drivebase to change where forwards is. 
+	 * @param reversed True makes the robot drive backwards, false makes it drive forwards.
+	 * @see arcadeDrive
+	 */
+	public void setReversed(boolean reversed) {
+		if (reversed) {
+			reverse = -1;
+		} else {
+			reverse = 1;
 		}
 	}
 

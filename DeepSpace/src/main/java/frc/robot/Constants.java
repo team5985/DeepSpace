@@ -67,7 +67,10 @@ public class Constants {
 	public static final double kDriveEncoderDriveGain = 0;  // Used in square root controller
 
     public static double kDriveWheelDiameter = 6.0;
-	public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kEncoderPpr;  // Metres per pulse
+    public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kEncoderPpr;  // Metres per pulse
+    
+    public static final double kDriveTipThreshold = 25.0;  // Degrees before activating tip protection
+    public static final double kDriveTipCorrectionPower = 0.4;  // Amount of power to drive when running tip protection.
 
     // Climber constants
     public static final double kElevatorHoldingPower = 0.17;  // TODO: Check all of these
@@ -124,5 +127,5 @@ public class Constants {
 	public static final double kVisionTargetRocketFarLeftAngle = 208.75;
 	public static final double kVisionTargetRocketFarRightAngle = 151.25;
 	public static final double kVisionTargetRocketNearLeftAngle = 331.25;
-    public static final double kVisionTargetRocketNearRightAngle = 28.75;  
+    public static final double kVisionTargetRocketNearRightAngle = 28.75;
 }
