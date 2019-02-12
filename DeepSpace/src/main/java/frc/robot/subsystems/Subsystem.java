@@ -5,13 +5,13 @@ public abstract class Subsystem {
 	 * Get the position of the mechanism's axis.
 	 * @return Current position. Units will be in metres or degrees.
 	 */
-	abstract double getPosition(); 
+	public abstract double getPosition(); 
 	
 	/**
 	 * Zero the mechanism by running a zeroing routine.
 	 * @return True when the sensor is zeroed.
 	 */
-	abstract boolean zeroPosition();
+	public abstract boolean zeroPosition();
 	
     /**
      * Configure and initialise all the actuator classes associated with the subsystem.

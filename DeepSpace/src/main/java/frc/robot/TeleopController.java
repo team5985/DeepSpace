@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Bobcat;
 import frc.robot.subsystems.Bobcat.ArmPositions;
 import frc.robot.subsystems.CargoIntake;
@@ -15,6 +16,7 @@ import frc.robot.subsystems.Hatch;
  */
 public class TeleopController {
     DriverControls _controls;
+
     CargoIntake _cargo;
     Drive _drive;
     Climber _climb;
@@ -24,10 +26,10 @@ public class TeleopController {
     States robotState;
     boolean cargoMode = true;
     public static TeleopController teleopInstance = null;
-    CargoWristAngleStates cargoWristAngleStates;
-    BobcatStates bobcatStates;
-    HatchStates hatchStates;
-    ElevatorStates elevatorStates;
+    CargoWristAngleStates cargoWristAngleState;
+    BobcatStates bobcatState;
+    HatchStates hatchState;
+    ElevatorStates climberState;
 
 Timer gameTimer = new Timer();
     public enum States {
@@ -54,12 +56,13 @@ Timer gameTimer = new Timer();
         STOWED,
     }
     public enum HatchStates{
-        BEAK_OUT,
-        BEAK_IN,
+        HOLD_HATCH,
+        STOW_HATCH,
+        POP,
     }
     public enum ElevatorStates{
-        Extended,
-        Retracted,
+        EXTENDED,
+        RETRACTED,
     }
 
     public static TeleopController getInstance() {
@@ -70,94 +73,134 @@ Timer gameTimer = new Timer();
     }
 
     private TeleopController() {
-        _drive = Drive.getInstance();
         _controls = DriverControls.getInstance();
+        
+        _drive = Drive.getInstance();
         _cargo = CargoIntake.getInstance();
         _climb = Climber.getInstance();
         _bobcat = Bobcat.getInstance();
         _hatch = Hatch.getInstance();
+
+        robotState = States.TELEOP;
+        cargoWristAngleState = CargoWristAngleStates.STOWED;
+        bobcatState = BobcatStates.STOWED;
+        hatchState = HatchStates.STOW_HATCH;
+        climberState = ElevatorStates.RETRACTED;
     }
 
     public void callStateMachines(){
-    stateMachine();
-    wristAngleStateMachine();
-    bobcatHeightStateMachine();
-    hatchStateMachine();
-    elevatorStateMachine();
+        stateMachine();
+        wristAngleStateMachine();
+        bobcatHeightStateMachine();
+        hatchStateMachine();
+        climberStateMachine();
+
+        SmartDashboard.putString("Current State", robotState.name());
     }
 
     //State Machine
     public void stateMachine() {
         switch (robotState) {
-                case TELEOP:
-                    trVision();
-                    runTeleop();
-                    trHab();
-                case VISION:
-                    stVision();
-                case HAB:
-                    stHab();
-                    trVictory();
-                case VICTORY:
-                    stVictory();
-                default:
+            case TELEOP:
+                trVision();
+                runTeleop();
+                trHab();
+                break;
+            case VISION:
+                stVision();
+                break;
+            case HAB:
+                stHab();
+                trVictory();
+                break;
+            case VICTORY:
+                stVictory();
+                break;
+            default:
+                break;
         }
     }
+
     public void wristAngleStateMachine(){
-        switch(cargoWristAngleStates){
+        switch(cargoWristAngleState){
             case LOW:
             cargoWristAngleLowState();
+            break;
             case MID:
             cargoWristAngleMidState();
+            break;
             case HIGH:
             cargoWristAngleHighState();
+            break;
             case STOWED:
             cargoWristAngleStowedState();
+            break;
             default:
             cargoWristAngleStowedState();
+            break;
         }
     }
+
     public void bobcatHeightStateMachine(){
-        switch(bobcatStates){
+        switch(bobcatState){
             case LOW_CARGO:
             bobcatCargoLowRocketState();
+            break;
             case MID_CARGO:
             bobcatCargoMidRocketState();
+            break;
             case HIGH_CARGO:
             bobcatCargoHighRocketState();
+            break;
             case CARGOSHIP_CARGO:
             bobcatCargoShipRocketState();
+            break;
             case LOW_HATCH:
             bobcatHatchLowRocketState();
+            break;
             case MID_HATCH:
             bobcatHatchMidRocketState();
+            break;
             case HIGH_HATCH:
             bobcatHatchHighRocketState();
+            break;
             case STOWED:
             bobcatStowedState();
+            break;
             default:
             bobcatStowedState();
+            break;
+        }
+    }
 
-        }
-    }
     public void hatchStateMachine(){
-        switch(hatchStates){
-            case BEAK_OUT:
-            hatchOutState();
-            case BEAK_IN:
-            hatchInState();
+        switch(hatchState){
+            case HOLD_HATCH:
+            hatchHoldState();
+            break;
+            case STOW_HATCH:
+            hatchStowState();
+            break;
+            case POP:
+            hatchPopState();
+            break;
             default:
-            hatchInState();
+            hatchStowState();
+            break;
         }
     }
-    public void elevatorStateMachine(){
-        switch(elevatorStates){
-            case Extended:
-            elevatorExtendedState();
-            case Retracted:
-            elevatorRetractedState();
+
+    public void climberStateMachine(){
+        switch(climberState){
+            case EXTENDED:
+                climberExtendedState();
+                break;
+            case RETRACTED:
+                climberRetractedState();
+                break;
             default:
-            elevatorRetractedState();
+                climberRetractedState();
+                break;
         }
     }
 
@@ -202,148 +245,160 @@ Timer gameTimer = new Timer();
     }
 
     //hatch states
-    private void hatchOutState(){
-        _hatch.moveBeak(true);
+    private void hatchHoldState(){
+        _hatch.setPosition(true, false);
     }
-    private void hatchInState(){
-        _hatch.moveBeak(false);
+    private void hatchStowState(){
+        _hatch.setPosition(false, false);
     }
+    private void hatchPopState() {
+        _hatch.setPosition(false, true);
+    }
+
     //elevator states
-    private void elevatorExtendedState(){
-        _climb.elevatorMove(true);               //TODO: add mantis arms
+    private void climberExtendedState(){
+        _climb.setMantisPosition(true);
+        _climb.actionMoveTo(Constants.kElevatorClimbHeight);
     }
-    private void elevatorRetractedState(){
-        _climb.elevatorMove(false);
+    private void climberRetractedState(){
+        _climb.setMantisPosition(false);
+        _climb.actionMoveTo(0.0);
     }
 
-        //tr for transition
-        private void trVision() {
-            if(_controls.getThumbPress() == true) {
-                robotState = States.TELEOP;
-            }
+    //tr for transition
+    private void trVision() {
+        // if(_controls.getThumbPress() == true) {
+            robotState = States.TELEOP;
+        // }
+    }
+    private void trHab() {
+        if((_controls.getButtonElevatorExtend())){
+            robotState = States.HAB;
         }
-        private void trHab() {
-            if((_controls.getButtonElevatorExtend())){
-                robotState = States.HAB;
-            }
+    }
+    public void trVictory() {
+        if(_controls.getButtonPress12()) {
+            //why
         }
-        public void trVictory() {
-            if(_controls.getButtonPress12()) {
-                //why
-            }
-        }
+    }
 
-        //States
-        public void callDrive() {
-            _drive.arcadeDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
-            if (robotState != States.HAB){
-                _drive.testTip();
-            }
+    //States
+    public void callDrive() {
+        if (_controls.getPressSwitchDriveDirection()) {
+            _drive.setReversed();
         }
-        public void stVision() {
-            //I've got my i on you
+        if (robotState != States.HAB){
+            _drive.teleopDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
         }
-        public void stHab() {
-            if (_climb.elevatorCompletedExtend == false){
-                elevatorStates = ElevatorStates.Extended;
-            }
-            else{
-                if (_controls.getButtonElevatorRetract()){
-                    elevatorStates = ElevatorStates.Retracted;
-                }
-            }
-        }
-        public void stEnd() {
-            //The end is here! ARRGH
-        }
-        public void stVictory() {
-            //AND THAT'S A WIN FOR TEAM 5985!!!!!!!!!!!!!!!!!!!!!
-        }
+    }
 
-        public void gamePieceMode() {
-            if (_controls.getChangeGamePieceMode()){
-                if (cargoMode == true){
-                    cargoMode = false;
-                } else{
-                    cargoMode = true;
-                    hatchStates = HatchStates.BEAK_IN;
-                }
-            }
-            else {
-                if (_controls.getPressHatchMode()) {
-                    cargoMode = true;
-                }
-                else if (_controls.getPressBallMode()) {
-                    cargoMode = false;
-                }
+    public void stVision() {
+        //I've got my i on you
+    }
+
+    public void stHab() {
+        if (_climb.elevatorCompletedExtend == false){
+            climberState = ElevatorStates.EXTENDED;
+        } else {
+            if (_controls.getButtonElevatorRetract()){
+                climberState = ElevatorStates.RETRACTED;
             }
         }
-        public boolean getGamePieceMode() {
-            return cargoMode;
+    }
+
+    public void stEnd() {
+        //The end is here! ARRGH
+    }
+
+    public void stVictory() {
+        //AND THAT'S A WIN FOR TEAM 5985!!!!!!!!!!!!!!!!!!!!!
+    }
+
+    public void setGamePieceMode() {
+        if (_controls.getChangeGamePieceMode()){
+            if (cargoMode == true){
+                cargoMode = false;
+            } else{
+                cargoMode = true;
+                hatchState = HatchStates.STOW_HATCH;
+            }
         }
+        else {
+            if (_controls.getPressHatchMode()) {
+                cargoMode = true;
+            }
+            else if (_controls.getPressBallMode()) {
+                cargoMode = false;
+            }
+        }
+    }
+
+    public boolean getGamePieceMode() {
+        return cargoMode;
+    }
 
     /**
      * To be called by Robot.teleopPeriodic() to run the teleop controller during the teleop mode.
      */
     public void runTeleop() {
-        if (getGamePieceMode()){
+        if (getGamePieceMode()){  // Ball handling mode
             if(_controls.getButtonPressWristUp()){               //set buttons for 30 degrees down and up and mid
-                cargoWristAngleStates = CargoWristAngleStates.HIGH;
+                cargoWristAngleState = CargoWristAngleStates.HIGH;
             }
             if (_controls.getButtonPressWristMid()){
-                cargoWristAngleStates = CargoWristAngleStates.MID;
+                cargoWristAngleState = CargoWristAngleStates.MID;
                 //TODO: if up shoot, if detect ball go mid
             }
             if (_controls.getPressCargoWristDown()){
-                cargoWristAngleStates = CargoWristAngleStates.LOW;   //TODO: change so no need to hold buttons
+                cargoWristAngleState = CargoWristAngleStates.LOW;   //TODO: change so no need to hold buttons
             }
             if (_controls.getPressStowCargo()){
-                cargoWristAngleStates = CargoWristAngleStates.STOWED;  //TODO: light sensor stuff
+                cargoWristAngleState = CargoWristAngleStates.STOWED;  //TODO: light sensor stuff
             }
             if (_controls.getPressLowRocketPosition()){
-                bobcatStates = BobcatStates.LOW_CARGO;
+                bobcatState = BobcatStates.LOW_CARGO;
             }
             if (_controls.getPressMidRocketPosition()){
-                bobcatStates = BobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
+                bobcatState = BobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
             }
             if (_controls.getPressHighRocketPosition()){
-                bobcatStates = BobcatStates.HIGH_CARGO;
+                bobcatState = BobcatStates.HIGH_CARGO;
             }
             if (_controls.getPressXButton()){
-                bobcatStates = BobcatStates.CARGOSHIP_CARGO;
+                bobcatState = BobcatStates.CARGOSHIP_CARGO;
             }
             if (_controls.getShootCargo()){
-                hatchStates = HatchStates.BEAK_OUT;
+                hatchState = HatchStates.HOLD_HATCH;
                 _cargo.setIntakeMode(IntakeModesCargo.SHOOT);
             }
             if (_controls.getCargoGrab()){
                 _cargo.setIntakeMode(IntakeModesCargo.GRAB);
-                hatchStates = HatchStates.BEAK_IN;
+                hatchState = HatchStates.STOW_HATCH;
             }
         }
         else if (getGamePieceMode() == false){
-            cargoWristAngleStates = CargoWristAngleStates.STOWED;
+            cargoWristAngleState = CargoWristAngleStates.STOWED;
             if (_controls.getPressLowRocketPosition()){
-                bobcatStates = BobcatStates.LOW_HATCH;
+                bobcatState = BobcatStates.LOW_HATCH;
             }
             if (_controls.getPressMidRocketPosition()){
-                bobcatStates = BobcatStates.MID_HATCH;
+                bobcatState = BobcatStates.MID_HATCH;
             }
             if (_controls.getPressHighRocketPosition()){
-                bobcatStates = BobcatStates.HIGH_HATCH;
+                bobcatState = BobcatStates.HIGH_HATCH;
             }
             if (_controls.getPressXButton()){
                 if (_hatch.getBeakPosition()){
-                    hatchStates = HatchStates.BEAK_IN;
+                    hatchState = HatchStates.STOW_HATCH;
                 } else {
-                    hatchStates = HatchStates.BEAK_OUT;
+                    hatchState = HatchStates.HOLD_HATCH;
                 }
             }
         }
         //put stow here
         if (_controls.getPressStowCargo()){
-            bobcatStates = BobcatStates.STOWED;
-            cargoWristAngleStates = CargoWristAngleStates.STOWED;
+            bobcatState = BobcatStates.STOWED;
+            cargoWristAngleState = CargoWristAngleStates.STOWED;
         }
     }
 }

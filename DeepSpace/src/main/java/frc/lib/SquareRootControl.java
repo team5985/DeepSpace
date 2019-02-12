@@ -15,6 +15,8 @@ public class SquareRootControl {
     private double vCoast;
     private double vDown;
 
+    double lastTarget = 0.0;
+
     /**
      * Initialise controller.
      * @param maximumAcceleration in units of m/s/s or deg/s/s
@@ -48,8 +50,6 @@ public class SquareRootControl {
         vUp = 0;
     }
 
-    double lastTarget = 0.0;
-
     /**
      * Run a controller step.
      * @param position Current position.
@@ -61,7 +61,9 @@ public class SquareRootControl {
             reset();
         }
 
-        double error = target - position;
+        boolean forward = target > position;  // True when the direction is positive and false when negative
+
+        double error = Math.abs(target - position);
 
         vUp = _maxAccel * dt;
         vCoast = _maxSpeed;
@@ -70,6 +72,10 @@ public class SquareRootControl {
         dt += 0.02;
         lastTarget = target;
 
-        return Math.min(Math.min(vUp, vCoast), vDown); // Return lowest speed.
+        if (forward) {
+            return Math.min(Math.min(vUp, vCoast), vDown); // Return lowest speed.
+        } else {
+            return -Math.min(Math.min(vUp, vCoast), vDown); // Return lowest speed.
+        }        
     }
 }

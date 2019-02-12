@@ -2,15 +2,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
-import frc.robot.DriverControls;
 
 public class Hatch extends Subsystem {
     boolean extendBeak = true;
-    DriverControls DriverControls = new DriverControls();
-    Constants Constants = new Constants();
+    
     public static Hatch hatchInstance = null;
-    Solenoid hatchPopLeft;
-    Solenoid hatchPopRight;
+
+    Solenoid popSolenoid;
     Solenoid beakSolenoid;
     
     public static Hatch getInstance() {
@@ -24,33 +22,41 @@ public class Hatch extends Subsystem {
         configActuators();
         configSensors();
     }
+
     /**out or in (out is true) */
-    public void setPosition(boolean Position){
-        hatchPopLeft.set(Position);
-        hatchPopRight.set(Position);
+    public void setPosition(boolean beakPosition, boolean popPosition){
+        popSolenoid.set(popPosition);
+        beakSolenoid.set(beakPosition);
     }
-    public void moveBeak(boolean Position){
-        beakSolenoid.set(Position);
-        extendBeak = Position;
+
+    /**
+     * Sets the beak to deploy or retract.
+     * @param position True deploys.
+     */
+    public void moveBeak(boolean position){
+        beakSolenoid.set(position);
+        extendBeak = position;
     }
+
     public boolean getBeakPosition(){
         return extendBeak;
     }
+
     public boolean zeroPosition(){
-        hatchPopLeft.set(false);
-        hatchPopRight.set(false);
+        popSolenoid.set(false);
+        beakSolenoid.set(false);
         return true;
     }
+
     public double getPosition(){
         return 0;
     }
+
     void configSensors() {
-		
     }
+
     void configActuators(){
-        hatchPopRight = new Solenoid(Constants.kHatchRightPcmPort);
-        hatchPopLeft = new Solenoid(Constants.kHatchLeftPcmPort);
-        beakSolenoid = new Solenoid(Constants.kBeakPlusCargoSolenoidChannel);
+        popSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kHatchPopperPcmPort);
+        beakSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel);
     }
-    
 }

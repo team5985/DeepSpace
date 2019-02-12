@@ -7,7 +7,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Hatch;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -18,10 +23,16 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public class Robot extends TimedRobot {
   TeleopController teleopController = TeleopController.getInstance();
-  DriverControls driverControls = DriverControls.getInstance();
+  // DriverControls driverControls = DriverControls.getInstance();
+  Joystick _stick;
   
+  Compressor comp;
+
   @Override
   public void robotInit() {
+    comp = new Compressor(Constants.kPcmCanId);
+    comp.setClosedLoopControl(true);
+    _stick = new Joystick(0);
   }
 
   @Override
@@ -30,9 +41,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    if (driverControls.getStickInterupt() == false){
+    // if (driverControls.getStickInterupt() == false){
       
-    }
+    // }
   }
 
   @Override
@@ -41,9 +52,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    teleopController.stateMachine();
-    teleopController.callDrive();
-    teleopController.getGamePieceMode();
+    teleopController.callStateMachines();
+    // teleopController.callDrive();
   }
 
   @Override
