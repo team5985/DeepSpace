@@ -202,8 +202,11 @@ public class Drive extends Subsystem {
      * @param rightPower
      */
     public void setMotors(double leftPower, double rightPower) {
-    	leftDriveA.set(leftPower);
-    	rightDriveA.set(rightPower);
+		leftDriveA.set(leftPower);
+		leftDriveB.set(leftPower);
+
+		rightDriveA.set(rightPower);
+		rightDriveB.set(rightPower);
 	}
 	
 	public AHRS getImuInstance() {
@@ -222,10 +225,6 @@ public class Drive extends Subsystem {
 		rightDriveA = new CANSparkMax(Constants.kRightDriveACanId, MotorType.kBrushless);
 		rightDriveB = new CANSparkMax(Constants.kRightDriveBCanId, MotorType.kBrushless);
 		
-		// Set follower controllers
-		leftDriveB.follow(leftDriveA);
-		rightDriveB.follow(rightDriveA);
-		
 		// Set brake/coast
 		leftDriveA.setIdleMode(Constants.kDriveIdleMode);
 		leftDriveB.setIdleMode(Constants.kDriveIdleMode);
@@ -235,11 +234,15 @@ public class Drive extends Subsystem {
 		
 		// Invert right side
 		leftDriveA.setInverted(Constants.kLeftDriveMotorPhase);
-		rightDriveA.setInverted(Constants.kRightDriveMotorPhase);
+		leftDriveB.setInverted(Constants.kLeftDriveMotorPhase);
+		rightDriveA.setInverted(!Constants.kLeftDriveMotorPhase);
+		rightDriveB.setInverted(!Constants.kLeftDriveMotorPhase);
 
 		// Set current limit to PDP fuses
 		leftDriveA.setSmartCurrentLimit(40);
+		leftDriveB.setSmartCurrentLimit(40);
 		rightDriveA.setSmartCurrentLimit(40);
+		rightDriveB.setSmartCurrentLimit(40);
 	}
 		
 	@Override

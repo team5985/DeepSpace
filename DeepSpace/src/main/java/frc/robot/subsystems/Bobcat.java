@@ -130,6 +130,13 @@ public class Bobcat extends Subsystem {
 
     void configActuators() {
         jointMotor = new WPI_TalonSRX(Constants.kTalonBobcatJointCanId);
+        jointMotor.setInverted(Constants.kBobcatJointDirection);  //TODO: check
+        
+        jointMotor.configPeakCurrentLimit(0, 0);
+        jointMotor.configContinuousCurrentLimit(30, 0);
+        
+        jointMotor.configPeakOutputForward(Constants.kBobcatJointMaxOutput);
+        jointMotor.configPeakOutputReverse(Constants.kBobcatJointMaxOutput);
     }
 
     void configSensors() {
@@ -145,6 +152,6 @@ public class Bobcat extends Subsystem {
      */
     public double getPosition(){
         double feedback = jointMotor.getSelectedSensorPosition();
-        return feedback * Constants.kCountsToDegrees;
+        return feedback * Constants.kCuiCountsToDegrees;
     }
 }

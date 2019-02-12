@@ -116,11 +116,11 @@ public class CargoIntake extends Subsystem {
 
 	public double getPosition(){
         feedBack = wristMotor.getSelectedSensorPosition();   //1024 Pulses per rotation -  4 counts per pulse   - 4096
-        return feedBack * Constants.kCountsToDegrees;
+        return feedBack * Constants.kCuiCountsToDegrees;
     }
 
     public double changeDegreesToCounts(double degrees){
-        return degrees / Constants.kCountsToDegrees;
+        return degrees / Constants.kCuiCountsToDegrees;
     }
 
     public boolean setAngle(double angle){
@@ -143,6 +143,13 @@ public class CargoIntake extends Subsystem {
 
     void configActuators(){
         wristMotor = new WPI_TalonSRX(Constants.kTalonCargoWristCanId);
+        wristMotor.setInverted(Constants.kWristMotorDirection);  //TODO: check
+        
+        wristMotor.configPeakCurrentLimit(0, 0);
+        wristMotor.configContinuousCurrentLimit(20, 0);
+
+        wristMotor.configPeakOutputForward(Constants.kWristMaxOutput);
+        wristMotor.configPeakOutputReverse(Constants.kWristMaxOutput);
 
         leftIntakeMotor = new VictorSP(Constants.kVictorCargoIntakeLeftPwmPort);
         leftIntakeMotor.setInverted(Constants.kVictorCargoIntakeDirection);

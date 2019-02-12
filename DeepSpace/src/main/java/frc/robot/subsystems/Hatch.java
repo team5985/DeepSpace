@@ -8,8 +8,7 @@ public class Hatch extends Subsystem {
     
     public static Hatch hatchInstance = null;
 
-    Solenoid hatchPopLeft;
-    Solenoid hatchPopRight;
+    Solenoid popSolenoid;
     Solenoid beakSolenoid;
     
     public static Hatch getInstance() {
@@ -25,9 +24,9 @@ public class Hatch extends Subsystem {
     }
 
     /**out or in (out is true) */
-    public void setPosition(boolean position){
-        hatchPopLeft.set(position);
-        hatchPopRight.set(position);
+    public void setPosition(boolean beakPosition, boolean popPosition){
+        popSolenoid.set(popPosition);
+        beakSolenoid.set(beakPosition);
     }
 
     /**
@@ -44,8 +43,8 @@ public class Hatch extends Subsystem {
     }
 
     public boolean zeroPosition(){
-        hatchPopLeft.set(false);
-        hatchPopRight.set(false);
+        popSolenoid.set(false);
+        beakSolenoid.set(false);
         return true;
     }
 
@@ -57,8 +56,7 @@ public class Hatch extends Subsystem {
     }
 
     void configActuators(){
-        hatchPopRight = new Solenoid(Constants.kHatchRightPcmPort);
-        hatchPopLeft = new Solenoid(Constants.kHatchLeftPcmPort);
-        beakSolenoid = new Solenoid(Constants.kBeakPlusCargoSolenoidChannel);
+        popSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kHatchPopperPcmPort);
+        beakSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel);
     }
 }

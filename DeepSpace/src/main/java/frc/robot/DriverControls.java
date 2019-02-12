@@ -66,6 +66,35 @@ public class DriverControls {
 		}
 	    return end;
 	}
+
+	/**
+	 * Get driver power command.
+	 * @return Y from -1 to 1.
+	 */
+	public double getDrivePower() {
+		return stick.getY();
+	}
+
+	/**
+	 * Get driver steering command.
+	 * @return X from -1 to 1.
+	 */
+	public double getDriveSteering() {
+		return stick.getX();
+	}
+
+	/**
+	 * Get driver throttle command.
+	 * @return Throttle from 0 to 1.
+	 */
+	public double getDriveThrottle() {
+		return (-stick.getThrottle() + 1) / 2;
+	}
+
+	public boolean getPressSwitchDriveDirection() {
+		return stick.getRawButtonPressed(7);
+	}
+	
 //Trigger
 	public boolean getTriggerPress() {
 		return stick.getTriggerPressed();
@@ -130,7 +159,7 @@ public class DriverControls {
 }
 //Elevators extend
 	public boolean getButtonElevatorExtend() {
-		return stick.getRawButtonPressed(8);
+		return stick.getRawButton(8);
 }
 
 	public boolean getReleaseElevatorExtend() {
@@ -188,22 +217,22 @@ public boolean getShootCargo() {
 public boolean getReleaseShootCargo() {
 	return (xBox.getStartButtonReleased());
 }
-/* Bobcat Controls */
-// Bobcat UDown
+
+/* Cargo Controls */
 	public boolean getPressStowCargo() {
 		return (xBox.getTriggerAxis(Hand.kLeft) > 0.5);
 }
 	public boolean getReleaseStowCargo() {
 		return (xBox.getTriggerAxis(Hand.kLeft) <= 0.75 && xBox.getTriggerAxis(Hand.kLeft) >= 0.25 );
 }
-// Bobcat Up
+
+/* Wrist Controls */
 	public boolean getPressCargoWristDown() {
 		return (xBox.getTriggerAxis(Hand.kRight) > 0.5);
 }
 	public boolean getReleaseCargoWristDown() {
 		return (xBox.getTriggerAxis(Hand.kRight) < 0.75 && xBox.getTriggerAxis(Hand.kRight) > 0.25);
 }
-/* Wrist Controls */
 // Wrist Down
 	public boolean getButtonPressWristMid() {
 		return (xBox.getBumperPressed(Hand.kLeft));
@@ -225,29 +254,7 @@ public boolean getReleaseShootCargo() {
 		return (xBox.getStickButtonPressed(Hand.kLeft));
 	}
 
-	/**
-	 * Get driver power command.
-	 * @return Y from -1 to 1.
-	 */
-	public double getDrivePower() {
-		return -stick.getY();
-	}
-
-	/**
-	 * Get driver steering command.
-	 * @return X from -1 to 1.
-	 */
-	public double getDriveSteering() {
-		return stick.getX();
-	}
-
-	/**
-	 * Get driver throttle command.
-	 * @return Throttle from 0 to 1.
-	 */
-	public double getDriveThrottle() {
-		return (-stick.getThrottle() + 1) / 2;
-	}
+	
 
 	//TODO: add two buttons for 30 degrees down and up for cargo intake angles and mid
 

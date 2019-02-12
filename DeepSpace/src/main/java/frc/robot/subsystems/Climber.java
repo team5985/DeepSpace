@@ -66,32 +66,39 @@ public class Climber extends Subsystem {
 	 * @return True when close to the target height.
 	 */
 	public boolean actionMoveTo(double height) {
-		boolean completed = Calcs.isWithinThreshold(height, getPosition(), Constants.kElevatorHeightTolerance);
 		double pitch = imu.getPitch();  // Where positive is tipping back
-		double feedforward = Math.min(Constants.kElevatorLiftFeedforward, Constants.kElevatorHoldingPower);
-		double power = feedforward + (Constants.kElevatorTiltCompGain * pitch);  // Set the tilt compensation gain to 0 to remove software levelling
+		double encoderBasedPower = height - getPosition() * Constants.kElevatorLiftDistGain;
+		double power = encoderBasedPower + (Constants.kElevatorTiltCompGain * pitch);  // Set the tilt compensation gain to 0 to remove software levelling
 		talonLeft.set(ControlMode.PercentOutput, power);
-		return completed;
+
+		return Calcs.isWithinThreshold(height, getPosition(), Constants.kElevatorHeightTolerance);
 	}
 
 	void configActuators() {
-		talonLeft = new WPI_TalonSRX(Constants.kTalonElevatorLeftCanId);
+		talonLeft = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
 		talonLeft.setInverted(Constants.kTalonElevatorDirection);  //TODO: check
 
-		talonRight = new WPI_TalonSRX(Constants.kTalonElevatorLeftCanId);
+		talonLeft.configOpenloopRamp(0.5);
+		talonLeft.configPeakCurrentLimit(0, 0);
+		talonLeft.configContinuousCurrentLimit(15, 0);
+
+		talonLeft.configPeakOutputForward(Constants.kElevatorMaxOutput);
+        talonLeft.configPeakOutputReverse(Constants.kElevatorMaxOutput);
+
+		talonRight = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
 		talonRight.setInverted(Constants.kTalonElevatorDirection);  //TODO: check
 		talonRight.follow(talonLeft);
 
-		mantisLeft = new VictorSP(Constants.kVictorMantisLeftPwnPort);
+		mantisLeft = new VictorSP(Constants.kVictorMantisLeftPwmPort);
 		mantisLeft.setInverted(Constants.kVictorMantisDirection);  //TODO: check
 		
 		mantisRight = new VictorSP(Constants.kVictorMantisRightPwmPort);
 		mantisRight.setInverted(!Constants.kVictorMantisDirection);
-		mantisSolenoid = new Solenoid(Constants.kSolenoidMantisChannel);
+		mantisSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kSolenoidMantisChannel);
 	}
 
 	void configSensors() {
-		elevator = new WPI_TalonSRX(Constants.kTalonElevatorLeftCanId);   //same as talonleft (encoder plugged into left TalonSRX)
+		elevator = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);   //same as talonleft (encoder plugged into left TalonSRX)
 		imu = Drive.getInstance().getImuInstance();
 	}
 
@@ -100,12 +107,12 @@ public class Climber extends Subsystem {
 	 * @return Height in metres.
 	 */
 	public double getPosition() {
-		return elevator.getSelectedSensorPosition() * 0.000244140625; //change values when robot built
+		return elevator.getSelectedSensorPosition() * Constants.kElevatorDistancePerPulse; //change values when robot built
 	}
 
 	public boolean zeroPosition() {
 		setMantisPosition(false); //TODO: elevator
 
-		return true;
+		return false;
 	}
 }
