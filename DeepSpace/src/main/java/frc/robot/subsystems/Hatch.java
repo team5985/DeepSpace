@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
 
 public class Hatch extends Subsystem {
-    boolean extendBeak = true;
+    boolean extendBeak = false;
     
     public static Hatch hatchInstance = null;
 
@@ -39,7 +39,7 @@ public class Hatch extends Subsystem {
     }
 
     public boolean getBeakPosition(){
-        return extendBeak;
+        return beakSolenoid.get();
     }
 
     public boolean zeroPosition(){

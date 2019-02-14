@@ -93,7 +93,7 @@ public class CargoIntake extends Subsystem {
     }
     
 	/**
-	 * returns z angle of Interial Measurement Unit
+	 * Runs cargo intake motors
 	 */
     public void setIntakeMode(IntakeModesCargo mode){
         if (mode == IntakeModesCargo.OFF) {
@@ -111,6 +111,9 @@ public class CargoIntake extends Subsystem {
         if (mode == IntakeModesCargo.SHOOT) {
             leftIntakeMotor.set(shootIntakePercent);     //dont know which negative which positive
             rightIntakeMotor.set(shootIntakePercent);
+        } else  {
+            leftIntakeMotor.set(0);
+            rightIntakeMotor.set(0);
         }
     }
 

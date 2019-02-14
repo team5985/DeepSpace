@@ -1,5 +1,9 @@
 package frc.robot;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Bobcat;
@@ -24,7 +28,7 @@ public class TeleopController {
     Hatch _hatch;
 
     States robotState;
-    boolean cargoMode = true;
+    boolean cargoMode = false;
     public static TeleopController teleopInstance = null;
     CargoWristAngleStates cargoWristAngleState;
     BobcatStates bobcatState;
@@ -318,6 +322,7 @@ Timer gameTimer = new Timer();
         if (_controls.getChangeGamePieceMode()){
             if (cargoMode == true){
                 cargoMode = false;
+                cargoWristAngleState = CargoWristAngleStates.STOWED;
             } else{
                 cargoMode = true;
                 hatchState = HatchStates.STOW_HATCH;
@@ -325,10 +330,10 @@ Timer gameTimer = new Timer();
         }
         else {
             if (_controls.getPressHatchMode()) {
-                cargoMode = true;
+                cargoMode = false;
             }
             else if (_controls.getPressBallMode()) {
-                cargoMode = false;
+                cargoMode = true;
             }
         }
     }
@@ -337,10 +342,9 @@ Timer gameTimer = new Timer();
         return cargoMode;
     }
 
-    /**
-     * To be called by Robot.teleopPeriodic() to run the teleop controller during the teleop mode.
-     */
     public void runTeleop() {
+        setGamePieceMode();
+        
         if (getGamePieceMode()){  // Ball handling mode
             if(_controls.getButtonPressWristUp()){               //set buttons for 30 degrees down and up and mid
                 cargoWristAngleState = CargoWristAngleStates.HIGH;
@@ -367,17 +371,21 @@ Timer gameTimer = new Timer();
             if (_controls.getPressXButton()){
                 bobcatState = BobcatStates.CARGOSHIP_CARGO;
             }
+
             if (_controls.getShootCargo()){
-                hatchState = HatchStates.HOLD_HATCH;
+                hatchState = HatchStates.POP;
                 _cargo.setIntakeMode(IntakeModesCargo.SHOOT);
-            }
-            if (_controls.getCargoGrab()){
+            } else if (_controls.getCargoGrab()){
                 _cargo.setIntakeMode(IntakeModesCargo.GRAB);
+                hatchState = HatchStates.STOW_HATCH;
+            } else {
+                _cargo.setIntakeMode(IntakeModesCargo.HOLD);
                 hatchState = HatchStates.STOW_HATCH;
             }
         }
         else if (getGamePieceMode() == false){
             cargoWristAngleState = CargoWristAngleStates.STOWED;
+
             if (_controls.getPressLowRocketPosition()){
                 bobcatState = BobcatStates.LOW_HATCH;
             }
@@ -387,6 +395,7 @@ Timer gameTimer = new Timer();
             if (_controls.getPressHighRocketPosition()){
                 bobcatState = BobcatStates.HIGH_HATCH;
             }
+            
             if (_controls.getPressXButton()){
                 if (_hatch.getBeakPosition()){
                     hatchState = HatchStates.STOW_HATCH;
@@ -400,5 +409,10 @@ Timer gameTimer = new Timer();
             bobcatState = BobcatStates.STOWED;
             cargoWristAngleState = CargoWristAngleStates.STOWED;
         }
+    }
+
+    @Test
+    public void mainStateMachineTest() {
+        assertTrue(true);
     }
 }

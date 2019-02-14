@@ -23,8 +23,6 @@ import frc.robot.subsystems.Hatch;
  */
 public class Robot extends TimedRobot {
   TeleopController teleopController = TeleopController.getInstance();
-  // DriverControls driverControls = DriverControls.getInstance();
-  Joystick _stick;
   
   Compressor comp;
 
@@ -32,7 +30,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     comp = new Compressor(Constants.kPcmCanId);
     comp.setClosedLoopControl(true);
-    _stick = new Joystick(0);
   }
 
   @Override
