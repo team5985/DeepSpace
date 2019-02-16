@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Calcs;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
@@ -130,6 +131,7 @@ public class CargoIntake extends Subsystem {
         double velocity = wristMotorControl.run(getPosition(), angle);
         double power = velocity / Constants.kCargoWristMaxSpeed;
         wristMotor.set(ControlMode.PercentOutput, power);
+        SmartDashboard.putNumber("CargoIntake Power", power);
         return Calcs.isWithinThreshold(getPosition(), angle, Constants.kCargoWristAngleTolerance);
     }
 

@@ -215,47 +215,47 @@ public class DriverControls {
 		return (xBox.getXButtonReleased());
 	}
 	public boolean getShootCargo() {
-		return (xBox.getStartButton());
+		return (xBox.getBumper(Hand.kRight));
 	}
 	public boolean getReleaseShootCargo() {
-		return (xBox.getStartButtonReleased());
+		return (xBox.getBumperReleased(Hand.kRight));
 	}
 
 	public boolean getStowBobcat() {
-		return xBox.getTriggerAxis(Hand.kRight)  < 0.75;
+		return xBox.getY(Hand.kRight)  < 0.75;
 	}
 
 /* Cargo Controls */
 	public boolean getPressStowCargo() {
-		return (xBox.getTriggerAxis(Hand.kLeft) > 0.5);
+		return (xBox.getPOV(0) == 0);
 	}
-	public boolean getReleaseStowCargo() {
-		return (xBox.getTriggerAxis(Hand.kLeft) <= 0.75 && xBox.getTriggerAxis(Hand.kLeft) >= 0.25 );
-	}
+	// public boolean getReleaseStowCargo() {
+	// 	return (xBox.getTriggerAxis(Hand.kLeft) <= 0.75 && xBox.getTriggerAxis(Hand.kLeft) >= 0.25 );
+	// }
 
 /* Wrist Controls */
 	public boolean getPressCargoWristDown() {
-		return (xBox.getTriggerAxis(Hand.kRight) > 0.5);
+		return (xBox.getPOV(0) == 180);
 	}
-	public boolean getReleaseCargoWristDown() {
-		return (xBox.getTriggerAxis(Hand.kRight) < 0.75 && xBox.getTriggerAxis(Hand.kRight) > 0.25);
-	}
+	// public boolean getReleaseCargoWristDown() {
+	// 	return (xBox.getTriggerAxis(Hand.kRight) < 0.75 && xBox.getTriggerAxis(Hand.kRight) > 0.25);
+	// }
 // Wrist Down
 	public boolean getButtonPressWristMid() {
-		return (xBox.getBumperPressed(Hand.kLeft));
+		return (xBox.getPOV(0) == 270);
 	}
-	public boolean getButtonReleaseWristMid() {
-		return (xBox.getBumperReleased(Hand.kLeft));
-	}
+	// public boolean getButtonReleaseWristMid() {
+	// 	return (xBox.getBumperReleased(Hand.kLeft));
+	// }
 // Wrist Up
 	public boolean getButtonPressWristUp() {
-		return (xBox.getBumperPressed(Hand.kRight));
+		return (xBox.getPOV(0) == 90);
 	}
-	public boolean getButtonReleaseWristUp() {
-		return (xBox.getBumperReleased(Hand.kRight));
-	}
+	// public boolean getButtonReleaseWristUp() {
+	// 	return (xBox.getBumperReleased(Hand.kRight));
+	// }
 	public boolean getCargoGrab(){
-		return (xBox.getStickButton(Hand.kRight));
+		return (xBox.getTriggerAxis(Hand.kRight) > 0.5);
 	}
 	public boolean leftStickPress(){
 		return (xBox.getStickButtonPressed(Hand.kLeft));

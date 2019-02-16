@@ -6,6 +6,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Calcs;
 import frc.robot.Constants;
 
@@ -67,12 +68,15 @@ public class Climber extends Subsystem {
 		double power = encoderBasedPower + (Constants.kElevatorTiltCompGain * pitch);  // Set the tilt compensation gain to 0 to remove software levelling
 		talonLeft.set(ControlMode.PercentOutput, power);
 
+		SmartDashboard.putNumber("Elevator Power", power);
 		return Calcs.isWithinThreshold(height, getPosition(), Constants.kElevatorHeightTolerance);
 	}
 
 	public void setMotors(double power) {
 		mantisLeft.set(power);
 		mantisRight.set(power);
+
+		SmartDashboard.putNumber("Mantis Wheels Power", power);
 	}
 
 	void configActuators() {

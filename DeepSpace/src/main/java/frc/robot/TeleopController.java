@@ -108,14 +108,16 @@ Timer gameTimer = new Timer();
         switch (robotState) {
             case TELEOP:
                 trVision();
-                runTeleop();
+                stTeleop();
                 trHab();
                 break;
             case VISION:
                 stVision();
+                trTeleop();
                 break;
             case HAB:
                 stHab();
+                trTeleop();
                 trVictory();
                 break;
             case VICTORY:
@@ -290,15 +292,22 @@ Timer gameTimer = new Timer();
 
     //tr for transition
     private void trVision() {
-        // if(_controls.getThumbPress() == true) {
-            robotState = States.TELEOP;
-        // }
+        if(_controls.getThumbPress() == true) {
+            robotState = States.VISION;
+        }
     }
     private void trHab() {
         if((_controls.getButtonPressElevatorExtend())){
             robotState = States.HAB;
         }
     }
+
+    private void trTeleop() {
+        if (_controls.getThumbPress()) {
+            robotState = States.TELEOP;
+        }
+    }
+    
     public void trVictory() {
         // if(_controls.getButtonPress12()) {
             //why
@@ -317,6 +326,7 @@ Timer gameTimer = new Timer();
 
     public void stVision() {
         //I've got my i on you
+        
     }
 
     public void stHab() {
@@ -369,7 +379,7 @@ Timer gameTimer = new Timer();
         return cargoMode;
     }
 
-    public void runTeleop() {
+    public void stTeleop() {
         setGamePieceMode();
         
         if (getGamePieceMode() == true){  // Ball handling mode

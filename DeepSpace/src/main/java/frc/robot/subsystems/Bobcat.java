@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Calcs;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
@@ -98,6 +99,7 @@ public class Bobcat extends Subsystem {
         double velocity = jointMotorControl.run(getPosition(), desiredAngle);
         double power = velocity / Constants.kBobcatJointMotorMaxSpeed;
         jointMotor.set(power);
+        SmartDashboard.putNumber("Bobcat Power", power);
         return Calcs.isWithinThreshold(getPosition(), desiredAngle, Constants.kBobcatJointAngleTolerance);
     }
 
