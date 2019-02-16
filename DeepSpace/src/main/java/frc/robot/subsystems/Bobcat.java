@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -16,7 +17,7 @@ public class Bobcat extends Subsystem {
     boolean hatchCollected = false;
     DriverControls driverControls = new DriverControls();
     private SquareRootControl jointMotorControl;
-    private CANSparkMax jointMotor;
+    private WPI_TalonSRX jointMotor;
     private Encoder jointEncoder;
     private DigitalInput hallEffect;
 
@@ -130,12 +131,17 @@ public class Bobcat extends Subsystem {
     }
 
     void configActuators() {
-        jointMotor = new CANSparkMax(Constants.kTalonBobcatJointCanId, MotorType.kBrushless);
+        jointMotor = new WPI_TalonSRX(Constants.kTalonBobcatJointCanId);
+        jointMotor.configFactoryDefault();
         jointMotor.setInverted(Constants.kBobcatJointDirection);  //TODO: check
         
-        jointMotor.setSmartCurrentLimit(30);
+        // jointMotor.setSmartCurrentLimit(30);
+        jointMotor.enableCurrentLimit(false);
 
-        jointMotor.setRampRate(Constants.kBobcatJointRampRate);
+        // jointMotor.setRampRate(Constants.kBobcatJointRampRate);
+        jointMotor.configOpenloopRamp(Constants.kBobcatJointRampRate);
+        jointMotor.configPeakOutputForward(Constants.kBobcatJointMaxOutput);
+        jointMotor.configPeakOutputReverse(-Constants.kBobcatJointMaxOutput);
     }
 
     void configSensors() {

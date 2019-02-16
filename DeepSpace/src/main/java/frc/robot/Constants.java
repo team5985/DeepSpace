@@ -50,7 +50,7 @@ public static final int kTalonBobcatJointCanId = 7; //for raising and lowering h
     // Encoder Constants
     public static final int kCuiEncoderPpr = 2048;  // Number of pulses per revolution of the encoder. Settable by the DIP switches on the CUI AMT-103, should be checked.
     public static final int kCuiEncoderCpr = kCuiEncoderPpr * 4;  // Number of counts per revolution of the encoder.
-    public static final double kCuiCountsToDegrees = kCuiEncoderCpr / 360;
+    public static final double kCuiCountsToDegrees = 360 / kCuiEncoderCpr;
 
     // Drivetrain Constants
     public static IdleMode kDriveIdleMode = IdleMode.kCoast;
@@ -87,12 +87,12 @@ public static final int kTalonBobcatJointCanId = 7; //for raising and lowering h
 	public static final double kElevatorLiftDistGain = 10;  // TODO:
 	public static final double kElevatorTiltCompGain = 0.05;  // TODO: Motor controller units (-1:1) per degree  
     public static final double kElevatorHeightTolerance = 0.05;  // Metres
-    public static final double kElevatorClimbHeight = 0.4826;
+    public static final double kElevatorClimbHeight = 0.44;
 
-    public static final double kElevatorSpoolDiam = 0.00762;  // In Metres!
+    public static final double kElevatorSpoolDiam = 0.0254;  // In Metres!
     public static final double kElevatorDistancePerPulse = (Math.PI * Constants.kElevatorSpoolDiam) / Constants.kCuiEncoderCpr;  // Metres per pulse
 
-	public static final double kElevatorMaxOutput = 0.0; // TODO
+	public static final double kElevatorMaxOutput = 1.0; // TODO
     public static final boolean kTalonElevatorDirection = false;
 	public static final boolean kVictorMantisDirection = false;
 
@@ -103,12 +103,12 @@ public static final int kTalonBobcatJointCanId = 7; //for raising and lowering h
     /**degrees per second per second */
     public static final double kCargoWristMaxAccelerationDegrees = 48.6;       // do calculations, placeholders (double max speed (not true value))
     public static final double kCargoWristMaxSpeed = 97.2;
-    public static final double kCargoWristGain = 1.0;  // Square root controller gain TODO: 
+    public static double kCargoWristGain = 1.0;  // Square root controller gain TODO: 
     public static final double kCargoWristAngleTolerance = 2;
-	public static final boolean kWristMotorDirection = true;
+	public static final boolean kWristMotorDirection = false;
     public static final boolean kTalonCargoIntakeEncoderPhase = true; //TODO: Check
 
-    public static double kWristMaxOutput = 0.0;  //TODO
+    public static double kWristMaxOutput = 0.1;  //TODO
 
     // Cargo Intake Constants
     public static final boolean kVictorCargoIntakeDirection = false;

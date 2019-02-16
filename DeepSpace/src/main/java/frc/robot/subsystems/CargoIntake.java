@@ -131,7 +131,13 @@ public class CargoIntake extends Subsystem {
         double velocity = wristMotorControl.run(getPosition(), angle);
         double power = velocity / Constants.kCargoWristMaxSpeed;
         wristMotor.set(ControlMode.PercentOutput, power);
+
+        Constants.kCargoWristGain = SmartDashboard.getNumber("CargoIntake K Gain", 0.0);
+        SmartDashboard.putNumber("CargoIntake Velocity", velocity);
+        SmartDashboard.putNumber("CargoIntake Encoder", getPosition());
+        SmartDashboard.putNumber("CargoIntake Set Angle", angle);        
         SmartDashboard.putNumber("CargoIntake Power", power);
+        
         return Calcs.isWithinThreshold(getPosition(), angle, Constants.kCargoWristAngleTolerance);
     }
 
@@ -154,7 +160,7 @@ public class CargoIntake extends Subsystem {
         wristMotor.configContinuousCurrentLimit(20, 0);
 
         wristMotor.configPeakOutputForward(Constants.kWristMaxOutput);
-        wristMotor.configPeakOutputReverse(Constants.kWristMaxOutput);
+        wristMotor.configPeakOutputReverse(-Constants.kWristMaxOutput);
 
         leftIntakeMotor = new VictorSP(Constants.kVictorCargoIntakeLeftPwmPort);
         leftIntakeMotor.setInverted(Constants.kVictorCargoIntakeDirection);

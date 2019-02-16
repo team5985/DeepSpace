@@ -64,10 +64,11 @@ public class Climber extends Subsystem {
 	 */
 	public boolean actionMoveTo(double height) {
 		double pitch = imu.getPitch();  // Where positive is tipping back
-		double encoderBasedPower = height - getPosition() * Constants.kElevatorLiftDistGain;
+		double encoderBasedPower = (height - getPosition()) * Constants.kElevatorLiftDistGain;
 		double power = encoderBasedPower + (Constants.kElevatorTiltCompGain * pitch);  // Set the tilt compensation gain to 0 to remove software levelling
 		talonLeft.set(ControlMode.PercentOutput, power);
 
+		SmartDashboard.putNumber("Elevator Position", getPosition());
 		SmartDashboard.putNumber("Elevator Power", power);
 		return Calcs.isWithinThreshold(height, getPosition(), Constants.kElevatorHeightTolerance);
 	}
@@ -85,10 +86,10 @@ public class Climber extends Subsystem {
 
 		talonLeft.configOpenloopRamp(0.5);
 		talonLeft.configPeakCurrentLimit(0, 0);
-		talonLeft.configContinuousCurrentLimit(15, 0);
+		talonLeft.configContinuousCurrentLimit(20, 0);
 
 		talonLeft.configPeakOutputForward(Constants.kElevatorMaxOutput);
-        talonLeft.configPeakOutputReverse(Constants.kElevatorMaxOutput);
+        talonLeft.configPeakOutputReverse(-Constants.kElevatorMaxOutput);
 
 		talonRight = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
 		talonRight.setInverted(Constants.kTalonElevatorDirection);  //TODO: check

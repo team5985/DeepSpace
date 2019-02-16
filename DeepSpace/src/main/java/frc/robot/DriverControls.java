@@ -72,7 +72,7 @@ public class DriverControls {
 	 * @return Y from -1 to 1.
 	 */
 	public double getDrivePower() {
-		return stick.getY();
+		return -stick.getY();
 	}
 
 	/**

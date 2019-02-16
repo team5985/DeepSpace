@@ -125,6 +125,8 @@ Timer gameTimer = new Timer();
     }
 
     public void wristAngleStateMachine(){
+        SmartDashboard.putString("Wrist Angle", cargoWristAngleState.name());
+        
         switch(cargoWristAngleState){
             case LOW:
             cargoWristAngleLowState();
@@ -177,6 +179,8 @@ Timer gameTimer = new Timer();
     }
 
     public void hatchStateMachine(){
+        SmartDashboard.putString("Hatch State", hatchState.name());
+        
         switch(hatchState){
             case HOLD_HATCH:
             hatchHoldState();
@@ -429,23 +433,27 @@ Timer gameTimer = new Timer();
             }
             
             // Hatch popper
-            if (_controls.getTrigger()) {
-                int hatchPopDelayTimer = 0;
-                if (_controls.getTriggerPress()) {
-                    hatchPopDelayTimer = 0;
-                }
-                hatchPopDelayTimer++;
+            // if (_controls.getTrigger()) {
+            //     int hatchPopDelayTimer = 0;
+            //     if (_controls.getTriggerPress()) {
+            //         hatchPopDelayTimer = 0;
+            //     }
+            //     hatchPopDelayTimer++;
                 
-                // Returns the beak and activates the popper after a delay.
-                if (hatchPopDelayTimer < Constants.kHatchPopperDelay) {
-                    hatchState = HatchStates.STOW_HATCH;
-                } else {
-                    hatchState = HatchStates.POP;
-                }
-            }
-            
+            //     // Returns the beak and activates the popper after a delay.
+            //     if (hatchPopDelayTimer < Constants.kHatchPopperDelay) {
+            //         hatchState = HatchStates.STOW_HATCH;
+            //     } else {
+            //         hatchState = HatchStates.POP;
+            //     }
+            // }
+
             // Hatch beak toggle
-            if (_controls.getPressXButton()){
+            if (_controls.getTriggerPress()) {
+                hatchState = HatchStates.POP;
+            } else if (_controls.getTriggerRelease()) {
+                hatchState = HatchStates.STOW_HATCH;
+            } else if (_controls.getPressXButton()){
                 if (_hatch.getBeakPosition()){
                     hatchState = HatchStates.STOW_HATCH;
                 } else {
