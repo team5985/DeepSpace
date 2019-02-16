@@ -3,19 +3,19 @@ package frc.robot;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 public class Constants {
-	// CAN IDs
-    public static final int kLeftDriveACanId = 3;
-    public static final int kLeftDriveBCanId = 2;
-
+    // CAN IDs
     public static final int kRightDriveACanId = 1;
-    public static final int kRightDriveBCanId = 0;
+    public static final int kRightDriveBCanId = 2;
+
+    public static final int kLeftDriveACanId = 3;
+    public static final int kLeftDriveBCanId = 4;
 
     public static final int kTalonElevatorMasterCanId = 5;   //Also elevator encoder
     public static final int kTalonElevatorSlaveCanId = 6;
     
     public static final int kTalonCargoWristCanId = 4;
     
-    public static final int kTalonBobcatJointCanId = 7; //for raising and lowering hatch
+public static final int kTalonBobcatJointCanId = 7; //for raising and lowering hatch
 
     public static final int kPcmCanId = 61;
 
@@ -24,8 +24,12 @@ public class Constants {
     public static final int kDriveLeftEncoderBPort = 1;
     public static final int kDriveRightEncoderAPort = 2;
     public static final int kDriveRightEncoderBPort = 3;
+
     public static final int kBobcatHallEffectPort = 4;
     public static final int kIntakeHallEffectPort = 5;
+    
+    public static final int kBobcatEncoderPortA = 6;
+    public static final int kBobcatEncoderPortB = 7;
     
     // RoboRIO PWM Ports
     public static final int kVictorCargoIntakeLeftPwmPort = 0;
@@ -118,9 +122,7 @@ public class Constants {
     public static final double kBobcatJointAngleTolerance = 2;  // +/- Degrees
 
     public static final boolean kBobcatJointDirection = true;
-    public static final int kBobcatEncoderPortA = 6;
-    public static final int kBobcatEncoderPortB = 7;
-    public static final boolean kBobcatJointEncoderPhase = true; //TODO: check     for hatch raising and lowering
+    public static final boolean kBobcatJointEncoderPhase = true; //TODO: check     for bobcat raising and lowering
     
     public static final double kBobcatJointRampRate = 0; // Seconds to full power
 	public static final double kBobcatJointMaxOutput = 0.0;  // TODO

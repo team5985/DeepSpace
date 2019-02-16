@@ -1,9 +1,5 @@
 package frc.robot;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Bobcat;
@@ -326,7 +322,7 @@ Timer gameTimer = new Timer();
 
     public void stVision() {
         //I've got my i on you
-        
+
     }
 
     public void stHab() {
@@ -461,10 +457,5 @@ Timer gameTimer = new Timer();
         if (_controls.getStowBobcat()){
             bobcatState = BobcatStates.STOWED;
         }
-    }
-
-    @Test
-    public void mainStateMachineTest() {
-        assertTrue(true);
     }
 }
