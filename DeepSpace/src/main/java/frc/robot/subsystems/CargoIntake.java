@@ -128,7 +128,7 @@ public class CargoIntake extends Subsystem {
 
     public boolean setAngle(double angle){
         double velocity = wristMotorControl.run(getPosition(), angle);
-        double power = Constants.kCargoWristMaxSpeed / velocity;
+        double power = velocity / Constants.kCargoWristMaxSpeed;
         wristMotor.set(ControlMode.PercentOutput, power);
         return Calcs.isWithinThreshold(getPosition(), angle, Constants.kCargoWristAngleTolerance);
     }

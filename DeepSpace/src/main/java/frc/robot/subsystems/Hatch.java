@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.Constants;
 
 public class Hatch extends Subsystem {
@@ -8,7 +10,7 @@ public class Hatch extends Subsystem {
     
     public static Hatch hatchInstance = null;
 
-    Solenoid popSolenoid;
+    DoubleSolenoid popSolenoid;
     Solenoid beakSolenoid;
     
     public static Hatch getInstance() {
@@ -25,7 +27,11 @@ public class Hatch extends Subsystem {
 
     /**out or in (out is true) */
     public void setPosition(boolean beakPosition, boolean popPosition){
-        popSolenoid.set(popPosition);
+        if (popPosition) {
+            popSolenoid.set(Value.kForward);
+        } else {
+            popSolenoid.set(Value.kReverse);
+        }
         beakSolenoid.set(beakPosition);
     }
 
@@ -43,8 +49,7 @@ public class Hatch extends Subsystem {
     }
 
     public boolean zeroPosition(){
-        popSolenoid.set(false);
-        beakSolenoid.set(false);
+        setPosition(false, false);
         return true;
     }
 
@@ -56,7 +61,7 @@ public class Hatch extends Subsystem {
     }
 
     void configActuators(){
-        popSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kHatchPopperPcmPort);
+        popSolenoid = new DoubleSolenoid(Constants.kPcmCanId, Constants.kHatchPopperForwardPcmPort, Constants.kHatchPopperReversePcmPort);
         beakSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel);
     }
 }

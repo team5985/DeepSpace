@@ -19,10 +19,6 @@ import frc.robot.Constants;
  * - 1 Solenoid (plumbed to both mantis arm cylinders)
  */
 public class Climber extends Subsystem {
-
-	public boolean elevatorCompletedExtend = false;
-	public boolean elevatorCompletedRetract = true;
-
 	private Solenoid mantisSolenoid;
 
 	private WPI_TalonSRX elevator; //sensor
@@ -74,6 +70,11 @@ public class Climber extends Subsystem {
 		return Calcs.isWithinThreshold(height, getPosition(), Constants.kElevatorHeightTolerance);
 	}
 
+	public void setMotors(double power) {
+		mantisLeft.set(power);
+		mantisRight.set(power);
+	}
+
 	void configActuators() {
 		talonLeft = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
 		talonLeft.setInverted(Constants.kTalonElevatorDirection);  //TODO: check
@@ -112,7 +113,7 @@ public class Climber extends Subsystem {
 
 	public boolean zeroPosition() {
 		setMantisPosition(false); //TODO: elevator
-
+		actionMoveTo(0.0);
 		return false;
 	}
 }

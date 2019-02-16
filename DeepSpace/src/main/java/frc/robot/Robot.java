@@ -8,11 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Hatch;
 
 /**
  * The VM is configured to automatically run this class, and to call the

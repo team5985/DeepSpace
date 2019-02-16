@@ -1,17 +1,14 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 public class Constants {
 	// CAN IDs
     public static final int kLeftDriveACanId = 3;
     public static final int kLeftDriveBCanId = 2;
-    // public static final int kLeftDriveCCanId = 3;
 
     public static final int kRightDriveACanId = 1;
     public static final int kRightDriveBCanId = 0;
-    // public static final int kRightDriveCCanId = 6;
 
     public static final int kTalonElevatorMasterCanId = 5;   //Also elevator encoder
     public static final int kTalonElevatorSlaveCanId = 6;
@@ -36,13 +33,20 @@ public class Constants {
     public static final int kVictorMantisRightPwmPort = 2;
     public static final int kVictorMantisLeftPwmPort = 3;
 
+    // PCM Solenoid Ports
+    public static final int kHatchPopperForwardPcmPort = 0;
+    public static final int kHatchPopperReversePcmPort = 1;
+    public static final int kSolenoidMantisChannel = 3;
+    public static final int kBeakPlusCargoSolenoidChannel = 4;
+
     // Driverstation Ports
     public static final int kJoystickPort = 0;
     public static final int kXboxPort = 1;
 
     // Encoder Constants
-    public static final int kCuiEncoderPpr = 1024;  // Number of pulses per revolution of the encoder. Settable by the DIP switches on the CUI AMT-103, should be checked.
-    public static final double kCuiCountsToDegrees = kCuiEncoderPpr / 360;
+    public static final int kCuiEncoderPpr = 2048;  // Number of pulses per revolution of the encoder. Settable by the DIP switches on the CUI AMT-103, should be checked.
+    public static final int kCuiEncoderCpr = kCuiEncoderPpr * 4;  // Number of counts per revolution of the encoder.
+    public static final double kCuiCountsToDegrees = kCuiEncoderCpr / 360;
 
     // Drivetrain Constants
     public static IdleMode kDriveIdleMode = IdleMode.kCoast;
@@ -61,14 +65,14 @@ public class Constants {
     public static double kDriveGyroRateThresh = 3.0;  // In deg/s.
     
 	public static final double kDrivePowerKf = 1 / 3.6;
-    public static final double kGainGyroDriveTurn = 0;  // TODO
+    public static final double kPGainGyroDriveTurn = 0.008;  // In % per degree (Not square root controller!: proportional gain)  TODO: Test
     
-	public static final double kDriveMaxDriveAccel = 0;  // m/s/s TODO: Find this
-	public static final double kDriveMaxDriveVel = 3.6;  // m/s
-	public static final double kDriveEncoderDriveGain = 0;  // TODO: Used in square root controller
+	public static final double kDriveMaxDriveAccel = 3.29;  // m/s/s
+	public static final double kDriveMaxDriveVel = 3.29;  // m/s
+	public static final double kDriveEncoderDriveGain = 1.0;  // TODO: Used in square root controller
 
     public static double kDriveWheelDiameter = 6.0;
-    public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kCuiEncoderPpr;  // Metres per pulse
+    public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kCuiEncoderCpr;  // Metres per pulse
     
     public static final double kDriveTipThreshold = 25.0;  // Degrees before activating tip protection
     public static final double kDriveTipCorrectionPower = 0.4;  // Amount of power to drive when running tip protection.
@@ -82,52 +86,43 @@ public class Constants {
     public static final double kElevatorClimbHeight = 0.4826;
 
     public static final double kElevatorSpoolDiam = 0.00762;  // In Metres!
-    public static final double kElevatorDistancePerPulse = (Math.PI * Constants.kElevatorSpoolDiam) / Constants.kCuiEncoderPpr;  // Metres per pulse
+    public static final double kElevatorDistancePerPulse = (Math.PI * Constants.kElevatorSpoolDiam) / Constants.kCuiEncoderCpr;  // Metres per pulse
 
 	public static final double kElevatorMaxOutput = 0.0; // TODO
     public static final boolean kTalonElevatorDirection = false;
 	public static final boolean kVictorMantisDirection = false;
-    
-    // Tilt Compensation Constants
-    public static final double kRollErrorMax = 5;
-    public static final double kRollErrorMin = kRollErrorMax * -1;
 
-    public static final double kPitchErrorMax = 5;
-    public static final double kPitchErrorMin = kPitchErrorMax * -1;
-
-    public static final double kYawErrorMax = 5;
-    public static final double kYawErrorMin = kYawErrorMax * -1;
-
-    // PCM Solenoid Ports
-    public static final int kHatchPopperPcmPort = 0;
-    public static final int kSolenoidMantisChannel = 3;
-    public static final int kBeakPlusCargoSolenoidChannel = 4;
-
-    // CargoIntake
-    public static final boolean kVictorCargoIntakeDirection = false;
+    // Hatch Constants
+	public static final int kHatchPopperDelay = 0;
 
     // CargoWrist Contants
     /**degrees per second per second */
     public static final double kCargoWristMaxAccelerationDegrees = 48.6;       // do calculations, placeholders (double max speed (not true value))
     public static final double kCargoWristMaxSpeed = 97.2;
-    public static final double kCargoWristGain = 1;  //TODO: placeholder
+    public static final double kCargoWristGain = 1.0;  // Square root controller gain TODO: 
     public static final double kCargoWristAngleTolerance = 2;
 	public static final boolean kWristMotorDirection = true;
     public static final boolean kTalonCargoIntakeEncoderPhase = true; //TODO: Check
 
     public static double kWristMaxOutput = 0.0;  //TODO
 
-    //Bobcat Constants
+    // Cargo Intake Constants
+    public static final boolean kVictorCargoIntakeDirection = false;
+
+    // Bobcat Constants
     public static final double kBobcatJointMotorMaxAccelerationDegrees = 300;       // do calculations, placeholders (double max speed (not true value))
     public static final double kBobcatJointMotorMaxSpeed = 169.2;  //different degree number to cargo + gearing
-    public static final double kBobCatJointMotorGain = 1;  //TODO: placeholder
+    public static final double kBobcatJointMotorGain = 1.0;  // Square root controller gain TODO: placeholder
     public static final double kBobcatJointKv = 1 / 169.2;  // deg/s^-1
 
     public static final double kBobcatJointAngleTolerance = 2;  // +/- Degrees
 
     public static final boolean kBobcatJointDirection = true;
-    public static final boolean kTalonBobcatJointEncoderPhase = true; //TODO: check     for hatch raising and lowering
+    public static final int kBobcatEncoderPortA = 6;
+    public static final int kBobcatEncoderPortB = 7;
+    public static final boolean kBobcatJointEncoderPhase = true; //TODO: check     for hatch raising and lowering
     
+    public static final double kBobcatJointRampRate = 0; // Seconds to full power
 	public static final double kBobcatJointMaxOutput = 0.0;  // TODO
     
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)

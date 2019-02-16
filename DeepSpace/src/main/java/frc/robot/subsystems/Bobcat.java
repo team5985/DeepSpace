@@ -1,10 +1,11 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import frc.lib.Calcs;
 import frc.lib.SquareRootControl;
 import frc.robot.Constants;
@@ -14,7 +15,8 @@ public class Bobcat extends Subsystem {
     boolean hatchCollected = false;
     DriverControls driverControls = new DriverControls();
     private SquareRootControl jointMotorControl;
-    private WPI_TalonSRX jointMotor;
+    private CANSparkMax jointMotor;
+    private Encoder jointEncoder;
     private DigitalInput hallEffect;
 
     //TODO: Test and change value below
@@ -36,7 +38,7 @@ public class Bobcat extends Subsystem {
     }
 
     private Bobcat(){
-        jointMotorControl = new SquareRootControl(Constants.kBobcatJointMotorMaxAccelerationDegrees, Constants.kBobcatJointMotorMaxSpeed, Constants.kBobCatJointMotorGain); 
+        jointMotorControl = new SquareRootControl(Constants.kBobcatJointMotorMaxAccelerationDegrees, Constants.kBobcatJointMotorMaxSpeed, Constants.kBobcatJointMotorGain); 
         configActuators();
         configSensors();  
     }
@@ -54,7 +56,7 @@ public class Bobcat extends Subsystem {
 
     public boolean actionMoveTo(ArmPositions positions){
         if (!hallEffect.get()) {
-            jointMotor.setSelectedSensorPosition(0);
+            jointEncoder.reset();
         }
 
         switch(positions){
@@ -94,8 +96,8 @@ public class Bobcat extends Subsystem {
      */
     public boolean setAngle(double desiredAngle){
         double velocity = jointMotorControl.run(getPosition(), desiredAngle);
-        double power = Constants.kBobcatJointMotorMaxSpeed / velocity;
-        jointMotor.set(ControlMode.PercentOutput, power);
+        double power = velocity / Constants.kBobcatJointMotorMaxSpeed;
+        jointMotor.set(power);
         return Calcs.isWithinThreshold(getPosition(), desiredAngle, Constants.kBobcatJointAngleTolerance);
     }
 
@@ -116,34 +118,27 @@ public class Bobcat extends Subsystem {
      */
     public boolean zeroPosition(){
         if (!hallEffect.get()) {  // When hall effect sensor is triggered
-            jointMotor.setSelectedSensorPosition(0);
-        }
-        if (jointMotor.getSelectedSensorPosition() != 0) {
-            jointMotor.set(ControlMode.PercentOutput, -0.2);
-        } else {
-            jointMotor.set(ControlMode.PercentOutput, 0.0);
+            jointEncoder.reset();
+            jointMotor.set(0.0);
             return true;
+        } else {
+            jointMotor.set(-0.1);
+            return false;
         }
-        
-        return false;
     }
 
     void configActuators() {
-        jointMotor = new WPI_TalonSRX(Constants.kTalonBobcatJointCanId);
+        jointMotor = new CANSparkMax(Constants.kTalonBobcatJointCanId, MotorType.kBrushless);
         jointMotor.setInverted(Constants.kBobcatJointDirection);  //TODO: check
         
-        jointMotor.configPeakCurrentLimit(0, 0);
-        jointMotor.configContinuousCurrentLimit(30, 0);
-        
-        jointMotor.configPeakOutputForward(Constants.kBobcatJointMaxOutput);
-        jointMotor.configPeakOutputReverse(Constants.kBobcatJointMaxOutput);
+        jointMotor.setSmartCurrentLimit(30);
+
+        jointMotor.setRampRate(Constants.kBobcatJointRampRate);
     }
 
     void configSensors() {
         hallEffect = new DigitalInput(Constants.kBobcatHallEffectPort);
-        
-		jointMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-		jointMotor.setSensorPhase(Constants.kTalonBobcatJointEncoderPhase);
+        jointEncoder = new Encoder(Constants.kBobcatEncoderPortA, Constants.kBobcatEncoderPortB, Constants.kBobcatJointEncoderPhase, EncodingType.k4X);
     }
     
     /**
@@ -151,7 +146,7 @@ public class Bobcat extends Subsystem {
      * @return Angle in degrees, bottom of movement is 0.
      */
     public double getPosition(){
-        double feedback = jointMotor.getSelectedSensorPosition();
+        double feedback = jointEncoder.getRaw();
         return feedback * Constants.kCuiCountsToDegrees;
     }
 }
