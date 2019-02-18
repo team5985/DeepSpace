@@ -87,9 +87,9 @@ public static final int kTalonBobcatJointCanId = 7; //for raising and lowering h
 	public static final double kElevatorLiftDistGain = 10;  // TODO:
 	public static final double kElevatorTiltCompGain = 0.05;  // TODO: Motor controller units (-1:1) per degree  
     public static final double kElevatorHeightTolerance = 0.05;  // Metres
-    public static final double kElevatorClimbHeight = 0.44;
+    public static final double kElevatorClimbHeight = 0.35;
 
-    public static final double kElevatorSpoolDiam = 0.0254;  // In Metres!
+    public static final double kElevatorSpoolDiam = 0.0191;  // In Metres!
     public static final double kElevatorDistancePerPulse = (Math.PI * Constants.kElevatorSpoolDiam) / Constants.kCuiEncoderCpr;  // Metres per pulse
 
 	public static final double kElevatorMaxOutput = 1.0; // TODO
@@ -101,14 +101,20 @@ public static final int kTalonBobcatJointCanId = 7; //for raising and lowering h
 
     // CargoWrist Contants
     /**degrees per second per second */
-    public static final double kCargoWristMaxAccelerationDegrees = 48.6;       // do calculations, placeholders (double max speed (not true value))
+    public static final double kCargoWristMaxAccelerationDegrees = 100.0;       // do calculations, placeholders (double max speed (not true value))
     public static final double kCargoWristMaxSpeed = 97.2;
-    public static double kCargoWristGain = 1.0;  // Square root controller gain TODO: 
+    public static double kCargoWristGain = 5.0;  // Square root controller gain TODO: 
     public static final double kCargoWristAngleTolerance = 2;
 	public static final boolean kWristMotorDirection = false;
     public static final boolean kTalonCargoIntakeEncoderPhase = true; //TODO: Check
 
-    public static double kWristMaxOutput = 0.1;  //TODO
+    public static final double kIntakePhysicalLength = 0.381; // Metres
+	public static final double kIntakeStowedPhysicalAngle = 0.0; // Degrees
+	public static final double kIntakePhysicalWeight = 39.24; // N
+	public static final double kIntakeWristMaxTorque = 43.0; // Nm
+	public static final double kWristPGain = 0.05;
+
+    public static double kWristMaxOutput = 0.0;  //TODO
 
     // Cargo Intake Constants
     public static final boolean kVictorCargoIntakeDirection = false;
@@ -119,13 +125,15 @@ public static final int kTalonBobcatJointCanId = 7; //for raising and lowering h
     public static final double kBobcatJointMotorGain = 1.0;  // Square root controller gain TODO: placeholder
     public static final double kBobcatJointKv = 1 / 169.2;  // deg/s^-1
 
+    public static final double kBobcatJointPGain = 0.07;
+    
     public static final double kBobcatJointAngleTolerance = 2;  // +/- Degrees
 
     public static final boolean kBobcatJointDirection = true;
     public static final boolean kBobcatJointEncoderPhase = true; //TODO: check     for bobcat raising and lowering
     
-    public static final double kBobcatJointRampRate = 0; // Seconds to full power
-	public static final double kBobcatJointMaxOutput = 0.0;  // TODO
+    public static final double kBobcatJointRampRate = 0.125; // Seconds to full power
+	public static final double kBobcatJointMaxOutput = 0.8;  // TODO
     
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)
 	public static final double kVisionTargetSideNearAngle = 0;

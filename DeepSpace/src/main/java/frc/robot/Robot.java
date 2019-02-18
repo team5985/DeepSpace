@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,6 +20,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public class Robot extends TimedRobot {
   TeleopController teleopController = TeleopController.getInstance();
+  Vision _vision = Vision.getInstance();
+
+  DriverControls _controls = new DriverControls();
   
   Compressor comp;
 
@@ -47,6 +51,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     teleopController.callStateMachines();
     teleopController.callDrive();
+
+    // _vision.updateVision();
+    // SmartDashboard.putNumber("Vision Angle", _vision.getAngle());   
   }
 
   @Override

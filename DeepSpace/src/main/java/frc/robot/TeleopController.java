@@ -147,6 +147,8 @@ Timer gameTimer = new Timer();
     }
 
     public void bobcatHeightStateMachine(){
+        SmartDashboard.putString("Bobcat State", bobcatState.name());
+        
         switch(bobcatState){
             case LOW_CARGO:
             bobcatCargoLowRocketState();

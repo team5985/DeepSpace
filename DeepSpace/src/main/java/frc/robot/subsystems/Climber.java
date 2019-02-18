@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -66,7 +67,8 @@ public class Climber extends Subsystem {
 		double pitch = imu.getPitch();  // Where positive is tipping back
 		double encoderBasedPower = (height - getPosition()) * Constants.kElevatorLiftDistGain;
 		double power = encoderBasedPower + (Constants.kElevatorTiltCompGain * pitch);  // Set the tilt compensation gain to 0 to remove software levelling
-		talonLeft.set(ControlMode.PercentOutput, power);
+		talonLeft.set(ControlMode.PercentOutput, -power);
+		talonRight.set(ControlMode.PercentOutput, power);
 
 		SmartDashboard.putNumber("Elevator Position", getPosition());
 		SmartDashboard.putNumber("Elevator Power", power);
@@ -82,19 +84,24 @@ public class Climber extends Subsystem {
 
 	void configActuators() {
 		talonLeft = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
-		talonLeft.setInverted(Constants.kTalonElevatorDirection);  //TODO: check
+		talonLeft.configFactoryDefault();
+		talonLeft.setNeutralMode(NeutralMode.Coast);
+		talonLeft.setInverted(false);  //TODO: check
 
 		talonLeft.configOpenloopRamp(0.5);
-		talonLeft.configPeakCurrentLimit(0, 0);
-		talonLeft.configContinuousCurrentLimit(20, 0);
+		// talonLeft.configPeakCurrentLimit(0, 0);
+		// talonLeft.configContinuousCurrentLimit(20, 0);
 
-		talonLeft.configPeakOutputForward(Constants.kElevatorMaxOutput);
-        talonLeft.configPeakOutputReverse(-Constants.kElevatorMaxOutput);
+		// talonLeft.configPeakOutputForward(Constants.kElevatorMaxOutput);
+        // talonLeft.configPeakOutputReverse(-Constants.kElevatorMaxOutput);
 
-		talonRight = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
-		talonRight.setInverted(Constants.kTalonElevatorDirection);  //TODO: check
-		talonRight.follow(talonLeft);
+		talonRight = new WPI_TalonSRX(Constants.kTalonElevatorSlaveCanId);
+		talonRight.configFactoryDefault();
+		talonRight.setNeutralMode(NeutralMode.Coast);
+		talonRight.setInverted(false);  //TODO: check
 
+		talonRight.configOpenloopRamp(0.5);
+		
 		mantisLeft = new VictorSP(Constants.kVictorMantisLeftPwmPort);
 		mantisLeft.setInverted(Constants.kVictorMantisDirection);  //TODO: check
 		

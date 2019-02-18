@@ -222,7 +222,7 @@ public class DriverControls {
 	}
 
 	public boolean getStowBobcat() {
-		return xBox.getY(Hand.kRight)  < 0.75;
+		return xBox.getY(Hand.kRight)  > 0.75;
 	}
 
 /* Cargo Controls */

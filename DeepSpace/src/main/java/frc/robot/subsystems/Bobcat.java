@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -17,7 +19,7 @@ public class Bobcat extends Subsystem {
     boolean hatchCollected = false;
     DriverControls driverControls = new DriverControls();
     private SquareRootControl jointMotorControl;
-    private WPI_TalonSRX jointMotor;
+    private CANSparkMax jointMotor;
     private Encoder jointEncoder;
     private DigitalInput hallEffect;
 
@@ -97,9 +99,18 @@ public class Bobcat extends Subsystem {
      * @return True if the arm is within a certain tolerance of the desired angle.
      */
     public boolean setAngle(double desiredAngle){
-        double velocity = jointMotorControl.run(getPosition(), desiredAngle);
-        double power = velocity / Constants.kBobcatJointMotorMaxSpeed;
+        // double velocity = jointMotorControl.run(getPosition(), desiredAngle);
+        // double power = velocity / Constants.kBobcatJointMotorMaxSpeed;
+
+        double power = (desiredAngle - getPosition()) * Constants.kBobcatJointPGain;
+
+        if (power < 0) {
+            power = 0;
+        }
+        
         jointMotor.set(power);
+        SmartDashboard.putNumber("Bobcat Target", desiredAngle);
+        SmartDashboard.putNumber("Bobcat Encoder", getPosition());
         SmartDashboard.putNumber("Bobcat Power", power);
         return Calcs.isWithinThreshold(getPosition(), desiredAngle, Constants.kBobcatJointAngleTolerance);
     }
@@ -131,17 +142,18 @@ public class Bobcat extends Subsystem {
     }
 
     void configActuators() {
-        jointMotor = new WPI_TalonSRX(Constants.kTalonBobcatJointCanId);
-        jointMotor.configFactoryDefault();
+        jointMotor = new CANSparkMax(Constants.kTalonBobcatJointCanId, MotorType.kBrushless);
+        jointMotor.setIdleMode(IdleMode.kBrake);
+        // jointMotor.configFactoryDefault();
         jointMotor.setInverted(Constants.kBobcatJointDirection);  //TODO: check
         
-        // jointMotor.setSmartCurrentLimit(30);
-        jointMotor.enableCurrentLimit(false);
+        jointMotor.setSmartCurrentLimit(30);
+        // jointMotor.enableCurrentLimit(false);
 
-        // jointMotor.setRampRate(Constants.kBobcatJointRampRate);
-        jointMotor.configOpenloopRamp(Constants.kBobcatJointRampRate);
-        jointMotor.configPeakOutputForward(Constants.kBobcatJointMaxOutput);
-        jointMotor.configPeakOutputReverse(-Constants.kBobcatJointMaxOutput);
+        jointMotor.setRampRate(Constants.kBobcatJointRampRate);
+        // jointMotor.configOpenloopRamp(Constants.kBobcatJointRampRate);
+        // jointMotor.configPeakOutputForward(Constants.kBobcatJointMaxOutput);
+        // jointMotor.configPeakOutputReverse(0.0);
     }
 
     void configSensors() {
@@ -155,6 +167,6 @@ public class Bobcat extends Subsystem {
      */
     public double getPosition(){
         double feedback = jointEncoder.getRaw();
-        return feedback * Constants.kCuiCountsToDegrees;
+        return (feedback / 8192) * 360;
     }
 }

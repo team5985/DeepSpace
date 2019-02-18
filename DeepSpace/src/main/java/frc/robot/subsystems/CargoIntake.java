@@ -100,17 +100,14 @@ public class CargoIntake extends Subsystem {
         if (mode == IntakeModesCargo.OFF) {
             leftIntakeMotor.set(0);
             rightIntakeMotor.set(0);
-        }
-        if (mode == IntakeModesCargo.GRAB) {
+        } else if (mode == IntakeModesCargo.GRAB) {
             leftIntakeMotor.set(grabIntakePercent);
             rightIntakeMotor.set(grabIntakePercent);
-        }
-        if (mode == IntakeModesCargo.HOLD) {
+        } else if (mode == IntakeModesCargo.HOLD) {
             leftIntakeMotor.set(holdIntakePercent);
             rightIntakeMotor.set(holdIntakePercent);
-        }
-        if (mode == IntakeModesCargo.SHOOT) {
-            leftIntakeMotor.set(shootIntakePercent);     //dont know which negative which positive
+        } else if (mode == IntakeModesCargo.SHOOT) {
+            leftIntakeMotor.set(shootIntakePercent);
             rightIntakeMotor.set(shootIntakePercent);
         } else  {
             leftIntakeMotor.set(0);
@@ -120,7 +117,7 @@ public class CargoIntake extends Subsystem {
 
 	public double getPosition(){
         feedBack = wristMotor.getSelectedSensorPosition();   //1024 Pulses per rotation -  4 counts per pulse   - 4096
-        return feedBack * Constants.kCuiCountsToDegrees;
+        return (feedBack / 4096) * 360;
     }
 
     public double changeDegreesToCounts(double degrees){
@@ -128,16 +125,20 @@ public class CargoIntake extends Subsystem {
     }
 
     public boolean setAngle(double angle){
-        double velocity = wristMotorControl.run(getPosition(), angle);
-        double power = velocity / Constants.kCargoWristMaxSpeed;
+        // double velocity = wristMotorControl.run(getPosition(), angle);
+        // double power = velocity / Constants.kCargoWristMaxSpeed;
+
+        double power = (angle - getPosition()) * Constants.kWristPGain;
+        power -= calculateHoldingFeedforward();
         wristMotor.set(ControlMode.PercentOutput, power);
 
-        Constants.kCargoWristGain = SmartDashboard.getNumber("CargoIntake K Gain", 0.0);
-        SmartDashboard.putNumber("CargoIntake Velocity", velocity);
+        SmartDashboard.setDefaultNumber("CargoIntake K Gain", 0.0);
+        wristMotorControl.configK(SmartDashboard.getNumber("CargoIntake K Gain", 0.0));
+        // SmartDashboard.putNumber("CargoIntake Velocity", velocity);
         SmartDashboard.putNumber("CargoIntake Encoder", getPosition());
         SmartDashboard.putNumber("CargoIntake Set Angle", angle);        
         SmartDashboard.putNumber("CargoIntake Power", power);
-        
+
         return Calcs.isWithinThreshold(getPosition(), angle, Constants.kCargoWristAngleTolerance);
     }
 
@@ -145,19 +146,19 @@ public class CargoIntake extends Subsystem {
      * Calculate the feedforward gain required to keep the intake level at steady state. Does not configure the Talon.
      * @return Units (-1:1)
      */
-    // private double calculateHoldingFeedforward() {
-    //     double horizDist = Constants.kIntakePhysicalLength * Math.sin(Constants.kIntakeStowedPhysicalAngle + getPosition());
-    //     double gravityTorque = Constants.kIntakePhysicalWeight * horizDist;
-    //     double feedforward = Constants.kIntakeWristMaxTorque / gravityTorque;
-    //     return feedforward;
-    // }
+    private double calculateHoldingFeedforward() {
+        double horizDist = Constants.kIntakePhysicalLength * Math.sin(Constants.kIntakeStowedPhysicalAngle + getPosition());
+        double gravityTorque = Constants.kIntakePhysicalWeight * horizDist;
+        double feedforward = gravityTorque / Constants.kIntakeWristMaxTorque;
+        return feedforward;
+    }
 
     void configActuators(){
         wristMotor = new WPI_TalonSRX(Constants.kTalonCargoWristCanId);
         wristMotor.setInverted(Constants.kWristMotorDirection);  //TODO: check
         
         wristMotor.configPeakCurrentLimit(0, 0);
-        wristMotor.configContinuousCurrentLimit(20, 0);
+        wristMotor.configContinuousCurrentLimit(30, 0);
 
         wristMotor.configPeakOutputForward(Constants.kWristMaxOutput);
         wristMotor.configPeakOutputReverse(-Constants.kWristMaxOutput);
