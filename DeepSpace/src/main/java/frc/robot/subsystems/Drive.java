@@ -138,7 +138,7 @@ public class Drive extends Subsystem {
 		double drivePower = driveSpeed * Constants.kDrivePowerKf;
 
 		double yaw = _imu.getYaw();
-		double steering = (targetHeading - yaw) * Constants.kGainGyroDriveTurn;
+		double steering = (targetHeading - yaw) * Constants.kPGainGyroDriveTurn;
 		arcadeDrive(drivePower, steering, 1);
 
 		return encoderIsWithinDistance(distance, 0.1);

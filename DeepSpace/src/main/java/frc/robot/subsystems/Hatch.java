@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
 
 public class Hatch extends Subsystem {
-    boolean extendBeak = true;
+    boolean extendBeak = false;
     
     public static Hatch hatchInstance = null;
 
@@ -25,7 +25,11 @@ public class Hatch extends Subsystem {
 
     /**out or in (out is true) */
     public void setPosition(boolean beakPosition, boolean popPosition){
-        popSolenoid.set(popPosition);
+        if (popPosition) {
+            popSolenoid.set(true);
+        } else {
+            popSolenoid.set(false);
+        }
         beakSolenoid.set(beakPosition);
     }
 
@@ -39,12 +43,11 @@ public class Hatch extends Subsystem {
     }
 
     public boolean getBeakPosition(){
-        return extendBeak;
+        return beakSolenoid.get();
     }
 
     public boolean zeroPosition(){
-        popSolenoid.set(false);
-        beakSolenoid.set(false);
+        setPosition(false, false);
         return true;
     }
 
@@ -56,7 +59,7 @@ public class Hatch extends Subsystem {
     }
 
     void configActuators(){
-        popSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kHatchPopperPcmPort);
+        popSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kHatchPopperForwardPcmPort);
         beakSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel);
     }
 }

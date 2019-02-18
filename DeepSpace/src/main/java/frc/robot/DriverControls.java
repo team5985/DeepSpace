@@ -72,7 +72,7 @@ public class DriverControls {
 	 * @return Y from -1 to 1.
 	 */
 	public double getDrivePower() {
-		return stick.getY();
+		return -stick.getY();
 	}
 
 	/**
@@ -96,6 +96,9 @@ public class DriverControls {
 	}
 	
 //Trigger
+	public boolean getTrigger() {
+		return stick.getRawButton(1);
+	}
 	public boolean getTriggerPress() {
 		return stick.getTriggerPressed();
 	}
@@ -119,136 +122,140 @@ public class DriverControls {
 //Ball Mode
 	public boolean getPressBallMode() {
 		return stick.getRawButtonPressed(4);
-}
+	}
 	public boolean getChangeGamePieceMode(){ //xbox
 		return xBox.getBackButtonPressed();
 	}
 
 	public boolean getButtonRelease4() {
 	return stick.getRawButtonReleased(4);
-}
-//??
+	}
+	//??
 	public boolean getButtonPress5() {
 		return stick.getRawButtonPressed(5);
-}
+	}
 	public boolean getButtonRelease5() {
 		return stick.getRawButtonReleased(5);
-}
-//?
+	}
+	//?
 	public boolean getButtonPress6() {
 		return stick.getRawButtonPressed(6);
-}
+	}
 	public boolean getButtonRelease6() {
 		return stick.getRawButtonReleased(6);
-}
-//Reverse Direction
+	}
+	//Reverse Direction
 	public boolean getButtonPress7() {
 		return stick.getRawButtonPressed(7);
-}
+	}
 
 	public boolean getButtonRelease7() {
 		return stick.getRawButtonReleased(7);
-}
-//free
+	}
+	//free
 	public boolean getButtonPress10() {
 		return stick.getRawButtonPressed(10);
-}
+	}
 
 	public boolean getButtonRelease10() {
 		return stick.getRawButtonReleased(10);
-}
-//Elevators extend
-	public boolean getButtonElevatorExtend() {
-		return stick.getRawButton(8);
-}
+	}
+	//Elevators extend
+	public boolean getButtonPressElevatorExtend() {
+		return stick.getRawButtonPressed(8);
+	}
 
 	public boolean getReleaseElevatorExtend() {
 		return stick.getRawButtonReleased(8);
-}
-//Elevators retract
-	public boolean getButtonElevatorRetract() {
+	}
+	//Elevators retract
+	public boolean getButtonPressElevatorRetract() {
 		return stick.getRawButtonPressed(11);
-}
+	}
 
 	public boolean getReleaseElevatorRetract() {
 		return stick.getRawButtonReleased(11);
-}
-//VICTORY
+	}
+	//VICTORY
 	public boolean getButtonPress12() {
 		return stick.getRawButtonPressed(12);
-}
+	}
 	public boolean getButtonRelease12() {
 		return stick.getRawButtonReleased(12);
 	}
-/** 
-* Xbox Controller Buttons
-*/
-// low rocket bobcat position
+	/** 
+	* Xbox Controller Buttons
+	*/
+	// low rocket bobcat position
 	public boolean getPressLowRocketPosition() {
 		return (xBox.getAButtonPressed());
-}
- 	public boolean getReleaseLowRocketPosition() {
+	}
+	public boolean getReleaseLowRocketPosition() {
 		return (xBox.getAButtonReleased());
-}
-// mid rocket bobcat position
+	}
+	// mid rocket bobcat position
 	public boolean getPressMidRocketPosition() {
 		return (xBox.getBButtonPressed());
-}
+	}
 	public boolean getReleaseMidRocketPosition() {
 		return (xBox.getBButtonReleased());
-}
-// high rocket bobcat position
+	}
+	// high rocket bobcat position
 	public boolean getPressHighRocketPosition() {
 		return (xBox.getYButtonPressed());
-}
+	}
 	public boolean getReleaseHighRocketPosition() {
 		return (xBox.getYButtonReleased());
-}
-// cargoship height (for ball) bobcat position
+	}
+	// cargoship height (for ball) bobcat position
 	public boolean getPressXButton() {
 		return (xBox.getXButtonPressed());
-}
+	}
 	public boolean getReleaseXButton() {
 		return (xBox.getXButtonReleased());
-}
-public boolean getShootCargo() {
-	return (xBox.getStartButton());
-}
-public boolean getReleaseShootCargo() {
-	return (xBox.getStartButtonReleased());
-}
+	}
+	public boolean getShootCargo() {
+		return (xBox.getBumper(Hand.kRight));
+	}
+	public boolean getReleaseShootCargo() {
+		return (xBox.getBumperReleased(Hand.kRight));
+	}
+
+	public boolean getStowBobcat() {
+		return xBox.getY(Hand.kRight)  > 0.75;
+	}
 
 /* Cargo Controls */
 	public boolean getPressStowCargo() {
-		return (xBox.getTriggerAxis(Hand.kLeft) > 0.5);
-}
-	public boolean getReleaseStowCargo() {
-		return (xBox.getTriggerAxis(Hand.kLeft) <= 0.75 && xBox.getTriggerAxis(Hand.kLeft) >= 0.25 );
-}
+		return (xBox.getPOV(0) == 0);
+	}
+	// public boolean getReleaseStowCargo() {
+	// 	return (xBox.getTriggerAxis(Hand.kLeft) <= 0.75 && xBox.getTriggerAxis(Hand.kLeft) >= 0.25 );
+	// }
 
 /* Wrist Controls */
 	public boolean getPressCargoWristDown() {
-		return (xBox.getTriggerAxis(Hand.kRight) > 0.5);
-}
-	public boolean getReleaseCargoWristDown() {
-		return (xBox.getTriggerAxis(Hand.kRight) < 0.75 && xBox.getTriggerAxis(Hand.kRight) > 0.25);
-}
+		return (xBox.getPOV(0) == 180);
+	}
+	// public boolean getReleaseCargoWristDown() {
+	// 	return (xBox.getTriggerAxis(Hand.kRight) < 0.75 && xBox.getTriggerAxis(Hand.kRight) > 0.25);
+	// }
 // Wrist Down
 	public boolean getButtonPressWristMid() {
-		return (xBox.getBumperPressed(Hand.kLeft));
-}
-	public boolean getButtonReleaseWristMid() {
-		return (xBox.getBumperReleased(Hand.kLeft));
-}
+		return (xBox.getPOV(0) == 270);
+	}
+	// public boolean getButtonReleaseWristMid() {
+	// 	return (xBox.getBumperReleased(Hand.kLeft));
+	// }
 // Wrist Up
 	public boolean getButtonPressWristUp() {
-		return (xBox.getBumperPressed(Hand.kRight));
-}
-	public boolean getButtonReleaseWristUp() {
-		return (xBox.getBumperReleased(Hand.kRight));
-}
+		return (xBox.getPOV(0) == 90);
+	}
+	// public boolean getButtonReleaseWristUp() {
+	// 	return (xBox.getBumperReleased(Hand.kRight));
+	// }
 	public boolean getCargoGrab(){
-		return (xBox.getStickButton(Hand.kRight));
+		return (xBox.getTriggerAxis(Hand.kRight) > 0.5);
 	}
 	public boolean leftStickPress(){
 		return (xBox.getStickButtonPressed(Hand.kLeft));

@@ -8,11 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Hatch;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,8 +20,9 @@ import frc.robot.subsystems.Hatch;
  */
 public class Robot extends TimedRobot {
   TeleopController teleopController = TeleopController.getInstance();
-  // DriverControls driverControls = DriverControls.getInstance();
-  Joystick _stick;
+  Vision _vision = Vision.getInstance();
+
+  DriverControls _controls = new DriverControls();
   
   Compressor comp;
 
@@ -32,7 +30,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     comp = new Compressor(Constants.kPcmCanId);
     comp.setClosedLoopControl(true);
-    _stick = new Joystick(0);
   }
 
   @Override
@@ -53,7 +50,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     teleopController.callStateMachines();
-    // teleopController.callDrive();
+    teleopController.callDrive();
+
+    // _vision.updateVision();
+    // SmartDashboard.putNumber("Vision Angle", _vision.getAngle());   
   }
 
   @Override

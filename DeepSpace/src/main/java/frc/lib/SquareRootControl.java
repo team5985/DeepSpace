@@ -73,7 +73,7 @@ public class SquareRootControl {
         lastTarget = target;
 
         if (forward) {
-            return Math.min(Math.min(vUp, vCoast), vDown); // Return lowest speed.
+            return Math.min(Math.min(vUp, vCoast), vDown); // Return lowest speed.e
         } else {
             return -Math.min(Math.min(vUp, vCoast), vDown); // Return lowest speed.
         }        

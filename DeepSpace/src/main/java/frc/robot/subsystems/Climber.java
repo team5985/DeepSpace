@@ -1,11 +1,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Calcs;
 import frc.robot.Constants;
 
@@ -19,10 +21,6 @@ import frc.robot.Constants;
  * - 1 Solenoid (plumbed to both mantis arm cylinders)
  */
 public class Climber extends Subsystem {
-
-	public boolean elevatorCompletedExtend = false;
-	public boolean elevatorCompletedRetract = true;
-
 	private Solenoid mantisSolenoid;
 
 	private WPI_TalonSRX elevator; //sensor
@@ -67,28 +65,43 @@ public class Climber extends Subsystem {
 	 */
 	public boolean actionMoveTo(double height) {
 		double pitch = imu.getPitch();  // Where positive is tipping back
-		double encoderBasedPower = height - getPosition() * Constants.kElevatorLiftDistGain;
+		double encoderBasedPower = (height - getPosition()) * Constants.kElevatorLiftDistGain;
 		double power = encoderBasedPower + (Constants.kElevatorTiltCompGain * pitch);  // Set the tilt compensation gain to 0 to remove software levelling
-		talonLeft.set(ControlMode.PercentOutput, power);
+		talonLeft.set(ControlMode.PercentOutput, -power);
+		talonRight.set(ControlMode.PercentOutput, power);
 
+		SmartDashboard.putNumber("Elevator Position", getPosition());
+		SmartDashboard.putNumber("Elevator Power", power);
 		return Calcs.isWithinThreshold(height, getPosition(), Constants.kElevatorHeightTolerance);
+	}
+
+	public void setMotors(double power) {
+		mantisLeft.set(power);
+		mantisRight.set(power);
+
+		SmartDashboard.putNumber("Mantis Wheels Power", power);
 	}
 
 	void configActuators() {
 		talonLeft = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
-		talonLeft.setInverted(Constants.kTalonElevatorDirection);  //TODO: check
+		talonLeft.configFactoryDefault();
+		talonLeft.setNeutralMode(NeutralMode.Coast);
+		talonLeft.setInverted(false);  //TODO: check
 
 		talonLeft.configOpenloopRamp(0.5);
-		talonLeft.configPeakCurrentLimit(0, 0);
-		talonLeft.configContinuousCurrentLimit(15, 0);
+		// talonLeft.configPeakCurrentLimit(0, 0);
+		// talonLeft.configContinuousCurrentLimit(20, 0);
 
-		talonLeft.configPeakOutputForward(Constants.kElevatorMaxOutput);
-        talonLeft.configPeakOutputReverse(Constants.kElevatorMaxOutput);
+		// talonLeft.configPeakOutputForward(Constants.kElevatorMaxOutput);
+        // talonLeft.configPeakOutputReverse(-Constants.kElevatorMaxOutput);
 
-		talonRight = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
-		talonRight.setInverted(Constants.kTalonElevatorDirection);  //TODO: check
-		talonRight.follow(talonLeft);
+		talonRight = new WPI_TalonSRX(Constants.kTalonElevatorSlaveCanId);
+		talonRight.configFactoryDefault();
+		talonRight.setNeutralMode(NeutralMode.Coast);
+		talonRight.setInverted(false);  //TODO: check
 
+		talonRight.configOpenloopRamp(0.5);
+		
 		mantisLeft = new VictorSP(Constants.kVictorMantisLeftPwmPort);
 		mantisLeft.setInverted(Constants.kVictorMantisDirection);  //TODO: check
 		
@@ -112,7 +125,7 @@ public class Climber extends Subsystem {
 
 	public boolean zeroPosition() {
 		setMantisPosition(false); //TODO: elevator
-
+		actionMoveTo(0.0);
 		return false;
 	}
 }
