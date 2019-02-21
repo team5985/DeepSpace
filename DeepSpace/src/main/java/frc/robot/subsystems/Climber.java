@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
@@ -67,8 +68,8 @@ public class Climber extends Subsystem {
 		double pitch = imu.getPitch();  // Where positive is tipping back
 		double encoderBasedPower = (height - getPosition()) * Constants.kElevatorLiftDistGain;
 		double power = encoderBasedPower + (Constants.kElevatorTiltCompGain * pitch);  // Set the tilt compensation gain to 0 to remove software levelling
-		talonLeft.set(ControlMode.PercentOutput, -power);
-		talonRight.set(ControlMode.PercentOutput, power);
+		talonLeft.set(ControlMode.PercentOutput, power);
+		talonRight.set(ControlMode.PercentOutput, -power);
 
 		SmartDashboard.putNumber("Elevator Position", getPosition());
 		SmartDashboard.putNumber("Elevator Power", power);
@@ -76,7 +77,7 @@ public class Climber extends Subsystem {
 	}
 
 	public void setMotors(double power) {
-		mantisLeft.set(power);
+		mantisLeft.set(-power);
 		mantisRight.set(power);
 
 		SmartDashboard.putNumber("Mantis Wheels Power", power);
@@ -111,7 +112,8 @@ public class Climber extends Subsystem {
 	}
 
 	void configSensors() {
-		elevator = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);   //same as talonleft (encoder plugged into left TalonSRX)
+		talonLeft.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+		talonLeft.setSensorPhase(false);
 		imu = Drive.getInstance().getImuInstance();
 	}
 
@@ -120,7 +122,7 @@ public class Climber extends Subsystem {
 	 * @return Height in metres.
 	 */
 	public double getPosition() {
-		return elevator.getSelectedSensorPosition() * Constants.kElevatorDistancePerPulse; //change values when robot built
+		return talonLeft.getSelectedSensorPosition() * Constants.kElevatorDistancePerPulse; //change values when robot built
 	}
 
 	public boolean zeroPosition() {

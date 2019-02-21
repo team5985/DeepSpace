@@ -95,9 +95,9 @@ public class Drive extends Subsystem {
 		double pitch = _imu.getPitch(); // returns -180 to 180 degress
 		double threshold = Constants.kDriveTipThreshold;
 		if (pitch > threshold) {
-			setMotors(Constants.kDriveTipCorrectionPower, Constants.kDriveTipCorrectionPower);
-		} else if (pitch < -threshold) {
 			setMotors(-Constants.kDriveTipCorrectionPower, -Constants.kDriveTipCorrectionPower);
+		} else if (pitch < -threshold) {
+			setMotors(Constants.kDriveTipCorrectionPower, Constants.kDriveTipCorrectionPower);
 		} else {
 			arcadeDrive(power, steering, throttle);  // Normal driving.
 		}

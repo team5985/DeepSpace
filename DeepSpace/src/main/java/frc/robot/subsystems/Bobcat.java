@@ -27,10 +27,12 @@ public class Bobcat extends Subsystem {
     private double lowAngleHatch = 10;
     private double midAngleHatch = 45;
     private double highAngleHatch = 90;
+
     private double lowAngleCargo = 10;
     private double midAngleCargo = 45;
     private double highAngleCargo = 90;
     private double cargoShipCargoAngle = 20;
+
     private double stowedAngle = 0;
     public static Bobcat bobcatInstance;
 
@@ -65,28 +67,28 @@ public class Bobcat extends Subsystem {
 
         switch(positions){
             case DOWN:
-                return setAngle(stowedAngle);
+                return setAngle(stowedAngle, false);
 
             case LOW_HATCH:
-                return setAngle(lowAngleHatch);
+                return setAngle(lowAngleHatch, true);
 
             case MID_HATCH:
-                return setAngle(midAngleHatch);
+                return setAngle(midAngleHatch, true);
 
             case HIGH_HATCH:
-                return setAngle(highAngleHatch);
+                return setAngle(highAngleHatch, true);
 
             case LOW_CARGO:
-                return setAngle(lowAngleCargo);
+                return setAngle(lowAngleCargo, true);
 
             case MID_CARGO:
-                return setAngle(midAngleCargo);
+                return setAngle(midAngleCargo, true);
 
             case HIGH_CARGO:
-                return setAngle(highAngleCargo);
+                return setAngle(highAngleCargo, true);
 
             case CARGOSHIP_BALL_POSITION:
-                return setAngle(cargoShipCargoAngle);
+                return setAngle(cargoShipCargoAngle, true);
 
             default:
                 return false;
@@ -96,16 +98,21 @@ public class Bobcat extends Subsystem {
     /**
      * Runs the square root controller to the desired angle.
      * @param desiredAngle In degrees, starting from bottom and increasing as the arm goes up.
+     * @param useHoldingFf Enables / disables the calculations for holding power. (see calculateHoldingFeedforward())
      * @return True if the arm is within a certain tolerance of the desired angle.
      */
-    public boolean setAngle(double desiredAngle){
+    public boolean setAngle(double desiredAngle, boolean useHoldingFf){
         // double velocity = jointMotorControl.run(getPosition(), desiredAngle);
         // double power = velocity / Constants.kBobcatJointMotorMaxSpeed;
 
         double power = (desiredAngle - getPosition()) * Constants.kBobcatJointPGain;
 
+        if (useHoldingFf) {
+            power += calculateHoldingFeedforward();
+        }
+
         if (power < 0) {
-            power = 0;
+            power = Constants.kBobcatJointMaxDownwardsOutput;
         }
         
         jointMotor.set(power);
@@ -119,12 +126,12 @@ public class Bobcat extends Subsystem {
      * Calculate the feedforward gain required to keep the arm level at steady state. Does not configure the Talon.
      * @return Units (-1:1)
      */
-    // private double calculateHoldingFeedforward() {
-    //     double horizDist = Constants.kBobcatPhysicalLength * Math.sin(Constants.kBobcatStowedPhysicalAngle + getPosition());
-    //     double gravityTorque = Constants.kBobcatPhysicalWeight * horizDist;
-    //     double feedforward = Constants.kBobcatJointMaxTorque / gravityTorque;
-    //     return feedforward;
-    // }
+    private double calculateHoldingFeedforward() {
+        double horizDist = Constants.kBobcatPhysicalLength * Math.sin(Math.toRadians(Constants.kBobcatStowedPhysicalAngle + getPosition()));
+        double gravityTorque = Constants.kBobcatPhysicalWeight * horizDist;
+        double feedforward = gravityTorque / Constants.kBobcatJointMaxTorque;
+        return feedforward;
+    }
 
     /**
      * Drives the arm downwards slowly until the hall effect sensor gets triggered.
@@ -147,10 +154,10 @@ public class Bobcat extends Subsystem {
         // jointMotor.configFactoryDefault();
         jointMotor.setInverted(Constants.kBobcatJointDirection);  //TODO: check
         
-        jointMotor.setSmartCurrentLimit(30);
+        jointMotor.setSmartCurrentLimit(40);
         // jointMotor.enableCurrentLimit(false);
 
-        jointMotor.setRampRate(Constants.kBobcatJointRampRate);
+        jointMotor.setOpenLoopRampRate(Constants.kBobcatJointRampRate);
         // jointMotor.configOpenloopRamp(Constants.kBobcatJointRampRate);
         // jointMotor.configPeakOutputForward(Constants.kBobcatJointMaxOutput);
         // jointMotor.configPeakOutputReverse(0.0);

@@ -347,6 +347,8 @@ Timer gameTimer = new Timer();
         } else if (_controls.getButtonPressElevatorRetract() && climberState == ElevatorStates.TRANSITION){
             climberState = ElevatorStates.RETRACT;
         }
+
+        SmartDashboard.putString("Climber State", climberState.name());
     }
 
     public void stEnd() {
@@ -362,7 +364,7 @@ Timer gameTimer = new Timer();
             if (cargoMode == true){
                 cargoMode = false;
                 cargoWristAngleState = CargoWristAngleStates.STOWED;
-            } else{
+            } else {
                 cargoMode = true;
                 hatchState = HatchStates.STOW_HATCH;
             }
@@ -411,7 +413,6 @@ Timer gameTimer = new Timer();
             }
 
             if (_controls.getShootCargo()){
-                hatchState = HatchStates.POP;
                 _cargo.setIntakeMode(IntakeModesCargo.SHOOT);
             } else if (_controls.getCargoGrab()){
                 _cargo.setIntakeMode(IntakeModesCargo.GRAB);
@@ -423,6 +424,7 @@ Timer gameTimer = new Timer();
         }
         else if (getGamePieceMode() == false) {  // Hatch handling mode
             cargoWristAngleState = CargoWristAngleStates.STOWED;
+            _cargo.setIntakeMode(IntakeModesCargo.OFF);
 
             if (_controls.getPressLowRocketPosition()){
                 bobcatState = BobcatStates.LOW_HATCH;
