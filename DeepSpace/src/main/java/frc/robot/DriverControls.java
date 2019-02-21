@@ -72,7 +72,7 @@ public class DriverControls {
 	 * @return Y from -1 to 1.
 	 */
 	public double getDrivePower() {
-		return -stick.getY();
+		return Math.pow(-stick.getY(), Constants.kDriveSquaredInputsExponent);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class DriverControls {
 	 * @return X from -1 to 1.
 	 */
 	public double getDriveSteering() {
-		return stick.getX();
+		return Math.pow(stick.getX(), Constants.kDriveSquaredInputsExponent);
 	}
 
 	/**

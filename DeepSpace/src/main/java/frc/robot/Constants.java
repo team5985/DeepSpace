@@ -81,6 +81,8 @@ public static final int kTalonBobcatJointCanId = 7; //for raising and lowering h
     public static final double kDriveTipThreshold = 25.0;  // Degrees before activating tip protection
     public static final double kDriveTipCorrectionPower = 0.4;  // Amount of power to drive when running tip protection.
 
+	public static final double kDriveSquaredInputsExponent = 2;
+
     // Climber constants
     // public static final double kElevatorHoldingPower = 0.17;  // TODO: Check all of these
 	// public static final double kElevatorLiftFeedforward = 1.0;
