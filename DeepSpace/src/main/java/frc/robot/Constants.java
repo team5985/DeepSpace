@@ -13,9 +13,9 @@ public class Constants {
     public static final int kTalonElevatorMasterCanId = 5;   //Also elevator encoder
     public static final int kTalonElevatorSlaveCanId = 6;
     
-    public static final int kTalonCargoWristCanId = 4;
+    public static final int kTalonCargoWristCanId = 4;  // FIXME conflicting assignment with drive C4
     
-public static final int kTalonBobcatJointCanId = 7; //for raising and lowering hatch
+    public static final int kTalonBobcatJointCanId = 7; //for raising and lowering bobcat
 
     public static final int kPcmCanId = 61;
 
@@ -84,10 +84,8 @@ public static final int kTalonBobcatJointCanId = 7; //for raising and lowering h
 	public static final double kDriveSquaredInputsExponent = 2;
 
     // Climber constants
-    // public static final double kElevatorHoldingPower = 0.17;  // TODO: Check all of these
-	// public static final double kElevatorLiftFeedforward = 1.0;
-	public static final double kElevatorLiftDistGain = 10;  // TODO:
-	public static final double kElevatorTiltCompGain = 0.0;  // TODO: Motor controller units (-1:1) per degree  
+    public static final double kElevatorLiftDistGain = 20;  // TODO:
+	public static final double kElevatorTiltCompGain = 0.0;  // Motor controller units (-1:1) per degree  
     public static final double kElevatorHeightTolerance = 0.05;  // Metres
     public static final double kElevatorClimbHeight = 0.35;
 
