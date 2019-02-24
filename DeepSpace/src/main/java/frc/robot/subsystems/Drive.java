@@ -45,13 +45,23 @@ public class Drive extends Subsystem {
 	public static Drive driveInstance;
 
 	public boolean zeroPosition(){
+		_imu.zeroYaw();
+		
 		return false;
 	}
 
 	/**
-	 * returns z angle of Interial Measurement Unit
+	 * @deprecated
 	 */
 	public double getPosition(){
+		return 0.0;
+	}
+
+	/**
+	 * 
+	 * @return Gyro angle in degrees from -180 to 180.
+	 */
+	public double getGyroYaw() {
 		return _imu.getYaw();
 	}
 

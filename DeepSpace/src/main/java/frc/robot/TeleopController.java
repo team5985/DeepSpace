@@ -16,6 +16,7 @@ import frc.robot.subsystems.Hatch;
  */
 public class TeleopController {
     DriverControls _controls;
+    Vision _vision;
 
     CargoIntake _cargo;
     Drive _drive;
@@ -75,6 +76,7 @@ Timer gameTimer = new Timer();
 
     private TeleopController() {
         _controls = DriverControls.getInstance();
+        _vision = Vision.getInstance();
         
         _drive = Drive.getInstance();
         _cargo = CargoIntake.getInstance();
@@ -113,8 +115,8 @@ Timer gameTimer = new Timer();
                 break;
             case HAB:
                 stHab();
-                trTeleop();
                 trVictory();
+                trTeleop();
                 break;
             case VICTORY:
                 stVictory();
@@ -321,14 +323,25 @@ Timer gameTimer = new Timer();
         if (_controls.getPressSwitchDriveDirection()) {
             _drive.setReversed();
         }
-        if (robotState != States.HAB){
+        if ((robotState != States.HAB) || (robotState != States.VISION)){
             _drive.teleopDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
         }
     }
 
+    /**
+     * Runs the vision assist code for the driver. DOES NOT UPDATE VISION TARGETING VALUES
+     */
     public void stVision() {
         //I've got my i on you
+        double adjustment = _controls.getDriveSteering() * Constants.kVisionDriverAdjustmentGain;  // Adds a small amount to the target angle so the driver can adjust side to side
+        double targetAngle = _vision.getAngle() + adjustment;
 
+        double steering = Constants.kVisionServoingGain * Math.sqrt(Math.abs(targetAngle));
+        if (targetAngle < 0) {
+            steering *= -1;
+        }
+
+        _drive.teleopDrive(_controls.getDrivePower(), steering, _controls.getDriveThrottle());
     }
 
     public void stHab() {
@@ -385,6 +398,7 @@ Timer gameTimer = new Timer();
 
     public void stTeleop() {
         setGamePieceMode();
+        callDrive();
         
         if (getGamePieceMode() == true){  // Ball handling mode
             if(_controls.getButtonPressWristUp()){               //set buttons for 30 degrees down and up and mid
@@ -469,5 +483,12 @@ Timer gameTimer = new Timer();
         if (_controls.getStowBobcat()){
             bobcatState = BobcatStates.STOWED;
         }
+    }
+
+    /**
+     * Set all the mechanim's sensor readings to 0 (without moving anything)
+     */
+    public void resetAllSensors() {  // TODO: Add other mechanisms
+        _drive.zeroPosition();
     }
 }

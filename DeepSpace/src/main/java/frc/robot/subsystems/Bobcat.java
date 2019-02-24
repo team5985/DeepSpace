@@ -25,13 +25,13 @@ public class Bobcat extends Subsystem {
 
     //TODO: Test and change value below
     private double lowAngleHatch = 10;
-    private double midAngleHatch = 45;
+    private double midAngleHatch = 48;
     private double highAngleHatch = 90;
 
-    private double lowAngleCargo = 10;
-    private double midAngleCargo = 45;
+    private double lowAngleCargo = 18;
+    private double midAngleCargo = 60;
     private double highAngleCargo = 90;
-    private double cargoShipCargoAngle = 20;
+    private double cargoShipCargoAngle = 29;
 
     private double stowedAngle = 0;
     public static Bobcat bobcatInstance;

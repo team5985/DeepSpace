@@ -140,7 +140,11 @@ public class Constants {
     public static final double kBobcatJointRampRate = 0.125; // Seconds to full power
     public static final double kBobcatJointMaxOutput = 1.0;  // TODO
     public static final double kBobcatJointMaxDownwardsOutput = -0.2;
-    
+
+    // Vision constants
+    public static final double kVisionDriverAdjustmentGain = 20; // Proportional, scales the joystick steering command and adds to the vision tracking target TODO both of these
+	public static final double kVisionServoingGain = 0.1;  // Square root gain
+
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)
 	public static final double kVisionTargetSideNearAngle = 0;
 	public static final double kVisionTargetSideLeftAngle = 90;
@@ -149,5 +153,6 @@ public class Constants {
 	public static final double kVisionTargetRocketFarRightAngle = 151.25;
 	public static final double kVisionTargetRocketNearLeftAngle = 331.25;
     public static final double kVisionTargetRocketNearRightAngle = 28.75;
+	public static final double kVisionTargetLoadingStation = 180;
 	
 }

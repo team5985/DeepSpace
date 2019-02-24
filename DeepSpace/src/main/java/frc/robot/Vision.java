@@ -3,6 +3,8 @@ package frc.robot;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.ParseException;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -12,6 +14,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Vision {
 	public static Vision mVisionInstance;
+
+	SerialPort mxp;
+
+	double targetAngle;
+	double targetDistance;
+	boolean dataIsValid;
+	boolean jevoisError;
+
+	double[] fieldTargetAngles;
 
 	public static Vision getInstance() {
 		if (mVisionInstance == null) {
@@ -23,8 +34,13 @@ public class Vision {
 	private Vision() {
 		mxp = new SerialPort(115200, SerialPort.Port.kMXP);
 
+		targetAngle = 0.0;
+		targetDistance = 0.0;
+		dataIsValid = false;
+		jevoisError = true;
+
 		// Angles of the vision targets, organised into an array. Used for automatically selecting the target.
-		fieldTargetAngles = new double[7];
+		fieldTargetAngles = new double[8];
 		fieldTargetAngles[0] = Constants.kVisionTargetSideNearAngle;
 		fieldTargetAngles[1] = Constants.kVisionTargetSideLeftAngle;
 		fieldTargetAngles[2] = Constants.kVisionTargetSideRightAngle;
@@ -32,14 +48,8 @@ public class Vision {
 		fieldTargetAngles[4] = Constants.kVisionTargetRocketFarRightAngle;
 		fieldTargetAngles[5] = Constants.kVisionTargetRocketNearLeftAngle;
 		fieldTargetAngles[6] = Constants.kVisionTargetRocketNearLeftAngle;		
+		fieldTargetAngles[7] = Constants.kVisionTargetLoadingStation;
 	}
-
-	SerialPort mxp;
-
-	double targetAngle;
-	double targetDistance;
-
-	double[] fieldTargetAngles;
 
 	public enum VisionTarget {
 		SIDE_NEAR,
@@ -56,30 +66,32 @@ public class Vision {
 	 */
 	public void updateVision() {
 		String json = mxp.readString();
-		System.out.println(json);
+		// DriverStation.reportWarning(json, false);
 		try {
 			JsonObject data = Json.parse(json).asObject();
-			// System.out.println("Parsed! ");
+			// DriverStation.reportWarning("Parsed! ", false);
 			targetAngle = data.get("x").asDouble();
-			// System.out.println("X Value Parsed! ");
+			// DriverStation.reportWarning("X Value Parsed! ", false);
 			targetDistance = data.get("distance").asDouble();
+			dataIsValid = data.get("valid").asBoolean();
+			jevoisError = false;
 		} catch (ParseException invalidJson) {
-			System.out.println("Invalid Json!");
-		} catch (UnsupportedOperationException invalidNumber) {
-			System.out.println("JSON data not a number!");
+			DriverStation.reportWarning("JeVois: Invalid Json!", false);
+			jevoisError = true;
+		} catch (UnsupportedOperationException invalidValue) {
+			DriverStation.reportWarning("JeVois: JSON data has a bad value!", false);
+			jevoisError = true;
 		} catch (Exception e) {
-			System.out.println("Failed to parse JSON: " + e.getMessage());
+			DriverStation.reportWarning("Jevois: Failed to parse JSON: " + e.getMessage(), false);
+			jevoisError = true;
 		}
 
-		if (targetAngle >= 1000) {
-			System.out.println("No Object Detected");
-		} else if (targetAngle >= -500 && targetAngle <= 500) {
-			System.out.println("Object Detected at " + targetAngle);			
+		if (dataIsValid) {
+			DriverStation.reportWarning("Object Detected at " + targetAngle, false);
 		} else {
-			System.out.println("No Data Avaliable"); 
+			DriverStation.reportWarning("JeVois: No Object Detected", false);
 		}
 
-		System.out.println("X: " + targetAngle);
 		SmartDashboard.putNumber("X", targetAngle);
 	}
 
@@ -151,6 +163,20 @@ public class Vision {
 	 */
 	public double getDistance() {
 		return targetDistance;
+	}
+
+	/**
+	 * @return True if the camera is detecting a valid target.
+	 */
+	public boolean getDataIsValid() {
+		return dataIsValid;
+	}
+
+	/**
+	 * @return True if there is no data coming in from the JeVois
+	 */
+	public boolean getJeVoisError() {
+		return jevoisError;
 	}
 
 	/**

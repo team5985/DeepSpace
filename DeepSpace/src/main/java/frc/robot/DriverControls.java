@@ -91,6 +91,9 @@ public class DriverControls {
 		return (-stick.getThrottle() + 1) / 2;
 	}
 
+	/**
+	 * button 7
+	 */
 	public boolean getPressSwitchDriveDirection() {
 		return stick.getRawButtonPressed(7);
 	}
