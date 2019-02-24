@@ -135,11 +135,9 @@ public class CargoIntake extends Subsystem {
         
         wristMotor.set(ControlMode.PercentOutput, power);
 
-        SmartDashboard.setDefaultNumber("CargoIntake K Gain", 0.0);
-        wristMotorControl.configK(SmartDashboard.getNumber("CargoIntake K Gain", 0.0));
         // SmartDashboard.putNumber("CargoIntake Velocity", velocity);
         SmartDashboard.putNumber("CargoIntake Encoder", getPosition());
-        SmartDashboard.putNumber("CargoIntake Set Angle", angle);        
+        SmartDashboard.putNumber("CargoIntake Set Angle", angle);
         SmartDashboard.putNumber("CargoIntake Power", power);
 
         return Calcs.isWithinThreshold(getPosition(), angle, Constants.kCargoWristAngleTolerance);

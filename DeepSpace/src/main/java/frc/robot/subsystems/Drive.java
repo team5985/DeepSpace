@@ -49,6 +49,7 @@ public class Drive extends Subsystem {
 	/**
 	 * @deprecated
 	 */
+	@Deprecated
 	public double getPosition(){
 		return 0.0;
 	}

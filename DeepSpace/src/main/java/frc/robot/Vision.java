@@ -70,10 +70,14 @@ public class Vision {
 		try {
 			JsonObject data = Json.parse(json).asObject();
 			// DriverStation.reportWarning("Parsed! ", false);
-			targetAngle = data.get("x").asDouble();
-			// DriverStation.reportWarning("X Value Parsed! ", false);
-			targetDistance = data.get("distance").asDouble();
+			
 			dataIsValid = data.get("valid").asBoolean();
+			if (dataIsValid) {
+				targetAngle = data.get("x").asDouble();
+				// DriverStation.reportWarning("X Value Parsed! ", false);
+				targetDistance = data.get("distance").asDouble();
+			}
+			
 			jevoisError = false;
 		} catch (ParseException invalidJson) {
 			DriverStation.reportWarning("JeVois: Invalid Json!", false);

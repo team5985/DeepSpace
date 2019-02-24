@@ -256,23 +256,29 @@ class PythonSandboxDisplay:
             for target in targetOrientations:
                 print("Target: " + str(target))
                 if targetOrientations[idx][0] == "r" and targetOrientations[idx+1][0] == "l":
-                    targetPairs.append(((targetOrientations[idx][1] + targetOrientations[idx+1][1]) / 2) - 160)  # Add the average of the target pairs' position to list of targetPairs
+                    pairInfo = [((targetOrientations[idx][1] + targetOrientations[idx+1][1]) / 2) - 160, (targetOrientations[idx][2] + targetOrientations[idx+1][2]) / 2]
+                    targetPairs.append(pairInfo)  # Add the average of the target pairs' position to list of targetPairs
                 idx += 1
         except:
             pass
         
         if (len(targetPairs) == 0):  # if there are no legal pairs, send a no targets message (x=1000)
-            toSend = {"Contour": -1, "x": 1000}
+            toSend = {"contour": -1, "x": 0, "distance": 0, "valid": False}
             json_toSend = json.dumps(toSend)
             jevois.sendSerial(json_toSend)
         else:
             cv2.putText(outimg, str(targetOrientations), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
 
-            angleToTarget = min(targetPairs)  # Use the target pair closest to the middle of view.
+            angleToTarget = min(targetPairs[0])  # Use the target pair closest to the middle of view.
 
             kDegsPerPixel = 65 / 320  # Number of degrees per pixel, for simple conversion
-            angleToTarget = round(angleToTarget * kDegsPerPixel, 2)
-            toSend = {"Contour": i, "x": angleToTarget}
+            angleToTarget = angleToTarget * kDegsPerPixel, 2
+
+            kVertDegsPerPixel = 48.75 / 240
+            vertAngleToTarget = (-(y - 240) - 120) * kVertDegsPerPixel
+            distanceToTarget = round(0.63 / math.tan(math.radians(vertAngleToTarget)), 2)
+
+            toSend = {"contour": i, "x": angleToTarget[0], "distance": distanceToTarget, "valid": True}  # Send target data
             json_toSend = json.dumps(toSend)
             jevois.sendSerial(json_toSend)
             

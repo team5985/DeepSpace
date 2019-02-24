@@ -263,9 +263,4 @@ public class DriverControls {
 	public boolean leftStickPress(){
 		return (xBox.getStickButtonPressed(Hand.kLeft));
 	}
-
-	
-
-	//TODO: add two buttons for 30 degrees down and up for cargo intake angles and mid
-
 }

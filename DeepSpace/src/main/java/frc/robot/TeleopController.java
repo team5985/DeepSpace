@@ -296,7 +296,7 @@ Timer gameTimer = new Timer();
 
     //tr for transition
     private void trVision() {
-        if(_controls.getThumbPress() == true) {
+        if((_controls.getThumbPress() == true) && (_vision.getDataIsValid())) {
             robotState = States.VISION;
         }
     }
@@ -334,7 +334,13 @@ Timer gameTimer = new Timer();
     public void stVision() {
         //I've got my i on you
         double adjustment = _controls.getDriveSteering() * Constants.kVisionDriverAdjustmentGain;  // Adds a small amount to the target angle so the driver can adjust side to side
-        double targetAngle = _vision.getAngle() + adjustment;
+        double targetAngle = 0.0;
+        if (_vision.getDataIsValid()) {
+            _vision.getAngle();
+        } else {
+            targetAngle = 0.0;
+        }
+        targetAngle += adjustment;
 
         double steering = Constants.kVisionServoingGain * Math.sqrt(Math.abs(targetAngle));
         if (targetAngle < 0) {

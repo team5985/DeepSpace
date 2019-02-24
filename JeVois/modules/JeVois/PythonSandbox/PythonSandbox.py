@@ -264,7 +264,7 @@ class PythonSandbox:
             pass
         
         if (len(targetPairs) == 0):  # if there are no legal pairs, send a no targets message (x=1000)
-            toSend = {"Contour": -1, "x": 1000}
+            toSend = {"contour": -1, "x": 0, "distance": 0, "valid": False}
             json_toSend = json.dumps(toSend)
             jevois.sendSerial(json_toSend)
         else:
@@ -279,7 +279,7 @@ class PythonSandbox:
             vertAngleToTarget = (-(y - 240) - 120) * kVertDegsPerPixel
             distanceToTarget = round(0.63 / math.tan(math.radians(vertAngleToTarget)), 2)
 
-            toSend = {"Contour": i, "x": angleToTarget[0], "distance": distanceToTarget}
+            toSend = {"contour": i, "x": angleToTarget[0], "distance": distanceToTarget, "valid": True}  # Send target data
             json_toSend = json.dumps(toSend)
             jevois.sendSerial(json_toSend)
             
