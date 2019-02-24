@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Calcs;
-import frc.lib.SquareRootControl;
 import frc.robot.Constants;
 
 public class CargoIntake extends Subsystem {
@@ -18,8 +17,7 @@ public class CargoIntake extends Subsystem {
     private VictorSP rightIntakeMotor;
     private DigitalInput hallEffect;
 
-    private double feedBack = 0;
-    public SquareRootControl wristMotorControl;
+    private double feedBack = 0; // 4096 cpr
     private double stowedAngle = 0;
     private double highAngle = 60;
     private double midAngle = 90;
@@ -51,7 +49,6 @@ public class CargoIntake extends Subsystem {
     }
 
     private CargoIntake(){
-        wristMotorControl = new SquareRootControl(Constants.kCargoWristMaxAccelerationDegrees, Constants.kCargoWristMaxSpeed, Constants.kCargoWristGain); 
         configActuators();
         configSensors();  
     }

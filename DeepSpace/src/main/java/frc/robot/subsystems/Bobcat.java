@@ -11,14 +11,12 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Calcs;
-import frc.lib.SquareRootControl;
 import frc.robot.Constants;
 import frc.robot.DriverControls;
 
 public class Bobcat extends Subsystem {
     boolean hatchCollected = false;
     DriverControls driverControls = new DriverControls();
-    private SquareRootControl jointMotorControl;
     private CANSparkMax jointMotor;
     private Encoder jointEncoder;
     private DigitalInput hallEffect;
@@ -44,7 +42,6 @@ public class Bobcat extends Subsystem {
     }
 
     private Bobcat(){
-        jointMotorControl = new SquareRootControl(Constants.kBobcatJointMotorMaxAccelerationDegrees, Constants.kBobcatJointMotorMaxSpeed, Constants.kBobcatJointMotorGain); 
         configActuators();
         configSensors();  
     }

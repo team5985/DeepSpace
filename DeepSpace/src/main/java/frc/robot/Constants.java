@@ -60,20 +60,15 @@ public class Constants {
 
 	public static final boolean kLeftDriveMotorPhase = false; // false = not inverted, true = inverted
 
-    public static double kDriveMaxRotationalAccel = 0.0;  // TODO: Test this
-    public static double kDriveMaxRotationalVel = 0.0;
-    public static double kDriveGyroTurnKf = 1 / kDriveMaxRotationalVel;  // Feedforward for power / turn rate
-    public static double kDriveGyroTurnKp = 0.0;  // Compensation for error
-    public static double kDriveGyroTurnGain = 1.0;  //TODO: K gain for square root controller.
+    public static double kDriveGyroTurnK = 0.06;  // Square root gain for turning on the spot TODO: Check this
     public static double kDriveGyroTurnThresh = 3.0;  // In degrees.
     public static double kDriveGyroRateThresh = 3.0;  // In deg/s.
     
-	public static final double kDrivePowerKf = 1 / 3.6;
-    public static final double kPGainGyroDriveTurn = 0.008;  // In % per degree (Not square root controller!: proportional gain)  TODO: Test
+    public static final double kDriveSensorDriveTurnKp = 0.03;  // In % per degree (Not square root controller!: proportional gain)  TODO: Test
     
 	public static final double kDriveMaxDriveAccel = 3.29;  // m/s/s
 	public static final double kDriveMaxDriveVel = 3.29;  // m/s
-	public static final double kDriveEncoderDriveGain = 1.0;  // TODO: Used in square root controller
+	public static final double kDriveEncoderDrivePGain = 1.0;  // TODO: Proportional gain for drive speed to distance
 
     public static double kDriveWheelDiameter = 6.0;
     public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kCuiEncoderCpr;  // Metres per pulse
@@ -120,17 +115,17 @@ public class Constants {
     public static final boolean kVictorCargoIntakeDirection = false;
 
     // Bobcat Constants
-    public static final double kBobcatJointMotorMaxAccelerationDegrees = 300;       // do calculations, placeholders (double max speed (not true value))
-    public static final double kBobcatJointMotorMaxSpeed = 169.2;  //different degree number to cargo + gearing
-    public static final double kBobcatJointMotorGain = 1.0;  // Square root controller gain TODO: placeholder
-    public static final double kBobcatJointKv = 1 / 169.2;  // deg/s^-1
+    // public static final double kBobcatJointMotorMaxAccelerationDegrees = 300;       // do calculations, placeholders (double max speed (not true value))
+    // public static final double kBobcatJointMotorMaxSpeed = 169.2;  //different degree number to cargo + gearing
+    // public static final double kBobcatJointMotorGain = 1.0;  // Square root controller gain TODO: placeholder
+    // public static final double kBobcatJointKv = 1 / 169.2;  // deg/s^-1
 
     public static final double kBobcatPhysicalLength = 1.0414;  // m
 	public static final double kBobcatStowedPhysicalAngle = 0;  // deg
 	public static final double kBobcatPhysicalWeight = 75;  // Newtons
 	public static final double kBobcatJointMaxTorque = 520;  // Nm
     
-    public static final double kBobcatJointPGain = 0.07;
+    public static final double kBobcatJointPGain = 0.06;
     
     public static final double kBobcatJointAngleTolerance = 2;  // +/- Degrees
 
@@ -143,7 +138,7 @@ public class Constants {
 
     // Vision constants
     public static final double kVisionDriverAdjustmentGain = 20; // Proportional, scales the joystick steering command and adds to the vision tracking target TODO both of these
-	public static final double kVisionServoingGain = 0.1;  // Square root gain
+	public static final double kVisionServoingGain = 0.06;  // Square root gain
 
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)
 	public static final double kVisionTargetSideNearAngle = 0;
