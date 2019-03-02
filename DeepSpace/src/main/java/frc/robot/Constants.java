@@ -13,7 +13,7 @@ public class Constants {
     public static final int kTalonElevatorMasterCanId = 5;   //Also elevator encoder
     public static final int kTalonElevatorSlaveCanId = 6;
     
-    public static final int kTalonCargoWristCanId = 4;  // FIXME conflicting assignment with drive C4
+    public static final int kTalonCargoWristCanId = 8;  // FIXME conflicting assignment with drive C4
     
     public static final int kTalonBobcatJointCanId = 7; //for raising and lowering bobcat
 
@@ -38,10 +38,10 @@ public class Constants {
     public static final int kVictorMantisLeftPwmPort = 3;
 
     // PCM Solenoid Ports
-    public static final int kHatchPopperForwardPcmPort = 0;
-    public static final int kHatchPopperReversePcmPort = 1;
+    public static final int kHatchPopperForwardPcmPort = 4;  // FIXME 0, 1 for comp robot
+    public static final int kHatchPopperReversePcmPort = 5;
     public static final int kSolenoidMantisChannel = 3;
-    public static final int kBeakPlusCargoSolenoidChannel = 4;
+    public static final int kBeakPlusCargoSolenoidChannel = 6;
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
@@ -76,7 +76,8 @@ public class Constants {
     public static final double kDriveTipThreshold = 25.0;  // Degrees before activating tip protection
     public static final double kDriveTipCorrectionPower = 0.4;  // Amount of power to drive when running tip protection.
 
-	public static final double kDriveSquaredInputsExponent = 2;
+    public static double kDriveSquaredSteeringInputsExponent = 2.0;
+    public static double kDriveSquaredPowerInputsExponent = 2.0;
 
     // Climber constants
     public static final double kElevatorLiftDistGain = 20;  // TODO:
@@ -87,7 +88,7 @@ public class Constants {
     public static final double kElevatorSpoolDiam = 0.0191;  // In Metres!
     public static final double kElevatorDistancePerPulse = (Math.PI * Constants.kElevatorSpoolDiam) / Constants.kCuiEncoderCpr;  // Metres per pulse
 
-	public static final double kElevatorMaxOutput = 1.0; // TODO
+	// public static final double kElevatorMaxOutput = 0.0;
     public static final boolean kTalonElevatorDirection = false;
 	public static final boolean kVictorMantisDirection = false;
 
@@ -103,13 +104,15 @@ public class Constants {
 	public static final boolean kWristMotorDirection = false;
     public static final boolean kTalonCargoIntakeEncoderPhase = true; //TODO: Check
 
-    public static final double kIntakePhysicalLength = 0.381; // Metres
+    public static final double kIntakePhysicalLength = 0.270; // Metres
 	public static final double kIntakeStowedPhysicalAngle = 0.0; // Degrees
-	public static final double kIntakePhysicalWeight = 39.24; // N
-	public static final double kIntakeWristMaxTorque = 43.0; // Nm
-	public static final double kWristPGain = 0.02;
+	public static final double kIntakePhysicalWeight = 32.0; // N
+    public static final double kIntakeWristMaxTorque = 43.0; // Nm
+    
+	public static final double kWristPGain = 0.015;
 
-    public static double kWristMaxOutput = 0.4;  //TODO
+    public static double kWristMaxUpOutput = 0.4;  //TODO
+    public static double kWristMaxDownOutput = 0.15;
 
     // Cargo Intake Constants
     public static final boolean kVictorCargoIntakeDirection = false;
@@ -125,7 +128,7 @@ public class Constants {
 	public static final double kBobcatPhysicalWeight = 75;  // Newtons
 	public static final double kBobcatJointMaxTorque = 520;  // Nm
     
-    public static final double kBobcatJointPGain = 0.06;
+    public static final double kBobcatJointPGain = 0.025;
     
     public static final double kBobcatJointAngleTolerance = 2;  // +/- Degrees
 
@@ -133,8 +136,8 @@ public class Constants {
     public static final boolean kBobcatJointEncoderPhase = true; //TODO: check     for bobcat raising and lowering
     
     public static final double kBobcatJointRampRate = 0.125; // Seconds to full power
-    public static final double kBobcatJointMaxOutput = 1.0;  // TODO
-    public static final double kBobcatJointMaxDownwardsOutput = -0.2;
+    public static final double kBobcatJointMaxOutput = 0.8;  // TODO
+    public static final double kBobcatJointMaxDownwardsOutput = -0.25;
 
     // Vision constants
     public static final double kVisionDriverAdjustmentGain = 20; // Proportional, scales the joystick steering command and adds to the vision tracking target TODO both of these

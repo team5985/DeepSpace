@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class receives raw joystick and Xbox input and contains methods for TeleopController to get.
@@ -27,6 +28,9 @@ public class DriverControls {
     public DriverControls() {
 		stick = new Joystick(Constants.kJoystickPort);
 		xBox = new XboxController(Constants.kXboxPort);
+
+		SmartDashboard.setDefaultNumber("Power Gain", 2.0);
+		SmartDashboard.setDefaultNumber("Steering Gain", 2.0);
     }
 
     /**
@@ -72,7 +76,9 @@ public class DriverControls {
 	 * @return Y from -1 to 1.
 	 */
 	public double getDrivePower() {
-		return Math.pow(-stick.getY(), Constants.kDriveSquaredInputsExponent);
+		double power = -stick.getY();
+		Constants.kDriveSquaredPowerInputsExponent = SmartDashboard.getNumber("Power Gain", 2.0);
+		return Math.pow(power, Constants.kDriveSquaredPowerInputsExponent) * Math.signum(power);
 	}
 
 	/**
@@ -80,7 +86,9 @@ public class DriverControls {
 	 * @return X from -1 to 1.
 	 */
 	public double getDriveSteering() {
-		return Math.pow(stick.getX(), Constants.kDriveSquaredInputsExponent);
+		double steering = stick.getX();
+		Constants.kDriveSquaredSteeringInputsExponent = SmartDashboard.getNumber("Steering Gain", 2.0);
+		return Math.pow(steering, Constants.kDriveSquaredSteeringInputsExponent) * Math.signum(steering);
 	}
 
 	/**
@@ -98,7 +106,7 @@ public class DriverControls {
 		return stick.getRawButtonPressed(7);
 	}
 	
-//Trigger
+	//Trigger
 	public boolean getTrigger() {
 		return stick.getRawButton(1);
 	}
@@ -108,23 +116,26 @@ public class DriverControls {
 	public boolean getTriggerRelease() {
 		return stick.getTriggerReleased();
 	}
-//Thumb Button
+
+	//Thumb Button
 	public boolean getThumbPress() {
 		return stick.getRawButtonPressed(2);
 	}
 	public boolean getThumbRelease() {
 		return stick.getRawButtonReleased(2);
 	}
-//Hatch Mode
+
+	//Hatch Mode
 	public boolean getPressHatchMode() {
 		 return stick.getRawButtonPressed(3);
-}
+	}
 	public boolean getButtonRelease3() {
 		return stick.getRawButtonReleased(3);
-}
-//Ball Mode
+	}
+
+	//Ball Mode
 	public boolean getPressBallMode() {
-		return stick.getRawButtonPressed(4);
+		return stick.getRawButtonPressed(4) || getCargoGrab();
 	}
 	public boolean getChangeGamePieceMode(){ //xbox
 		return xBox.getBackButtonPressed();
@@ -163,23 +174,44 @@ public class DriverControls {
 	public boolean getButtonRelease10() {
 		return stick.getRawButtonReleased(10);
 	}
-	//Elevators extend
-	public boolean getButtonPressElevatorExtend() {
+
+	// Syncronised (semi-auto) climb TODO: Full auto climb
+	public boolean getButtonPressSyncClimb() {
 		return stick.getRawButtonPressed(8);
 	}
 
-	public boolean getReleaseElevatorExtend() {
+	public boolean getButtonReleaseSyncClimb() {
 		return stick.getRawButtonReleased(8);
 	}
-	//Elevators retract
-	public boolean getButtonPressElevatorRetract() {
+
+	//Elevators extend
+	public boolean getButtonPressElevatorExtend() {
 		return stick.getRawButtonPressed(11);
 	}
 
-	public boolean getReleaseElevatorRetract() {
+	public boolean getReleaseElevatorExtend() {
 		return stick.getRawButtonReleased(11);
 	}
-	//VICTORY
+
+	//Elevators retract
+	public boolean getButtonPressElevatorRetract() {
+		return stick.getRawButtonPressed(12);
+	}
+
+	public boolean getReleaseElevatorRetract() {
+		return stick.getRawButtonReleased(12);
+	}
+		
+	// Mantis Arms
+	public boolean getButtonPressMantisExtend() {
+		return stick.getRawButtonPressed(9);
+	}
+
+	public boolean getButtonPressMantisRetract() {
+		return stick.getRawButtonPressed(10);
+	}
+
+	
 	public boolean getButtonPress12() {
 		return stick.getRawButtonPressed(12);
 	}
@@ -212,13 +244,13 @@ public class DriverControls {
 	}
 	// cargoship height (for ball) bobcat position
 	public boolean getPressXButton() {
-		return (xBox.getXButtonPressed());
+		return (xBox.getXButtonPressed() || getThumbPress());
 	}
 	public boolean getReleaseXButton() {
-		return (xBox.getXButtonReleased());
+		return (xBox.getXButtonReleased() || getThumbRelease());
 	}
 	public boolean getShootCargo() {
-		return (xBox.getBumper(Hand.kRight));
+		return (xBox.getBumper(Hand.kRight) || stick.getTrigger());
 	}
 	public boolean getReleaseShootCargo() {
 		return (xBox.getBumperReleased(Hand.kRight));

@@ -162,8 +162,8 @@ public class CargoIntake extends Subsystem {
         wristMotor.configPeakCurrentLimit(0, 0);
         wristMotor.configContinuousCurrentLimit(30, 0);
 
-        wristMotor.configPeakOutputForward(Constants.kWristMaxOutput);
-        wristMotor.configPeakOutputReverse(-Constants.kWristMaxOutput);
+        wristMotor.configPeakOutputForward(Constants.kWristMaxDownOutput);
+        wristMotor.configPeakOutputReverse(-Constants.kWristMaxUpOutput);
 
         leftIntakeMotor = new VictorSP(Constants.kVictorCargoIntakeLeftPwmPort);
         leftIntakeMotor.setInverted(Constants.kVictorCargoIntakeDirection);
