@@ -2,7 +2,9 @@ package frc.lib;
 
 /**
  * Simple feedback controller that accelerates, coasts, and decelerates.
+ * <b>Doesn't work, don't use.</b>
  */
+@Deprecated
 public class SquareRootControl {
     private double _maxAccel;
     private double _maxSpeed;

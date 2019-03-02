@@ -16,6 +16,7 @@ import frc.robot.subsystems.Hatch;
  */
 public class TeleopController {
     DriverControls _controls;
+    // Vision _vision;
 
     CargoIntake _cargo;
     Drive _drive;
@@ -75,6 +76,7 @@ Timer gameTimer = new Timer();
 
     private TeleopController() {
         _controls = DriverControls.getInstance();
+        // _vision = Vision.getInstance();
         
         _drive = Drive.getInstance();
         _cargo = CargoIntake.getInstance();
@@ -103,6 +105,7 @@ Timer gameTimer = new Timer();
     public void stateMachine() {
         switch (robotState) {
             case TELEOP:
+                trVictory();
                 trVision();
                 stTeleop();
                 trHab();
@@ -113,11 +116,12 @@ Timer gameTimer = new Timer();
                 break;
             case HAB:
                 stHab();
-                trTeleop();
                 trVictory();
+                trTeleop();
                 break;
             case VICTORY:
                 stVictory();
+                trTeleop();
                 break;
             default:
                 break;
@@ -281,7 +285,7 @@ Timer gameTimer = new Timer();
      */
     private void climberTransferState() {
         _climb.setMantisPosition(false);
-        _climb.actionMoveTo(0.0);
+        _climb.actionMoveTo(Constants.kElevatorClimbHeight);
     }
 
     /**
@@ -294,26 +298,26 @@ Timer gameTimer = new Timer();
 
     //tr for transition
     private void trVision() {
-        if(_controls.getThumbPress() == true) {
-            robotState = States.VISION;
-        }
+        // if((_controls.getThumbPress() == true) && (_vision.getDataIsValid())) {
+        //     robotState = States.VISION;
+        // }
     }
     private void trHab() {
-        if((_controls.getButtonPressElevatorExtend())){
+        if((_controls.getButtonPressSyncClimb())){
             robotState = States.HAB;
         }
     }
 
     private void trTeleop() {
-        if (_controls.getThumbPress()) {
+        if (_controls.getPressHatchMode() || _controls.getPressBallMode()) { // FIXME
             robotState = States.TELEOP;
         }
     }
     
     public void trVictory() {
-        // if(_controls.getButtonPress12()) {
-            //why
-        // }
+        if(_controls.getButtonPress6()) {
+            robotState = States.VICTORY;
+        }
     }
 
     //States
@@ -321,14 +325,33 @@ Timer gameTimer = new Timer();
         if (_controls.getPressSwitchDriveDirection()) {
             _drive.setReversed();
         }
-        if (robotState != States.HAB){
+        if ((robotState != States.HAB) || (robotState != States.VISION)){
             _drive.teleopDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
         }
     }
 
+    /**
+     * Runs the vision assist code for the driver. DOES NOT UPDATE VISION TARGETING VALUES
+     */
     public void stVision() {
         //I've got my i on you
+        /** temporary removal
+        double adjustment = _controls.getDriveSteering() * Constants.kVisionDriverAdjustmentGain;  // Adds a small amount to the target angle so the driver can adjust side to side
+        double targetAngle = 0.0;
+        if (_vision.getDataIsValid()) {
+            _vision.getAngle();
+        } else {
+            targetAngle = 0.0;
+        }
+        targetAngle += adjustment;
 
+        double steering = Constants.kVisionServoingGain * Math.sqrt(Math.abs(targetAngle));
+        if (targetAngle < 0) {
+            steering *= -1;
+        }
+
+        _drive.teleopDrive(_controls.getDrivePower(), steering, _controls.getDriveThrottle());
+        */
     }
 
     public void stHab() {
@@ -338,15 +361,18 @@ Timer gameTimer = new Timer();
         _climb.setMotors(_controls.getDrivePower());
         _drive.teleopDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
         
-        if (_controls.getReleaseElevatorExtend()) {
+        if (_controls.getButtonReleaseSyncClimb()) {
             climberState = ElevatorStates.RISE;
 
-        } else if (_controls.getButtonPressElevatorRetract() && climberState == ElevatorStates.RISE){
+        } else if (_controls.getButtonPressMantisRetract() && climberState == ElevatorStates.RISE){
             climberState = ElevatorStates.TRANSITION;
 
-        } else if (_controls.getButtonPressElevatorRetract() && climberState == ElevatorStates.TRANSITION){
+        }
+        if (_controls.getButtonPressElevatorRetract() && climberState == ElevatorStates.TRANSITION){
             climberState = ElevatorStates.RETRACT;
         }
+
+        SmartDashboard.putString("Climber State", climberState.name());
     }
 
     public void stEnd() {
@@ -355,6 +381,7 @@ Timer gameTimer = new Timer();
 
     public void stVictory() {
         //AND THAT'S A WIN FOR TEAM 5985!!!!!!!!!!!!!!!!!!!!!
+        _drive.setMotors(1.0, -1.0);
     }
 
     public void setGamePieceMode() {
@@ -362,7 +389,7 @@ Timer gameTimer = new Timer();
             if (cargoMode == true){
                 cargoMode = false;
                 cargoWristAngleState = CargoWristAngleStates.STOWED;
-            } else{
+            } else {
                 cargoMode = true;
                 hatchState = HatchStates.STOW_HATCH;
             }
@@ -383,6 +410,7 @@ Timer gameTimer = new Timer();
 
     public void stTeleop() {
         setGamePieceMode();
+        callDrive();
         
         if (getGamePieceMode() == true){  // Ball handling mode
             if(_controls.getButtonPressWristUp()){               //set buttons for 30 degrees down and up and mid
@@ -411,7 +439,6 @@ Timer gameTimer = new Timer();
             }
 
             if (_controls.getShootCargo()){
-                hatchState = HatchStates.POP;
                 _cargo.setIntakeMode(IntakeModesCargo.SHOOT);
             } else if (_controls.getCargoGrab()){
                 _cargo.setIntakeMode(IntakeModesCargo.GRAB);
@@ -423,6 +450,7 @@ Timer gameTimer = new Timer();
         }
         else if (getGamePieceMode() == false) {  // Hatch handling mode
             cargoWristAngleState = CargoWristAngleStates.STOWED;
+            _cargo.setIntakeMode(IntakeModesCargo.OFF);
 
             if (_controls.getPressLowRocketPosition()){
                 bobcatState = BobcatStates.LOW_HATCH;
@@ -467,5 +495,12 @@ Timer gameTimer = new Timer();
         if (_controls.getStowBobcat()){
             bobcatState = BobcatStates.STOWED;
         }
+    }
+
+    /**
+     * Set all the mechanim's sensor readings to 0 (without moving anything)
+     */
+    public void resetAllSensors() {  // TODO: Add other mechanisms
+        _drive.zeroPosition();
     }
 }

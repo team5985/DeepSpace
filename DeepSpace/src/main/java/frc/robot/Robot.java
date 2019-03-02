@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
   TeleopController teleopController = TeleopController.getInstance();
-  Vision _vision = Vision.getInstance();
+  // Vision _vision = Vision.getInstance();
 
   DriverControls _controls = new DriverControls();
   
@@ -30,17 +31,27 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     comp = new Compressor(Constants.kPcmCanId);
     comp.setClosedLoopControl(true);
+
+    CameraServer.getInstance().startAutomaticCapture();    
+  }
+
+  @Override
+  public void robotPeriodic() {
+    // _vision.updateVision();
+    // SmartDashboard.putBoolean("Target Lock", _vision.getDataIsValid());
+    // SmartDashboard.putNumber("Vision Angle", _vision.getAngle());
+
+    SmartDashboard.putBoolean("Game Piece Mode", teleopController.getGamePieceMode());  // True = ball mode
   }
 
   @Override
   public void autonomousInit() {
+    teleopController.resetAllSensors();
   }
 
   @Override
   public void autonomousPeriodic() {
-    // if (driverControls.getStickInterupt() == false){
-      
-    // }
+    teleopController.callStateMachines();
   }
 
   @Override
@@ -50,17 +61,5 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     teleopController.callStateMachines();
-    teleopController.callDrive();
-
-    // _vision.updateVision();
-    // SmartDashboard.putNumber("Vision Angle", _vision.getAngle());   
-  }
-
-  @Override
-  public void testInit() {
-  }
-
-  @Override
-  public void testPeriodic() {
   }
 }

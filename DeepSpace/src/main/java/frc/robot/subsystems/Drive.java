@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
-import frc.lib.SquareRootControl;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -39,19 +38,27 @@ public class Drive extends Subsystem {
 	double oldTime = 0;
 	double newTime = 0;
 
-	SquareRootControl gyroTurnController;
-	SquareRootControl driveController;
-
 	public static Drive driveInstance;
 
 	public boolean zeroPosition(){
+		_imu.zeroYaw();
+		
 		return false;
 	}
 
 	/**
-	 * returns z angle of Interial Measurement Unit
+	 * @deprecated
 	 */
+	@Deprecated
 	public double getPosition(){
+		return 0.0;
+	}
+
+	/**
+	 * 
+	 * @return Gyro angle in degrees from -180 to 180.
+	 */
+	public double getGyroYaw() {
 		return _imu.getYaw();
 	}
 
@@ -73,9 +80,6 @@ public class Drive extends Subsystem {
     private Drive() {
     	configActuators();
 		configSensors();
-		
-		gyroTurnController = new SquareRootControl(Constants.kDriveMaxRotationalAccel, Constants.kDriveMaxRotationalVel, Constants.kDriveGyroTurnGain);
-		driveController = new SquareRootControl(Constants.kDriveMaxDriveAccel, Constants.kDriveMaxDriveVel, Constants.kDriveEncoderDriveGain);
 	}
 
 	// Drive-Control
@@ -95,9 +99,9 @@ public class Drive extends Subsystem {
 		double pitch = _imu.getPitch(); // returns -180 to 180 degress
 		double threshold = Constants.kDriveTipThreshold;
 		if (pitch > threshold) {
-			setMotors(Constants.kDriveTipCorrectionPower, Constants.kDriveTipCorrectionPower);
-		} else if (pitch < -threshold) {
 			setMotors(-Constants.kDriveTipCorrectionPower, -Constants.kDriveTipCorrectionPower);
+		} else if (pitch < -threshold) {
+			setMotors(Constants.kDriveTipCorrectionPower, Constants.kDriveTipCorrectionPower);
 		} else {
 			arcadeDrive(power, steering, throttle);  // Normal driving.
 		}
@@ -105,21 +109,15 @@ public class Drive extends Subsystem {
 	
 	/**
 	 * Turn the robot on the spot with square root ramping based on gyro heading.
-	 * @param gain Gain to use for square root ramping.
 	 * @param targetHeading Heading to aim at, in degrees.
-	 * @param maxRate Coast rotational rate, in deg/s.
+	 * @param maxRate Coast rotational rate, in motor units. (1 is full throttle, 0 is no power.)
 	 * @return True when heading and rate within target threshold.
 	 */
-	public boolean actionGyroTurn(double gain, double targetHeading, int maxRate) {
-		double currentHeading = _imu.getYaw();
+	public boolean actionGyroTurn(double targetHeading, int maxRate) {
 		double currentRate = _imu.getRate();
-
-		gyroTurnController.configK(gain);
-		gyroTurnController.configMaxSpeed(maxRate);
-		double rate = gyroTurnController.run(currentHeading, targetHeading);
-
-		double steering = (rate * Constants.kDriveGyroTurnKf) + (rate - currentRate) * Constants.kDriveGyroTurnKp;  // TODO: Find feedforward and tune compensation
-		arcadeDrive(0.0, steering, 1.0);
+		double currentHeading = _imu.getYaw();
+		double steering = Math.sqrt((targetHeading - currentHeading)) * Constants.kDriveGyroTurnK;
+		arcadeDrive(0.0, steering, Math.abs(maxRate));
 
 		return (Math.abs(targetHeading - currentHeading) <= Constants.kDriveGyroTurnThresh) && (Math.abs(currentRate) <= Constants.kDriveGyroRateThresh);
 	}
@@ -133,12 +131,10 @@ public class Drive extends Subsystem {
 	 */
 	public boolean actionSensorDrive(double speed, double targetHeading, double distance) {
 		double position = getAvgEncoderDistance();
-		driveController.configMaxSpeed(speed);
-		double driveSpeed = driveController.run(position, distance);
-		double drivePower = driveSpeed * Constants.kDrivePowerKf;
+		double drivePower = (distance - position) * Constants.kDriveEncoderDrivePGain;
 
-		double yaw = _imu.getYaw();
-		double steering = (targetHeading - yaw) * Constants.kPGainGyroDriveTurn;
+		double currentHeading = _imu.getYaw();
+		double steering = (targetHeading - currentHeading) * Constants.kDriveSensorDriveTurnKp;
 		arcadeDrive(drivePower, steering, 1);
 
 		return encoderIsWithinDistance(distance, 0.1);

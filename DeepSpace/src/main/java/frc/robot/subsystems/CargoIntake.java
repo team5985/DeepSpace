@@ -2,13 +2,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Calcs;
-import frc.lib.SquareRootControl;
 import frc.robot.Constants;
 
 public class CargoIntake extends Subsystem {
@@ -17,15 +17,14 @@ public class CargoIntake extends Subsystem {
     private VictorSP rightIntakeMotor;
     private DigitalInput hallEffect;
 
-    private double feedBack = 0;
-    public SquareRootControl wristMotorControl;
+    private double feedBack = 0; // 4096 cpr
     private double stowedAngle = 0;
     private double highAngle = 60;
     private double midAngle = 90;
-    private double lowAngle = 120;
-    private double grabIntakePercent = 0.8;
-    private double holdIntakePercent = 0.2;
-    private double shootIntakePercent = 1;
+    private double lowAngle = 115;
+    private double grabIntakePercent = 0.3;
+    private double holdIntakePercent = 0.0;
+    private double shootIntakePercent = -1;
     public static CargoIntake cargoInstance;
 
     public enum IntakePositionsCargo {
@@ -50,7 +49,6 @@ public class CargoIntake extends Subsystem {
     }
 
     private CargoIntake(){
-        wristMotorControl = new SquareRootControl(Constants.kCargoWristMaxAccelerationDegrees, Constants.kCargoWristMaxSpeed, Constants.kCargoWristGain); 
         configActuators();
         configSensors();  
     }
@@ -130,13 +128,16 @@ public class CargoIntake extends Subsystem {
 
         double power = (angle - getPosition()) * Constants.kWristPGain;
         power -= calculateHoldingFeedforward();
+
+        if ((getPosition() < 15) && (angle < 15)) {
+            power = -0.1;
+        }
+        
         wristMotor.set(ControlMode.PercentOutput, power);
 
-        SmartDashboard.setDefaultNumber("CargoIntake K Gain", 0.0);
-        wristMotorControl.configK(SmartDashboard.getNumber("CargoIntake K Gain", 0.0));
         // SmartDashboard.putNumber("CargoIntake Velocity", velocity);
         SmartDashboard.putNumber("CargoIntake Encoder", getPosition());
-        SmartDashboard.putNumber("CargoIntake Set Angle", angle);        
+        SmartDashboard.putNumber("CargoIntake Set Angle", angle);
         SmartDashboard.putNumber("CargoIntake Power", power);
 
         return Calcs.isWithinThreshold(getPosition(), angle, Constants.kCargoWristAngleTolerance);
@@ -147,7 +148,7 @@ public class CargoIntake extends Subsystem {
      * @return Units (-1:1)
      */
     private double calculateHoldingFeedforward() {
-        double horizDist = Constants.kIntakePhysicalLength * Math.sin(Constants.kIntakeStowedPhysicalAngle + getPosition());
+        double horizDist = Constants.kIntakePhysicalLength * Math.sin(Math.toRadians(Constants.kIntakeStowedPhysicalAngle + getPosition()));
         double gravityTorque = Constants.kIntakePhysicalWeight * horizDist;
         double feedforward = gravityTorque / Constants.kIntakeWristMaxTorque;
         return feedforward;
@@ -156,12 +157,13 @@ public class CargoIntake extends Subsystem {
     void configActuators(){
         wristMotor = new WPI_TalonSRX(Constants.kTalonCargoWristCanId);
         wristMotor.setInverted(Constants.kWristMotorDirection);  //TODO: check
+        wristMotor.setNeutralMode(NeutralMode.Brake);
         
         wristMotor.configPeakCurrentLimit(0, 0);
         wristMotor.configContinuousCurrentLimit(30, 0);
 
-        wristMotor.configPeakOutputForward(Constants.kWristMaxOutput);
-        wristMotor.configPeakOutputReverse(-Constants.kWristMaxOutput);
+        wristMotor.configPeakOutputForward(Constants.kWristMaxDownOutput);
+        wristMotor.configPeakOutputReverse(-Constants.kWristMaxUpOutput);
 
         leftIntakeMotor = new VictorSP(Constants.kVictorCargoIntakeLeftPwmPort);
         leftIntakeMotor.setInverted(Constants.kVictorCargoIntakeDirection);

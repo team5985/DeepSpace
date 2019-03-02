@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.Constants;
 
 public class Hatch extends Subsystem {
@@ -9,7 +11,7 @@ public class Hatch extends Subsystem {
     public static Hatch hatchInstance = null;
 
     Solenoid popSolenoid;
-    Solenoid beakSolenoid;
+    DoubleSolenoid beakSolenoid;
     
     public static Hatch getInstance() {
         if (hatchInstance == null) {
@@ -30,20 +32,30 @@ public class Hatch extends Subsystem {
         } else {
             popSolenoid.set(false);
         }
-        beakSolenoid.set(beakPosition);
+
+        if (beakPosition) {
+            beakSolenoid.set(Value.kForward);
+        } else {
+            beakSolenoid.set(Value.kReverse);
+        }
+        
     }
 
     /**
      * Sets the beak to deploy or retract.
      * @param position True deploys.
      */
-    public void moveBeak(boolean position){
-        beakSolenoid.set(position);
-        extendBeak = position;
-    }
+    // public void moveBeak(boolean position){
+    //     beakSolenoid.set(position);
+    //     extendBeak = position;
+    // }
 
     public boolean getBeakPosition(){
-        return beakSolenoid.get();
+        if (beakSolenoid.get() == Value.kForward) {  // FIXME for single solenoids
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean zeroPosition(){
@@ -60,6 +72,6 @@ public class Hatch extends Subsystem {
 
     void configActuators(){
         popSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kHatchPopperForwardPcmPort);
-        beakSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel);
+        beakSolenoid = new DoubleSolenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel, Constants.kBeakPlusCargoSolenoidChannel + 1);
     }
 }
