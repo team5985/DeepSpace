@@ -76,6 +76,13 @@ public class AutoController {
 		}
 	}
 
+	/**
+	 * @return True when the auto program has completed its motions
+	 */
+	public boolean exit() {
+		return runningAuto.getExit();
+	}
+
 	private AutoMode evaluateAutoSelection(AutoSelection autoType, StartSelection start) {
 		AutoMode retval = null;
 		

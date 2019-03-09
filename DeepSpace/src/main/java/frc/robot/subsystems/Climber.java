@@ -86,7 +86,7 @@ public class Climber extends Subsystem {
 		masterTalon = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
 		masterTalon.configFactoryDefault();
 		masterTalon.setNeutralMode(NeutralMode.Coast);
-		masterTalon.setInverted(false);  //TODO: check
+		masterTalon.setInverted(false);
 
 		masterTalon.configOpenloopRamp(0.5);
 		// talonLeft.configPeakCurrentLimit(0, 0);
@@ -98,7 +98,7 @@ public class Climber extends Subsystem {
 		slaveTalon = new WPI_TalonSRX(Constants.kTalonElevatorSlaveCanId);
 		slaveTalon.configFactoryDefault();
 		slaveTalon.setNeutralMode(NeutralMode.Coast);
-		slaveTalon.setInverted(false);  //TODO: check
+		slaveTalon.setInverted(false);
 
 		slaveTalon.configOpenloopRamp(0.5);
 		

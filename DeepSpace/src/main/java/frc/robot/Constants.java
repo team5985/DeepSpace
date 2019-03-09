@@ -38,10 +38,10 @@ public class Constants {
     public static final int kVictorMantisLeftPwmPort = 3;
 
     // PCM Solenoid Ports
-    public static final int kHatchPopperForwardPcmPort = 4;  // FIXME 0, 1 for comp robot
-    public static final int kHatchPopperReversePcmPort = 5;
+    public static final int kHatchPopperForwardPcmPort = 0;  // 0, 1 for comp robot, 4/5 for Pyxis
+    public static final int kHatchPopperReversePcmPort = 1;
     public static final int kSolenoidMantisChannel = 3;
-    public static final int kBeakPlusCargoSolenoidChannel = 6;
+    public static final int kBeakPlusCargoSolenoidChannel = 6;  // TODO: Check
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
@@ -56,19 +56,19 @@ public class Constants {
     public static IdleMode kDriveIdleMode = IdleMode.kCoast;
 
 	public static final boolean kLeftDriveEncoderPhase = false; // false = not inverted, true = inverted
-    public static final boolean kRightDriveEncoderPhase = false; // TODO: Check this
+    public static final boolean kRightDriveEncoderPhase = false; // Check this
 
 	public static final boolean kLeftDriveMotorPhase = false; // false = not inverted, true = inverted
 
-    public static double kDriveGyroTurnK = 0.06;  // Square root gain for turning on the spot TODO: Check this
+    public static double kDriveGyroTurnK = 0.06;  // Square root gain for turning on the spot
     public static double kDriveGyroTurnThresh = 3.0;  // In degrees.
     public static double kDriveGyroRateThresh = 3.0;  // In deg/s.
     
-    public static final double kDriveSensorDriveTurnKp = 0.0075;  // In % per degree (Not square root controller!: proportional gain)  TODO: Test
+    public static final double kDriveSensorDriveTurnKp = 0.0075;  // In % per degree (Not square root controller!: proportional gain)
     
 	public static final double kDriveMaxDriveAccel = 3.29;  // m/s/s
 	public static final double kDriveMaxDriveVel = 3.29;  // m/s
-	public static final double kDriveEncoderDrivePGain = 1.0;  // TODO: Proportional gain for drive speed to distance
+	public static final double kDriveEncoderDrivePGain = 1.0;  // Proportional gain for drive speed to distance
 
     public static double kDriveWheelDiameter = 6.0;
     public static final double kDriveEncoderDistancePerPulse = (kDriveWheelDiameter * Math.PI) / kCuiEncoderCpr;  // Metres per pulse
@@ -134,7 +134,7 @@ public class Constants {
     public static final double kBobcatJointMaxDownwardsOutput = -0.25;
 
     // Vision constants
-    public static final double kVisionDriverAdjustmentGain = 20; // Proportional, scales the joystick steering command and adds to the vision tracking target TODO both of these
+    public static final double kVisionDriverAdjustmentGain = 20; // Proportional, scales the joystick steering command and adds to the vision tracking target
 	public static final double kVisionServoingGain = 0.06;  // Square root gain
 
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)

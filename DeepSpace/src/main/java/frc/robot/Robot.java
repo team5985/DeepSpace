@@ -53,7 +53,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    autoController.runAuto();
+    if (!autoController.exit()) {
+      autoController.runAuto();
+      
+    } else {
+      teleopController.callStateMachines();
+    }
   }
 
   @Override

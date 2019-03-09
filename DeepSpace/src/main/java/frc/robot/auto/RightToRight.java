@@ -10,7 +10,13 @@ public class RightToRight extends AutoMode {
     private AutoSelection autoType = AutoSelection.RIGHT_CARGOSHIP;
     private StartSelection startPosition = StartSelection.RIGHT_LEV2;
 
+    boolean exit = false;
     int timer = 0;
+    
+    public void init() {
+        exit = false;
+        timer = 0;
+    }    
 
     public boolean runStep(int step) {
         boolean stepComplete = false;
@@ -45,6 +51,7 @@ public class RightToRight extends AutoMode {
             Drive.getInstance().gyroDrive(0.0, -90.0);
             CargoIntake.getInstance().actionMoveTo(IntakePositionsCargo.STOWED);
             Hatch.getInstance().setPosition(true, false);
+            exit = true;
             stepComplete = false;
             break;
         }
@@ -75,5 +82,9 @@ public class RightToRight extends AutoMode {
      */
     public StartSelection getStartPosition() {
         return startPosition;
+    }
+
+    public boolean getExit() {
+        return exit;
     }
 }
