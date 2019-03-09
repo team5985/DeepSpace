@@ -28,6 +28,8 @@ public class Robot extends TimedRobot {
   
   Compressor comp;
 
+  boolean autoInterrupt = false;
+
   @Override
   public void robotInit() {
     comp = new Compressor(Constants.kPcmCanId);
@@ -49,13 +51,17 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     teleopController.resetAllSensors();
     autoController.initialiseAuto();
+    autoInterrupt = false;
   }
 
   @Override
   public void autonomousPeriodic() {
-    if (!autoController.exit()) {
+    if (!autoController.exit() || !_controls.getStickInterupt()) {
+      autoInterrupt = true;
+    }
+
+    if (!autoInterrupt) {
       autoController.runAuto();
-      
     } else {
       teleopController.callStateMachines();
     }
