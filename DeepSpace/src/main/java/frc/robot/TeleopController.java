@@ -45,6 +45,7 @@ Timer gameTimer = new Timer();
         MID,
         HIGH,
         STOWED,
+        MANUAL,
     }
     public enum BobcatStates{
         LOW_CARGO,
@@ -55,6 +56,7 @@ Timer gameTimer = new Timer();
         MID_HATCH,
         HIGH_HATCH,
         STOWED,
+        MANUAL,
     }
     public enum HatchStates{
         HOLD_HATCH,
@@ -105,18 +107,17 @@ Timer gameTimer = new Timer();
     public void stateMachine() {
         switch (robotState) {
             case TELEOP:
-                trVictory();
-                trVision();
+                // trVision();
                 stTeleop();
                 trHab();
                 break;
             case VISION:
+                stTeleop();
                 stVision();
                 trTeleop();
                 break;
             case HAB:
                 stHab();
-                trVictory();
                 trTeleop();
                 break;
             case VICTORY:
@@ -143,6 +144,9 @@ Timer gameTimer = new Timer();
             break;
             case STOWED:
             cargoWristAngleStowedState();
+            break;
+            case MANUAL:
+            cargoWristManualState();
             break;
             default:
             cargoWristAngleStowedState();
@@ -177,6 +181,9 @@ Timer gameTimer = new Timer();
             break;
             case STOWED:
             bobcatStowedState();
+            break;
+            case MANUAL:
+            bobcatManualState();
             break;
             default:
             bobcatStowedState();
@@ -233,6 +240,9 @@ Timer gameTimer = new Timer();
     private void cargoWristAngleStowedState(){
         _cargo.actionMoveTo(IntakePositionsCargo.STOWED);
     }
+    private void cargoWristManualState() {
+        _cargo.manualMove(_controls.getManualCargoWrist());
+    }
 
     //bobcat states
     private void bobcatCargoLowRocketState(){
@@ -258,6 +268,9 @@ Timer gameTimer = new Timer();
     }
     private void bobcatStowedState(){
         _bobcat.actionMoveTo(ArmPositions.DOWN); 
+    }
+    private void bobcatManualState() {
+        _bobcat.manualMove(_controls.getManualBobcat());
     }
 
     //hatch states
@@ -298,10 +311,11 @@ Timer gameTimer = new Timer();
 
     //tr for transition
     private void trVision() {
-        // if((_controls.getThumbPress() == true) && (_vision.getDataIsValid())) {
+        // if((_controls.getButtonPressVision() == true) && (_vision.getDataIsValid())) {
         //     robotState = States.VISION;
         // }
     }
+
     private void trHab() {
         if((_controls.getButtonPressSyncClimb())){
             robotState = States.HAB;
@@ -309,7 +323,7 @@ Timer gameTimer = new Timer();
     }
 
     private void trTeleop() {
-        if (_controls.getPressHatchMode() || _controls.getPressBallMode()) { // FIXME
+        if (_controls.getPressHatchMode() || _controls.getPressBallMode()) {
             robotState = States.TELEOP;
         }
     }
@@ -335,31 +349,48 @@ Timer gameTimer = new Timer();
      */
     public void stVision() {
         //I've got my i on you
-        /** temporary removal
-        double adjustment = _controls.getDriveSteering() * Constants.kVisionDriverAdjustmentGain;  // Adds a small amount to the target angle so the driver can adjust side to side
-        double targetAngle = 0.0;
-        if (_vision.getDataIsValid()) {
-            _vision.getAngle();
-        } else {
-            targetAngle = 0.0;
-        }
-        targetAngle += adjustment;
+        // double adjustment = _controls.getDriveSteering() * Constants.kVisionDriverAdjustmentGain;  // Adds a small amount to the target angle so the driver can adjust side to side
+        // double targetAngle = 0.0;
+        // if (_vision.getDataIsValid()) {
+        //     _vision.getAngle();
+        // } else {
+        //     targetAngle = 0.0;
+        // }
+        // targetAngle += adjustment;
 
-        double steering = Constants.kVisionServoingGain * Math.sqrt(Math.abs(targetAngle));
-        if (targetAngle < 0) {
-            steering *= -1;
-        }
+        // double steering = Constants.kVisionServoingGain * Math.sqrt(Math.abs(targetAngle));
+        // if (targetAngle < 0) {
+        //     steering *= -1;
+        // }
 
-        _drive.teleopDrive(_controls.getDrivePower(), steering, _controls.getDriveThrottle());
-        */
+        // _drive.teleopDrive(_controls.getDrivePower(), steering, _controls.getDriveThrottle());
     }
 
     public void stHab() {
-        bobcatState = BobcatStates.STOWED;
         cargoWristAngleState = CargoWristAngleStates.STOWED;
 
         _climb.setMotors(_controls.getDrivePower());
         _drive.teleopDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
+
+        if (_controls.getPressMidRocketPosition()){
+            bobcatState = BobcatStates.MID_HATCH;
+        }
+        if (_controls.getStowBobcat()){
+            bobcatState = BobcatStates.STOWED;
+        }
+        // Zero the joints
+        if (_controls.getButtonPressResetBobcat()) {
+            _bobcat.resetSensors();
+        }
+        if (_controls.getButtonPressResetCargoWrist()) {
+            _cargo.resetSensors();
+        }
+
+        // Run manual mode
+        if (_controls.getManualMode()) {
+            cargoWristAngleState = CargoWristAngleStates.MANUAL;
+            bobcatState = BobcatStates.MANUAL;
+        }
         
         if (_controls.getButtonReleaseSyncClimb()) {
             climberState = ElevatorStates.RISE;
@@ -427,15 +458,19 @@ Timer gameTimer = new Timer();
             }
             if (_controls.getPressLowRocketPosition()){
                 bobcatState = BobcatStates.LOW_CARGO;
+                cargoWristAngleState = CargoWristAngleStates.MID;
             }
             if (_controls.getPressMidRocketPosition()){
-                bobcatState = BobcatStates.MID_CARGO;  //TODO: fix mixture with shooting and positions
+                bobcatState = BobcatStates.MID_CARGO;
+                cargoWristAngleState = CargoWristAngleStates.MID;
             }
             if (_controls.getPressHighRocketPosition()){
                 bobcatState = BobcatStates.HIGH_CARGO;
+                cargoWristAngleState = CargoWristAngleStates.HIGH;
             }
             if (_controls.getPressXButton()){
                 bobcatState = BobcatStates.CARGOSHIP_CARGO;
+                cargoWristAngleState = CargoWristAngleStates.MID;cargoWristAngleState = CargoWristAngleStates.MID;
             }
 
             if (_controls.getShootCargo()){
@@ -461,22 +496,6 @@ Timer gameTimer = new Timer();
             if (_controls.getPressHighRocketPosition()){
                 bobcatState = BobcatStates.HIGH_HATCH;
             }
-            
-            // Hatch popper
-            // if (_controls.getTrigger()) {
-            //     int hatchPopDelayTimer = 0;
-            //     if (_controls.getTriggerPress()) {
-            //         hatchPopDelayTimer = 0;
-            //     }
-            //     hatchPopDelayTimer++;
-                
-            //     // Returns the beak and activates the popper after a delay.
-            //     if (hatchPopDelayTimer < Constants.kHatchPopperDelay) {
-            //         hatchState = HatchStates.STOW_HATCH;
-            //     } else {
-            //         hatchState = HatchStates.POP;
-            //     }
-            // }
 
             // Hatch beak toggle
             if (_controls.getTriggerPress()) {
@@ -491,16 +510,32 @@ Timer gameTimer = new Timer();
                 }
             }
         }
-        //put stow here
+        
         if (_controls.getStowBobcat()){
             bobcatState = BobcatStates.STOWED;
+        }
+
+        // Zero the joints
+        if (_controls.getButtonPressResetBobcat()) {
+            _bobcat.resetSensors();
+        }
+        if (_controls.getButtonPressResetCargoWrist()) {
+            _cargo.resetSensors();
+        }
+
+        // Run manual mode
+        if (_controls.getManualMode()) {
+            cargoWristAngleState = CargoWristAngleStates.MANUAL;
+            bobcatState = BobcatStates.MANUAL;
         }
     }
 
     /**
      * Set all the mechanim's sensor readings to 0 (without moving anything)
      */
-    public void resetAllSensors() {  // TODO: Add other mechanisms
+    public void resetAllSensors() {  // TODO: Add elevators
         _drive.zeroPosition();
+        _bobcat.resetSensors();
+        _cargo.resetSensors();
     }
 }

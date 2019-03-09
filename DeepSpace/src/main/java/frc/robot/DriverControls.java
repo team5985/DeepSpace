@@ -78,7 +78,7 @@ public class DriverControls {
 	public double getDrivePower() {
 		double power = -stick.getY();
 		Constants.kDriveSquaredPowerInputsExponent = SmartDashboard.getNumber("Power Gain", 2.0);
-		return Math.pow(power, Constants.kDriveSquaredPowerInputsExponent) * Math.signum(power);
+		return Math.pow(Math.abs(power), Constants.kDriveSquaredPowerInputsExponent) * Math.signum(power);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class DriverControls {
 	public double getDriveSteering() {
 		double steering = stick.getX();
 		Constants.kDriveSquaredSteeringInputsExponent = SmartDashboard.getNumber("Steering Gain", 2.0);
-		return Math.pow(steering, Constants.kDriveSquaredSteeringInputsExponent) * Math.signum(steering);
+		return Math.pow(Math.abs(steering), Constants.kDriveSquaredSteeringInputsExponent) * Math.signum(steering);
 	}
 
 	/**
@@ -175,7 +175,11 @@ public class DriverControls {
 		return stick.getRawButtonReleased(10);
 	}
 
-	// Syncronised (semi-auto) climb TODO: Full auto climb
+	public boolean getButtonPressVision() {
+		return stick.getRawButtonPressed(5);
+	}
+
+	// Syncroned (semi-auto) climb
 	public boolean getButtonPressSyncClimb() {
 		return stick.getRawButtonPressed(8);
 	}
@@ -257,10 +261,46 @@ public class DriverControls {
 	}
 
 	public boolean getStowBobcat() {
-		return xBox.getY(Hand.kRight)  > 0.75;
+		return xBox.getY(Hand.kLeft)  > 0.75;
 	}
 
-/* Cargo Controls */
+	// Manual joint control controls
+	/**
+	 * @return True while the button for manually controlling both joints is being pressed
+	 */
+	public boolean getManualMode() {
+		return xBox.getBumper(Hand.kLeft);
+	}	
+
+	/**
+	 * @return Power for bobcat to drive at from -1 to +1
+	 */
+	public double getManualBobcat() {
+		return -xBox.getY(Hand.kLeft);
+	}
+
+	/**
+	 * @return Power for cargo wrist to drive from -1 to +1
+	 */
+	public double getManualCargoWrist() {
+		return xBox.getY(Hand.kRight);
+	}
+
+	/**
+	 * @return True if the reset button was pressed since last checked
+	 */
+	public boolean getButtonPressResetBobcat() {
+		return xBox.getStickButtonPressed(Hand.kLeft);
+	}
+
+	/**
+	 * @return True if the reset button was pressed since last checked
+	 */
+	public boolean getButtonPressResetCargoWrist() {
+		return xBox.getStickButtonPressed(Hand.kRight);
+	}
+
+	/* Cargo Controls */
 	public boolean getPressStowCargo() {
 		return (xBox.getPOV(0) == 0);
 	}

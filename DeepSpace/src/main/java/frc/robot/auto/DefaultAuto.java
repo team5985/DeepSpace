@@ -15,7 +15,7 @@ public class DefaultAuto extends AutoMode {
         /** Each step's code runs within each case. Each step's code runs concurrently, and the step moves on when stepComplete returns true. */
         switch (step) {
             case 0:
-            stepComplete = Drive.getInstance().actionSensorDrive(1.0, 0.0, 2.0);
+            // stepComplete = Drive.getInstance().actionSensorDrive(1.0, 0.0, 2.0);
             break;
         }
         

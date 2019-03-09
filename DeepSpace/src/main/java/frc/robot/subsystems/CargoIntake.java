@@ -18,10 +18,10 @@ public class CargoIntake extends Subsystem {
     private DigitalInput hallEffect;
 
     private double feedBack = 0; // 4096 cpr
-    private double stowedAngle = 0;
+    private double stowedAngle = -6;
     private double highAngle = 60;
     private double midAngle = 90;
-    private double lowAngle = 115;
+    private double lowAngle = 103;
     private double grabIntakePercent = 0.3;
     private double holdIntakePercent = 0.0;
     private double shootIntakePercent = -1;
@@ -90,6 +90,10 @@ public class CargoIntake extends Subsystem {
         
         return false;
     }
+
+    public void resetSensors() {
+        wristMotor.setSelectedSensorPosition(0);
+    }
     
 	/**
 	 * Runs cargo intake motors
@@ -123,17 +127,10 @@ public class CargoIntake extends Subsystem {
     }
 
     public boolean setAngle(double angle){
-        // double velocity = wristMotorControl.run(getPosition(), angle);
-        // double power = velocity / Constants.kCargoWristMaxSpeed;
-
         double power = (angle - getPosition()) * Constants.kWristPGain;
         power -= calculateHoldingFeedforward();
-
-        if ((getPosition() < 15) && (angle < 15)) {
-            power = -0.1;
-        }
         
-        wristMotor.set(ControlMode.PercentOutput, power);
+        manualMove(power);
 
         // SmartDashboard.putNumber("CargoIntake Velocity", velocity);
         SmartDashboard.putNumber("CargoIntake Encoder", getPosition());
@@ -143,6 +140,10 @@ public class CargoIntake extends Subsystem {
         return Calcs.isWithinThreshold(getPosition(), angle, Constants.kCargoWristAngleTolerance);
     }
 
+    public void manualMove(double power) {
+        wristMotor.set(ControlMode.PercentOutput, power);
+    }
+    
     /**
      * Calculate the feedforward gain required to keep the intake level at steady state. Does not configure the Talon.
      * @return Units (-1:1)
@@ -156,7 +157,7 @@ public class CargoIntake extends Subsystem {
 
     void configActuators(){
         wristMotor = new WPI_TalonSRX(Constants.kTalonCargoWristCanId);
-        wristMotor.setInverted(Constants.kWristMotorDirection);  //TODO: check
+        wristMotor.setInverted(Constants.kWristMotorDirection);
         wristMotor.setNeutralMode(NeutralMode.Brake);
         
         wristMotor.configPeakCurrentLimit(0, 0);

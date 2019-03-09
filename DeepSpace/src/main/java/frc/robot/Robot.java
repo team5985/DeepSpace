@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
   TeleopController teleopController = TeleopController.getInstance();
+  AutoController autoController = AutoController.getInstance();
   // Vision _vision = Vision.getInstance();
 
   DriverControls _controls = new DriverControls();
@@ -47,11 +48,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     teleopController.resetAllSensors();
+    autoController.initialiseAuto();
   }
 
   @Override
   public void autonomousPeriodic() {
-    teleopController.callStateMachines();
+    autoController.runAuto();
   }
 
   @Override

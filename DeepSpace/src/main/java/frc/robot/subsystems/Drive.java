@@ -139,6 +139,12 @@ public class Drive extends Subsystem {
 
 		return encoderIsWithinDistance(distance, 0.1);
 	}
+
+	public void gyroDrive(double speed, double targetHeading) {
+		double currentHeading = _imu.getYaw();
+		double steering = (targetHeading - currentHeading) * Constants.kDriveSensorDriveTurnKp;
+		arcadeDrive(speed, steering, 1);
+	}
 		
 	//Driver Heading Assist
 	public void headingAssist(double speed, double adjustAmmount) {
