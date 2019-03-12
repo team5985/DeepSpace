@@ -38,10 +38,10 @@ public class Constants {
     public static final int kVictorMantisLeftPwmPort = 3;
 
     // PCM Solenoid Ports
-    public static final int kHatchPopperForwardPcmPort = 0;  // 0, 1 for comp robot, 4/5 for Pyxis
-    public static final int kHatchPopperReversePcmPort = 1;
+    public static final int kHatchPopperForwardPcmPort = 6;  // 0, 1 for comp robot, 4/5 for Pyxis
+    public static final int kHatchPopperReversePcmPort = 7;
     public static final int kSolenoidMantisChannel = 3;
-    public static final int kBeakPlusCargoSolenoidChannel = 6;  // TODO: Check
+    public static final int kBeakPlusCargoSolenoidChannel = 4;  // TODO: Check
 
     // Driverstation Ports
     public static final int kJoystickPort = 0;
@@ -83,7 +83,8 @@ public class Constants {
     public static final double kElevatorLiftDistGain = 20;
 	public static final double kElevatorTiltCompGain = 0.0;  // Motor controller units (-1:1) per degree  
     public static final double kElevatorHeightTolerance = 0.05;  // Metres
-    public static final double kElevatorClimbHeight = 0.43;
+    public static final double kElevatorClimbHeight = 0.35; // Antlia .35 Pyxis .43
+    public static final double kElevatorLev2ClimbHeight = 0.12;
 
     public static final double kElevatorSpoolDiam = 0.0191;  // In Metres!
     public static final double kElevatorDistancePerPulse = (Math.PI * Constants.kElevatorSpoolDiam) / Constants.kCuiEncoderCpr;  // Metres per pulse
@@ -113,8 +114,10 @@ public class Constants {
     public static double kWristMaxUpOutput = 0.5;
     public static double kWristMaxDownOutput = 0.2;
 
+	
+
     // Cargo Intake Constants
-    public static final boolean kVictorCargoIntakeDirection = false;
+    public static final boolean kVictorCargoIntakeDirection = true;
 
     // Bobcat Constants
     public static final double kBobcatPhysicalLength = 1.0414;  // m

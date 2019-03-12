@@ -103,7 +103,8 @@ public class DriverControls {
 	 * button 7
 	 */
 	public boolean getPressSwitchDriveDirection() {
-		return stick.getRawButtonPressed(7);
+		// return stick.getRawButtonPressed(7);
+		return false;
 	}
 	
 	//Trigger
@@ -186,6 +187,14 @@ public class DriverControls {
 
 	public boolean getButtonReleaseSyncClimb() {
 		return stick.getRawButtonReleased(8);
+	}
+
+	public boolean getButtonPressSyncLev2Climb() {
+		return stick.getRawButtonPressed(7);
+	}
+
+	public boolean getButtonReleaseSyncLev2Climb() {
+		return stick.getRawButtonReleased(7);
 	}
 
 	//Elevators extend

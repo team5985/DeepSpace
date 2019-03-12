@@ -33,6 +33,8 @@ public class Climber extends Subsystem {
 	public static Climber climberInstance = null;
 
 	private static AHRS imu;
+	
+	private double _climbHeight = 0.0;
 
 	private Climber(){
 		configActuators();
@@ -77,7 +79,7 @@ public class Climber extends Subsystem {
 
 	public void setMotors(double power) {
 		mantisLeft.set(-power);
-		mantisRight.set(power);
+		mantisRight.set(-power);
 
 		SmartDashboard.putNumber("Mantis Wheels Power", power);
 	}
@@ -128,5 +130,13 @@ public class Climber extends Subsystem {
 		setMantisPosition(false);
 		actionMoveTo(0.0);
 		return false;
+	}
+
+	public void setClimbHeight(double height) {
+		_climbHeight = height;
+	}
+
+	public double getClimbHeight() {
+		return _climbHeight;
 	}
 }

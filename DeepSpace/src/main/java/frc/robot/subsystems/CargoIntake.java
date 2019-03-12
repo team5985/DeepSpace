@@ -21,10 +21,10 @@ public class CargoIntake extends Subsystem {
     private double stowedAngle = -6;
     private double highAngle = 60;
     private double midAngle = 90;
-    private double lowAngle = 103;
-    private double grabIntakePercent = 0.3;
+    private double lowAngle = 108;
+    private double grabIntakePercent = 0.4;
     private double holdIntakePercent = 0.0;
-    private double shootIntakePercent = -1;
+    private double shootIntakePercent = -0.6;
     public static CargoIntake cargoInstance;
 
     public enum IntakePositionsCargo {

@@ -22,13 +22,15 @@ public class Bobcat extends Subsystem {
     private DigitalInput hallEffect;
 
     private double lowAngleHatch = 8;
-    private double midAngleHatch = 53;
+    private double midAngleHatch = 55;
     private double highAngleHatch = 92;
 
     private double lowAngleCargo = 36;
     private double midAngleCargo = 70;
     private double highAngleCargo = 105;
-    private double cargoShipCargoAngle = 55;
+    private double cargoShipCargoAngle = 48;
+
+    private double climbAngle = 43;
 
     private double stowedAngle = 0;
     public static Bobcat bobcatInstance;
@@ -53,7 +55,8 @@ public class Bobcat extends Subsystem {
         HIGH_CARGO,
         MID_CARGO,
         LOW_CARGO,
-        CARGOSHIP_BALL_POSITION;
+        CARGOSHIP_BALL_POSITION,
+        CLIMB_ANGLE,
     }
 
     public boolean actionMoveTo(ArmPositions positions){
@@ -85,6 +88,9 @@ public class Bobcat extends Subsystem {
 
             case CARGOSHIP_BALL_POSITION:
                 return setAngle(cargoShipCargoAngle, true);
+
+            case CLIMB_ANGLE:
+                return setAngle(climbAngle, true);
 
             default:
                 return false;

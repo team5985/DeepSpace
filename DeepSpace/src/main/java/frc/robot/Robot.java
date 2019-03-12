@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    if (!autoController.exit() || !_controls.getStickInterupt()) {
+    if (autoController.exit() || _controls.getStickInterupt()) {
       autoInterrupt = true;
     }
 

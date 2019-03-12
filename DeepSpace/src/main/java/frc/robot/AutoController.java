@@ -66,6 +66,8 @@ public class AutoController {
 		selectedAuto = autoSelector.getSelected();
 		runningAuto = evaluateAutoSelection(selectedAuto, selectedPosition);
 
+		TeleopController.getInstance().resetAllSensors();
+
 		currentStep = 0;
 	}
 
