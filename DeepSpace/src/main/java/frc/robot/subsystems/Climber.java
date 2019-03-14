@@ -33,6 +33,8 @@ public class Climber extends Subsystem {
 	public static Climber climberInstance = null;
 
 	private static AHRS imu;
+	
+	private double _climbHeight = 0.0;
 
 	private Climber(){
 		configActuators();
@@ -75,9 +77,14 @@ public class Climber extends Subsystem {
 		return Calcs.isWithinThreshold(height, getPosition(), Constants.kElevatorHeightTolerance);
 	}
 
+	public void setElevatorMotors(double power) {
+		masterTalon.set(ControlMode.PercentOutput, power);
+		slaveTalon.set(ControlMode.PercentOutput, -power);
+	}
+
 	public void setMotors(double power) {
 		mantisLeft.set(-power);
-		mantisRight.set(power);
+		mantisRight.set(-power);
 
 		SmartDashboard.putNumber("Mantis Wheels Power", power);
 	}
@@ -86,7 +93,7 @@ public class Climber extends Subsystem {
 		masterTalon = new WPI_TalonSRX(Constants.kTalonElevatorMasterCanId);
 		masterTalon.configFactoryDefault();
 		masterTalon.setNeutralMode(NeutralMode.Coast);
-		masterTalon.setInverted(false);  //TODO: check
+		masterTalon.setInverted(false);
 
 		masterTalon.configOpenloopRamp(0.5);
 		// talonLeft.configPeakCurrentLimit(0, 0);
@@ -98,7 +105,7 @@ public class Climber extends Subsystem {
 		slaveTalon = new WPI_TalonSRX(Constants.kTalonElevatorSlaveCanId);
 		slaveTalon.configFactoryDefault();
 		slaveTalon.setNeutralMode(NeutralMode.Coast);
-		slaveTalon.setInverted(false);  //TODO: check
+		slaveTalon.setInverted(false);
 
 		slaveTalon.configOpenloopRamp(0.5);
 		
@@ -128,5 +135,13 @@ public class Climber extends Subsystem {
 		setMantisPosition(false);
 		actionMoveTo(0.0);
 		return false;
+	}
+
+	public void setClimbHeight(double height) {
+		_climbHeight = height;
+	}
+
+	public double getClimbHeight() {
+		return _climbHeight;
 	}
 }

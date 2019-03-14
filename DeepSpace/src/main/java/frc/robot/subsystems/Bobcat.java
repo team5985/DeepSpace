@@ -21,15 +21,16 @@ public class Bobcat extends Subsystem {
     private Encoder jointEncoder;
     private DigitalInput hallEffect;
 
-    //TODO: Test and change value below
-    private double lowAngleHatch = 10;
-    private double midAngleHatch = 50;
-    private double highAngleHatch = 90;
+    private double lowAngleHatch = 8;
+    private double midAngleHatch = 55;
+    private double highAngleHatch = 92;
 
-    private double lowAngleCargo = 18;
-    private double midAngleCargo = 60;
-    private double highAngleCargo = 97;
-    private double cargoShipCargoAngle = 29;
+    private double lowAngleCargo = 36;
+    private double midAngleCargo = 70;
+    private double highAngleCargo = 105;
+    private double cargoShipCargoAngle = 48;
+
+    private double climbAngle = 43;
 
     private double stowedAngle = 0;
     public static Bobcat bobcatInstance;
@@ -54,7 +55,8 @@ public class Bobcat extends Subsystem {
         HIGH_CARGO,
         MID_CARGO,
         LOW_CARGO,
-        CARGOSHIP_BALL_POSITION;
+        CARGOSHIP_BALL_POSITION,
+        CLIMB_ANGLE,
     }
 
     public boolean actionMoveTo(ArmPositions positions){
@@ -87,6 +89,9 @@ public class Bobcat extends Subsystem {
             case CARGOSHIP_BALL_POSITION:
                 return setAngle(cargoShipCargoAngle, true);
 
+            case CLIMB_ANGLE:
+                return setAngle(climbAngle, true);
+
             default:
                 return false;
         }
@@ -95,7 +100,7 @@ public class Bobcat extends Subsystem {
     /**
      * Runs the square root controller to the desired angle.
      * @param desiredAngle In degrees, starting from bottom and increasing as the arm goes up.
-     * @param useHoldingFf Enables / disables the calculations for holding power. (see calculateHoldingFeedforward())
+     * @param useHoldingFf Enables / disables the calculations for holding power. (see calculateHoldingFeedforward()) (deprecated)
      * @return True if the arm is within a certain tolerance of the desired angle.
      */
     public boolean setAngle(double desiredAngle, boolean useHoldingFf){
@@ -108,21 +113,31 @@ public class Bobcat extends Subsystem {
         //     power += calculateHoldingFeedforward();
         // }
 
+        
+        
+        manualMove(power);
+
+        SmartDashboard.putNumber("Bobcat Target", desiredAngle);
+        SmartDashboard.putNumber("Bobcat Encoder", getPosition());
+        SmartDashboard.putNumber("Bobcat Power", power);
+        return Calcs.isWithinThreshold(getPosition(), desiredAngle, Constants.kBobcatJointAngleTolerance);
+    }
+
+    /**
+     * Manually set the power of the bobcat. +1 goes up, -1 goes down.
+     * @param power
+     */
+    public void manualMove(double power) {
         if (power < Constants.kBobcatJointMaxDownwardsOutput) {
             power = Constants.kBobcatJointMaxDownwardsOutput;
-
             if (getPosition() <3) {
                 power = 0.0;
             }
         } else if (power > Constants.kBobcatJointMaxOutput) {
             power = Constants.kBobcatJointMaxOutput;
         }
-        
+
         jointMotor.set(power);
-        SmartDashboard.putNumber("Bobcat Target", desiredAngle);
-        SmartDashboard.putNumber("Bobcat Encoder", getPosition());
-        SmartDashboard.putNumber("Bobcat Power", power);
-        return Calcs.isWithinThreshold(getPosition(), desiredAngle, Constants.kBobcatJointAngleTolerance);
     }
 
     /**
@@ -151,11 +166,15 @@ public class Bobcat extends Subsystem {
         }
     }
 
+    public void resetSensors() {
+        jointEncoder.reset();
+    }
+
     void configActuators() {
         jointMotor = new CANSparkMax(Constants.kTalonBobcatJointCanId, MotorType.kBrushless);
         jointMotor.setIdleMode(IdleMode.kBrake);
         // jointMotor.configFactoryDefault();
-        jointMotor.setInverted(Constants.kBobcatJointDirection);  //TODO: check
+        jointMotor.setInverted(Constants.kBobcatJointDirection);
         
         jointMotor.setSmartCurrentLimit(40);
         // jointMotor.enableCurrentLimit(false);

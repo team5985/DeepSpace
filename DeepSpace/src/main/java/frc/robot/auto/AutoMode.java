@@ -31,6 +31,13 @@ public abstract class AutoMode {
     public StartSelection getStartPosition() {
         return startPosition;
     }
+
+    /**
+     * @return True when auto movements are complete
+     */
+    public abstract boolean getExit();
+
+    public abstract void init();
     
     /**
      * Will run a given step in the autonomous period.

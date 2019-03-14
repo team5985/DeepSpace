@@ -10,8 +10,8 @@ public class Hatch extends Subsystem {
     
     public static Hatch hatchInstance = null;
 
-    Solenoid popSolenoid;
-    DoubleSolenoid beakSolenoid;
+    DoubleSolenoid popSolenoid;
+    Solenoid beakSolenoid;
     
     public static Hatch getInstance() {
         if (hatchInstance == null) {
@@ -28,15 +28,15 @@ public class Hatch extends Subsystem {
     /**out or in (out is true) */
     public void setPosition(boolean beakPosition, boolean popPosition){
         if (popPosition) {
-            popSolenoid.set(true);
+            popSolenoid.set(Value.kForward);
         } else {
-            popSolenoid.set(false);
+            popSolenoid.set(Value.kReverse);
         }
 
         if (beakPosition) {
-            beakSolenoid.set(Value.kForward);
+            beakSolenoid.set(true);
         } else {
-            beakSolenoid.set(Value.kReverse);
+            beakSolenoid.set(false);
         }
         
     }
@@ -51,7 +51,7 @@ public class Hatch extends Subsystem {
     // }
 
     public boolean getBeakPosition(){
-        if (beakSolenoid.get() == Value.kForward) {  // FIXME for single solenoids
+        if (beakSolenoid.get()) {
             return true;
         } else {
             return false;
@@ -71,7 +71,7 @@ public class Hatch extends Subsystem {
     }
 
     void configActuators(){
-        popSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kHatchPopperForwardPcmPort);
-        beakSolenoid = new DoubleSolenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel, Constants.kBeakPlusCargoSolenoidChannel + 1);
+        popSolenoid = new DoubleSolenoid(Constants.kPcmCanId, Constants.kHatchPopperForwardPcmPort, Constants.kHatchPopperReversePcmPort);
+        beakSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel);
     }
 }

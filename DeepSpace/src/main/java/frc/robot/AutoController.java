@@ -16,6 +16,9 @@ public class AutoController {
 
 	public AutoMode[] autoModes = new AutoMode[] {
 		new DefaultAuto(),
+		new LeftToLeft(),
+		new RightToRight(),
+		new CentreToFront(),
 	};
 
 	public enum StartSelection {
@@ -28,7 +31,7 @@ public class AutoController {
 	}
 
 	public enum AutoSelection {
-		DEFAULT,
+		DEFAULT, LEFT_CARGOSHIP, RIGHT_CARGOSHIP, CENTRE_CARGOSHIP,
 		
 	}
 
@@ -41,6 +44,7 @@ public class AutoController {
 
 	private AutoController() {
 		autoSelector = new SendableChooser<AutoSelection>();
+		positionSelector = new SendableChooser<StartSelection>();
 		
 		// Add each auto to the dashboard dropdown menu
 		for (AutoSelection auto : AutoSelection.values()) {
@@ -48,13 +52,21 @@ public class AutoController {
 		}
 		autoSelector.setDefaultOption(AutoSelection.DEFAULT.name(), AutoSelection.DEFAULT);
 
-		SmartDashboard.putData(autoSelector);
+		for (StartSelection selection : StartSelection.values()) {
+			positionSelector.addOption(selection.name(), selection);
+		}
+		positionSelector.setDefaultOption(StartSelection.DEFAULT.name(), StartSelection.DEFAULT);
+
+		SmartDashboard.putData("Auto Selector", autoSelector);
+		SmartDashboard.putData("Position Selector", positionSelector);
 	}
 
 	public void initialiseAuto() {
 		selectedPosition = positionSelector.getSelected();		
 		selectedAuto = autoSelector.getSelected();
 		runningAuto = evaluateAutoSelection(selectedAuto, selectedPosition);
+
+		TeleopController.getInstance().resetAllSensors();
 
 		currentStep = 0;
 	}
@@ -66,11 +78,18 @@ public class AutoController {
 		}
 	}
 
+	/**
+	 * @return True when the auto program has completed its motions
+	 */
+	public boolean exit() {
+		return runningAuto.getExit();
+	}
+
 	private AutoMode evaluateAutoSelection(AutoSelection autoType, StartSelection start) {
 		AutoMode retval = null;
 		
 		for (AutoMode mode : autoModes) {
-			if (mode.getAutoType() == autoType && mode.getStartPosition() == start) {
+			if ((mode.getAutoType() == autoType) && (mode.getStartPosition() == start)) {
 				return mode;
 			}
 		}
