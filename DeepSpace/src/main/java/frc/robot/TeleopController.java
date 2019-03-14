@@ -303,12 +303,12 @@ Timer gameTimer = new Timer();
      */
     private void climberExtendedState(){
         _climb.setMantisPosition(true);
-        _climb.actionMoveTo(_climb.getClimbHeight());
+        // _climb.actionMoveTo(_climb.getClimbHeight());
     }
 
     private void climberLev2ExtendedState() {
         _climb.setMantisPosition(true);
-        _climb.actionMoveTo(_climb.getClimbHeight());
+        // _climb.actionMoveTo(_climb.getClimbHeight());
     }
 
     /**
@@ -316,7 +316,7 @@ Timer gameTimer = new Timer();
      */
     private void climberTransferState() {
         _climb.setMantisPosition(false);
-        _climb.actionMoveTo(_climb.getClimbHeight());
+        // _climb.actionMoveTo(_climb.getClimbHeight());
     }
 
     /**
@@ -411,6 +411,7 @@ Timer gameTimer = new Timer();
             bobcatState = BobcatStates.MANUAL;
         }
         
+        // Climb
         if (_controls.getButtonReleaseSyncClimb()) {
             climberState = ElevatorStates.RISE;
 
@@ -421,8 +422,16 @@ Timer gameTimer = new Timer();
             climberState = ElevatorStates.TRANSITION;
 
         }
-        if (_controls.getButtonPressElevatorRetract()){
-            climberState = ElevatorStates.RETRACT;
+        // if (_controls.getButtonPressElevatorRetract()){
+        //     climberState = ElevatorStates.RETRACT;
+        // }
+
+        if (_controls.stick.getRawButton(12)) {
+            _climb.setElevatorMotors(1);
+        } else if (_controls.stick.getRawButton(11)) {
+            _climb.setElevatorMotors(-1);
+        } else {
+            _climb.setElevatorMotors(0);
         }
 
         SmartDashboard.putString("Climber State", climberState.name());

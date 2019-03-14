@@ -77,6 +77,11 @@ public class Climber extends Subsystem {
 		return Calcs.isWithinThreshold(height, getPosition(), Constants.kElevatorHeightTolerance);
 	}
 
+	public void setElevatorMotors(double power) {
+		masterTalon.set(ControlMode.PercentOutput, power);
+		slaveTalon.set(ControlMode.PercentOutput, -power);
+	}
+
 	public void setMotors(double power) {
 		mantisLeft.set(-power);
 		mantisRight.set(-power);
