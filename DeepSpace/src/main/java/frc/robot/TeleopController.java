@@ -65,10 +65,12 @@ Timer gameTimer = new Timer();
         POP,
     }
     public enum ElevatorStates{
+        STOWED,
         RISE,
         LEV2_RISE,
         TRANSITION,
         RETRACT,
+        MANUAL,
     }
 
     public static TeleopController getInstance() {
@@ -92,7 +94,7 @@ Timer gameTimer = new Timer();
         cargoWristAngleState = CargoWristAngleStates.STOWED;
         bobcatState = BobcatStates.STOWED;
         hatchState = HatchStates.HOLD_HATCH;
-        climberState = ElevatorStates.RETRACT;
+        climberState = ElevatorStates.STOWED;
     }
 
     public void callStateMachines(){
@@ -217,6 +219,8 @@ Timer gameTimer = new Timer();
 
     public void climberStateMachine(){
         switch(climberState){
+            case STOWED:
+                break;
             case RISE:
                 _climb.setClimbHeight(Constants.kElevatorClimbHeight);
                 climberExtendedState();
@@ -303,12 +307,12 @@ Timer gameTimer = new Timer();
      */
     private void climberExtendedState(){
         _climb.setMantisPosition(true);
-        // _climb.actionMoveTo(_climb.getClimbHeight());
+        _climb.actionMoveTo(_climb.getClimbHeight());
     }
 
     private void climberLev2ExtendedState() {
         _climb.setMantisPosition(true);
-        // _climb.actionMoveTo(_climb.getClimbHeight());
+        _climb.actionMoveTo(_climb.getClimbHeight());
     }
 
     /**
@@ -316,7 +320,7 @@ Timer gameTimer = new Timer();
      */
     private void climberTransferState() {
         _climb.setMantisPosition(false);
-        // _climb.actionMoveTo(_climb.getClimbHeight());
+        _climb.actionMoveTo(_climb.getClimbHeight());
     }
 
     /**
@@ -406,9 +410,11 @@ Timer gameTimer = new Timer();
         }
 
         // Run manual mode
-        if (_controls.getManualMode()) {
-            cargoWristAngleState = CargoWristAngleStates.MANUAL;
+        if (_controls.getManualBobcatMode()) {
             bobcatState = BobcatStates.MANUAL;
+        }
+        if (_controls.getManualCargoWristMode()) {
+            cargoWristAngleState = CargoWristAngleStates.MANUAL;
         }
         
         // Climb
@@ -418,21 +424,23 @@ Timer gameTimer = new Timer();
         } else if (_controls.getButtonReleaseSyncLev2Climb()) {
             climberState = ElevatorStates.LEV2_RISE;
 
-        } else if (_controls.getButtonPressMantisRetract()){
+        } else if (_controls.getButtonPressMantisRetract()) {
             climberState = ElevatorStates.TRANSITION;
 
         }
-        // if (_controls.getButtonPressElevatorRetract()){
-        //     climberState = ElevatorStates.RETRACT;
-        // }
-
-        if (_controls.stick.getRawButton(12)) {
-            _climb.setElevatorMotors(1);
-        } else if (_controls.stick.getRawButton(11)) {
-            _climb.setElevatorMotors(-1);
-        } else {
-            _climb.setElevatorMotors(0);
+        if (_controls.getButtonPressElevatorRetract()){
+            climberState = ElevatorStates.RETRACT;
         }
+
+        // if (_controls.stick.getRawButton(12)) {
+        //     climberState = ElevatorStates.MANUAL;
+        //     _climb.setElevatorMotors(1);
+        // } else if (_controls.stick.getRawButton(11)) {
+        //     climberState = ElevatorStates.MANUAL;
+        //     _climb.setElevatorMotors(-1);
+        // } else if (climberState == ElevatorStates.MANUAL) {
+        //     _climb.setElevatorMotors(0);
+        // }
 
         SmartDashboard.putString("Climber State", climberState.name());
     }
@@ -555,7 +563,7 @@ Timer gameTimer = new Timer();
         }
 
         // Run manual mode
-        if (_controls.getManualMode()) {
+        if (_controls.getManualBobcatMode()) {
             cargoWristAngleState = CargoWristAngleStates.MANUAL;
             bobcatState = BobcatStates.MANUAL;
         }
@@ -568,5 +576,13 @@ Timer gameTimer = new Timer();
         _drive.zeroPosition();
         _bobcat.resetSensors();
         _cargo.resetSensors();
+    }
+
+    public void matchStartConfig() {
+        robotState = States.TELEOP;
+        cargoWristAngleState = CargoWristAngleStates.STOWED;
+        bobcatState = BobcatStates.STOWED;
+        hatchState = HatchStates.HOLD_HATCH;
+        climberState = ElevatorStates.STOWED;
     }
 }

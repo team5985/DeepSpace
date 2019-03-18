@@ -6,8 +6,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Calcs;
 import frc.robot.Constants;
@@ -32,6 +34,7 @@ public class Climber extends Subsystem {
 
 	public static Climber climberInstance = null;
 
+	private Encoder encoder;
 	private static AHRS imu;
 	
 	private double _climbHeight = 0.0;
@@ -118,8 +121,7 @@ public class Climber extends Subsystem {
 	}
 
 	void configSensors() {
-		masterTalon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-		masterTalon.setSensorPhase(false);
+		encoder = new Encoder(Constants.kElevatorEncoderPortA, Constants.kElevatorEncoderPortB, Constants.kElevatorJointEncoderPhase, EncodingType.k4X);
 		imu = Drive.getInstance().getImuInstance();
 	}
 
@@ -128,7 +130,7 @@ public class Climber extends Subsystem {
 	 * @return Height in metres.
 	 */
 	public double getPosition() {
-		return masterTalon.getSelectedSensorPosition() * Constants.kElevatorDistancePerPulse;
+		return encoder.getRaw() * Constants.kElevatorDistancePerPulse;
 	}
 
 	public boolean zeroPosition() {

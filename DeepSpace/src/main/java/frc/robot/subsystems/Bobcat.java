@@ -30,7 +30,7 @@ public class Bobcat extends Subsystem {
     private double highAngleCargo = 105;
     private double cargoShipCargoAngle = 48;
 
-    private double climbAngle = 43;
+    private double climbAngle = 38;
 
     private double stowedAngle = 0;
     public static Bobcat bobcatInstance;

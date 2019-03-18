@@ -277,8 +277,15 @@ public class DriverControls {
 	/**
 	 * @return True while the button for manually controlling both joints is being pressed
 	 */
-	public boolean getManualMode() {
+	public boolean getManualBobcatMode() {
 		return xBox.getBumper(Hand.kLeft);
+	}	
+
+	/**
+	 * @return True while the button for manually controlling both joints is being pressed
+	 */
+	public boolean getManualCargoWristMode() {
+		return (xBox.getTriggerAxis(Hand.kLeft) > 0.5);
 	}	
 
 	/**

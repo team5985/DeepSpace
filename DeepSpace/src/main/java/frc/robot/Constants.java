@@ -30,6 +30,9 @@ public class Constants {
     
     public static final int kBobcatEncoderPortA = 6;
     public static final int kBobcatEncoderPortB = 7;
+
+    public static final int kElevatorEncoderPortA = 8;
+	public static final int kElevatorEncoderPortB = 9;
     
     // RoboRIO PWM Ports
     public static final int kVictorCargoIntakeLeftPwmPort = 0;
@@ -83,11 +86,12 @@ public class Constants {
     public static final double kElevatorLiftDistGain = 20;
 	public static final double kElevatorTiltCompGain = 0.0;  // Motor controller units (-1:1) per degree  
     public static final double kElevatorHeightTolerance = 0.05;  // Metres
-    public static final double kElevatorClimbHeight = 0.35; // Antlia .35 Pyxis .43
-    public static final double kElevatorLev2ClimbHeight = 0.12;
+    public static final double kElevatorClimbHeight = 0.36; // Antlia .35 Pyxis .43
+    public static final double kElevatorLev2ClimbHeight = 0.24;
 
     public static final double kElevatorSpoolDiam = 0.0191;  // In Metres!
     public static final double kElevatorDistancePerPulse = (Math.PI * Constants.kElevatorSpoolDiam) / Constants.kCuiEncoderCpr;  // Metres per pulse
+	public static final boolean kElevatorJointEncoderPhase = false;
 
 	// public static final double kElevatorMaxOutput = 0.0;
     public static final boolean kTalonElevatorDirection = false;
@@ -102,7 +106,7 @@ public class Constants {
     public static final double kCargoWristMaxSpeed = 97.2;
     public static final double kCargoWristAngleTolerance = 2;
 	public static final boolean kWristMotorDirection = false;
-    public static final boolean kTalonCargoIntakeEncoderPhase = true;
+    public static final boolean kTalonCargoIntakeEncoderPhase = false;
 
     public static final double kIntakePhysicalLength = 0.270; // Metres
 	public static final double kIntakeStowedPhysicalAngle = 0.0; // Degrees
@@ -148,6 +152,5 @@ public class Constants {
 	public static final double kVisionTargetRocketFarRightAngle = 151.25;
 	public static final double kVisionTargetRocketNearLeftAngle = 331.25;
     public static final double kVisionTargetRocketNearRightAngle = 28.75;
-	public static final double kVisionTargetLoadingStation = 180;
-	
+	public static final double kVisionTargetLoadingStation = 180;	
 }

@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
     teleopController.resetAllSensors();
     autoController.initialiseAuto();
     autoInterrupt = false;
+    teleopController.matchStartConfig();
   }
 
   @Override
