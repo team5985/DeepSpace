@@ -22,7 +22,7 @@ public class CargoIntake extends Subsystem {
     private double highAngle = 60;
     private double midAngle = 90;
     private double lowAngle = 105;
-    private double grabIntakePercent = 0.4;
+    private double grabIntakePercent = 0.3;
     private double holdIntakePercent = 0.0;
     private double shootIntakePercent = -0.6;
     public static CargoIntake cargoInstance;
