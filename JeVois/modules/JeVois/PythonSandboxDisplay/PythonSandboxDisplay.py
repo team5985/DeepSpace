@@ -2,6 +2,7 @@ import libjevois as jevois
 import cv2
 import numpy as np
 import json
+import math
 
 ## Simple example of image processing using OpenCV in Python on JeVois
 #

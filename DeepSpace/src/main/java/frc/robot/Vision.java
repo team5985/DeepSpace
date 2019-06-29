@@ -66,7 +66,7 @@ public class Vision {
 	 */
 	public void updateVision() {
 		String json = mxp.readString();
-		// DriverStation.reportWarning(json, false);
+		DriverStation.reportWarning("JSON: " + json, false);
 		try {
 			JsonObject data = Json.parse(json).asObject();
 			// DriverStation.reportWarning("Parsed! ", false);
@@ -119,6 +119,7 @@ public class Vision {
 	/**
 	 * Returns distance the robot must travel perpendicular to the vision target in order to align with it. Does not update vision values.
 	 * @param visionTargetAngle Target to track.
+	 * 
 	 * @param robotAngle Angle of the robot's gyro, relative to the field.
 	 * @return Error in metres.
 	 * @see updateVision()

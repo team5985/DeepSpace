@@ -118,7 +118,7 @@ public class CargoIntake extends Subsystem {
     }
 
 	public double getPosition(){
-        feedBack = wristMotor.getSelectedSensorPosition();   //1024 Pulses per rotation -  4 counts per pulse   - 4096
+        feedBack = -wristMotor.getSelectedSensorPosition();   //1024 Pulses per rotation -  4 counts per pulse   - 4096  FIXME polarity
         return (feedBack / 4096) * 360;
     }
 

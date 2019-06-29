@@ -11,7 +11,7 @@ public class Hatch extends Subsystem {
     public static Hatch hatchInstance = null;
 
     DoubleSolenoid popSolenoid;
-    Solenoid beakSolenoid;
+    DoubleSolenoid beakSolenoid;
     
     public static Hatch getInstance() {
         if (hatchInstance == null) {
@@ -34,9 +34,9 @@ public class Hatch extends Subsystem {
         }
 
         if (beakPosition) {
-            beakSolenoid.set(true);
+            beakSolenoid.set(Value.kForward);
         } else {
-            beakSolenoid.set(false);
+            beakSolenoid.set(Value.kReverse);
         }
         
     }
@@ -51,7 +51,7 @@ public class Hatch extends Subsystem {
     // }
 
     public boolean getBeakPosition(){
-        if (beakSolenoid.get()) {
+        if (beakSolenoid.get() == Value.kForward) {
             return true;
         } else {
             return false;
@@ -72,6 +72,6 @@ public class Hatch extends Subsystem {
 
     void configActuators(){
         popSolenoid = new DoubleSolenoid(Constants.kPcmCanId, Constants.kHatchPopperForwardPcmPort, Constants.kHatchPopperReversePcmPort);
-        beakSolenoid = new Solenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel);
+        beakSolenoid = new DoubleSolenoid(Constants.kPcmCanId, Constants.kBeakPlusCargoSolenoidChannel, 5);
     }
 }
