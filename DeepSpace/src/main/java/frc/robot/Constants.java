@@ -142,7 +142,7 @@ public class Constants {
 
     // Vision constants
     public static final double kVisionDriverAdjustmentGain = 20; // Proportional, scales the joystick steering command and adds to the vision tracking target
-	public static final double kVisionServoingGain = 0.06;  // Square root gain
+	public static final double kVisionServoingGain = 0.03;  // Square root gain
 
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)
 	public static final double kVisionTargetSideNearAngle = 0;

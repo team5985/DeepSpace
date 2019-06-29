@@ -176,8 +176,8 @@ public class DriverControls {
 		return stick.getRawButtonReleased(10);
 	}
 
-	public boolean getButtonPressVision() {
-		return stick.getRawButtonPressed(5);
+	public boolean getButtonVision() {
+		return stick.getRawButton(5);
 	}
 
 	// Syncroned (semi-auto) climb

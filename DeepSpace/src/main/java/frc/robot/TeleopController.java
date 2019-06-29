@@ -16,7 +16,7 @@ import frc.robot.subsystems.Hatch;
  */
 public class TeleopController {
     DriverControls _controls;
-    // Vision _vision;
+    Vision _vision;
 
     CargoIntake _cargo;
     Drive _drive;
@@ -82,7 +82,7 @@ Timer gameTimer = new Timer();
 
     private TeleopController() {
         _controls = DriverControls.getInstance();
-        // _vision = Vision.getInstance();
+        _vision = Vision.getInstance();
         
         _drive = Drive.getInstance();
         _cargo = CargoIntake.getInstance();
@@ -363,6 +363,10 @@ Timer gameTimer = new Timer();
         }
         if ((robotState != States.HAB) || (robotState != States.VISION)){
             _drive.teleopDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
+        }
+
+        if (_controls.getButtonVision()) {
+            _drive.arcadeDrive(_controls.getDrivePower(), _vision.getAngle() * Constants.kVisionServoingGain * (_controls.getDrivePower() + 0.1), _controls.getDriveThrottle());
         }
     }
 

@@ -4,6 +4,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.ParseException;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -65,36 +66,7 @@ public class Vision {
 	 * Updates the known locations of the vision targets.
 	 */
 	public void updateVision() {
-		String json = mxp.readString();
-		DriverStation.reportWarning("JSON: " + json, false);
-		try {
-			JsonObject data = Json.parse(json).asObject();
-			// DriverStation.reportWarning("Parsed! ", false);
-			
-			dataIsValid = data.get("valid").asBoolean();
-			if (dataIsValid) {
-				targetAngle = data.get("x").asDouble();
-				// DriverStation.reportWarning("X Value Parsed! ", false);
-				targetDistance = data.get("distance").asDouble();
-			}
-			
-			jevoisError = false;
-		} catch (ParseException invalidJson) {
-			DriverStation.reportWarning("JeVois: Invalid Json!", false);
-			jevoisError = true;
-		} catch (UnsupportedOperationException invalidValue) {
-			DriverStation.reportWarning("JeVois: JSON data has a bad value!", false);
-			jevoisError = true;
-		} catch (Exception e) {
-			DriverStation.reportWarning("Jevois: Failed to parse JSON: " + e.getMessage(), false);
-			jevoisError = true;
-		}
-
-		if (dataIsValid) {
-			DriverStation.reportWarning("Object Detected at " + targetAngle, false);
-		} else {
-			DriverStation.reportWarning("JeVois: No Object Detected", false);
-		}
+		targetAngle = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
 		SmartDashboard.putNumber("X", targetAngle);
 	}

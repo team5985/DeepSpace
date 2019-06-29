@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    // _vision.updateVision();
+    _vision.updateVision();
     // SmartDashboard.putBoolean("Target Lock", _vision.getDataIsValid());
     // SmartDashboard.putNumber("Vision Angle", _vision.getAngle());
 
