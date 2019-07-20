@@ -418,7 +418,7 @@ public class TeleopController {
                 if (limeLightDriveCommand > Constants.kVisionMaxDrive){
                     limeLightDriveCommand = Constants.kVisionMaxDrive;
                 }
-                _drive.arcadeDrive(limeLightDriveCommand, limeLightSteerCommand, _controls.getDriveThrottle())
+                _drive.arcadeDrive(limeLightDriveCommand, limeLightSteerCommand, _controls.getDriveThrottle());
             }   
                 //_drive.arcadeDrive(_controls.getDrivePower(), _vision.getAngle() * Constants.kVisionServoingGain * (_controls.getDrivePower() + 0.1), _controls.getDriveThrottle());
         }
