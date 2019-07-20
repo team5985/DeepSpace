@@ -142,7 +142,11 @@ public class Constants {
 
     // Vision constants
     public static final double kVisionDriverAdjustmentGain = 20; // Proportional, scales the joystick steering command and adds to the vision tracking target
-	public static final double kVisionServoingGain = 0.03;  // Square root gain
+    public static final double kVisionServoingGain = 0.03;  // Square root gain
+    public static final double kVisionSteer = 0.03;  //All need adjustment          
+    public static final double kVisionDrive = 0.26;    //http://docs.limelightvision.io/en/latest/cs_drive_to_goal_2019.html                
+    public static final double kVisionDesiredArea = 13.0;        
+    public static final double kVisionMaxDrive = 0.7;      
 
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)
 	public static final double kVisionTargetSideNearAngle = 0;
