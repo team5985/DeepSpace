@@ -41,9 +41,9 @@ public class Constants {
     public static final int kVictorMantisLeftPwmPort = 3;
 
     // PCM Solenoid Ports
-    public static final int kHatchPopperForwardPcmPort = 6;  // 0, 1 for comp robot, 4/5 for Pyxis
-    public static final int kHatchPopperReversePcmPort = 7;
-    public static final int kSolenoidMantisChannel = 3;
+    public static final int kHatchPopperForwardPcmPort = 3;  // 0, 1 for comp robot, whatever the hell for Pyxis
+    public static final int kHatchPopperReversePcmPort = 0;
+    public static final int kSolenoidMantisChannel = 7;
     public static final int kBeakPlusCargoSolenoidChannel = 4;  // TODO: Check
 
     // Driverstation Ports
@@ -106,7 +106,7 @@ public class Constants {
     public static final double kCargoWristMaxSpeed = 97.2;
     public static final double kCargoWristAngleTolerance = 2;
 	public static final boolean kWristMotorDirection = false;
-    public static final boolean kTalonCargoIntakeEncoderPhase = false;
+    public static final boolean kTalonCargoIntakeEncoderPhase = true;
 
     public static final double kIntakePhysicalLength = 0.270; // Metres
 	public static final double kIntakeStowedPhysicalAngle = 0.0; // Degrees
@@ -142,7 +142,11 @@ public class Constants {
 
     // Vision constants
     public static final double kVisionDriverAdjustmentGain = 20; // Proportional, scales the joystick steering command and adds to the vision tracking target
-	public static final double kVisionServoingGain = 0.06;  // Square root gain
+    public static final double kVisionSteer = 0.03;  //All need adjustment          
+    public static final double kVisionDrive = 0.26;    //http://docs.limelightvision.io/en/latest/cs_drive_to_goal_2019.html                
+    public static final double kVisionDesiredArea = 13.0;        
+    public static final double kVisionMaxDrive = 0.7;      
+	public static final double kVisionServoingGain = 0.01;  // Square root gain
 
     // Field measurements (angles are positive as getAutoDetectTargetCrossError() requires it)
 	public static final double kVisionTargetSideNearAngle = 0;

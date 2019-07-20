@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
   TeleopController teleopController = TeleopController.getInstance();
   AutoController autoController = AutoController.getInstance();
-  // Vision _vision = Vision.getInstance();
+  Vision _vision = Vision.getInstance();
 
   DriverControls _controls = new DriverControls();
   
@@ -35,12 +35,12 @@ public class Robot extends TimedRobot {
     comp = new Compressor(Constants.kPcmCanId);
     comp.setClosedLoopControl(true);
 
-    CameraServer.getInstance().startAutomaticCapture();    
+    CameraServer.getInstance().startAutomaticCapture();
   }
 
   @Override
   public void robotPeriodic() {
-    // _vision.updateVision();
+    _vision.updateVision();
     // SmartDashboard.putBoolean("Target Lock", _vision.getDataIsValid());
     // SmartDashboard.putNumber("Vision Angle", _vision.getAngle());
 

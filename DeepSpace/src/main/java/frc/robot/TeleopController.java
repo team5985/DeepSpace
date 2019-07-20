@@ -9,6 +9,7 @@ import frc.robot.subsystems.CargoIntake.*;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Hatch;
+import edu.wpi.first.networktables.*;
 
 
 /**
@@ -16,7 +17,7 @@ import frc.robot.subsystems.Hatch;
  */
 public class TeleopController {
     DriverControls _controls;
-    // Vision _vision;
+    Vision _vision;
 
     CargoIntake _cargo;
     Drive _drive;
@@ -32,7 +33,14 @@ public class TeleopController {
     HatchStates hatchState;
     ElevatorStates climberState;
 
-Timer gameTimer = new Timer();
+    Timer gameTimer = new Timer();
+    double newTime = gameTimer.getFPGATimestamp();
+    boolean finished = true;
+    double oldTime = 0;             
+
+    private double limeLightDriveCommand = 0.0;
+    private double limeLightSteerCommand = 0.0;
+
     public enum States {
         AUTO,
         TELEOP,
@@ -82,7 +90,7 @@ Timer gameTimer = new Timer();
 
     private TeleopController() {
         _controls = DriverControls.getInstance();
-        // _vision = Vision.getInstance();
+        _vision = Vision.getInstance();
         
         _drive = Drive.getInstance();
         _cargo = CargoIntake.getInstance();
@@ -125,7 +133,7 @@ Timer gameTimer = new Timer();
                 trTeleop();
                 break;
             case VICTORY:
-                stVictory();
+                autoClimb();
                 trTeleop();
                 break;
             default:
@@ -349,11 +357,40 @@ Timer gameTimer = new Timer();
             robotState = States.TELEOP;
         }
     }
-    
-    public void trVictory() {
+
+
+    public void autoClimb() {
         if(_controls.getButtonPress6()) {
-            robotState = States.VICTORY;
+            oldTime = gameTimer.getFPGATimestamp();
+            finished = false;
         }
+        
+        if (finished == false){
+            if(newTime - oldTime < 4){
+                // activate elevators and mantis arms
+                climberState = ElevatorStates.RISE;
+            }
+            // wait 4 seconds
+            if(newTime - oldTime >= 4 && newTime - oldTime < 9){
+                //retract elevator arms and drive forward for 5
+                climberState = ElevatorStates.TRANSITION;
+                _drive.teleopDrive(0.2, 1, 1);
+            }
+            //drive forward for five seconds
+            if (newTime - oldTime >= 9 && newTime - oldTime < 10){
+                //drive back a little so elevators can retract
+                _drive.teleopDrive(0.2, -1, 1);
+
+                }
+            if (newTime - oldTime >= 10 && newTime - oldTime < 13)
+                climberState = ElevatorStates.STOWED;
+            }
+            if (newTime - oldTime >= 13 && newTime - oldTime < 15){
+                _drive.teleopDrive(0.2, 1, 1);
+            }
+            else{
+                finished = true;
+            }  
     }
 
     //States
@@ -363,6 +400,27 @@ Timer gameTimer = new Timer();
         }
         if ((robotState != States.HAB) || (robotState != States.VISION)){
             _drive.teleopDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
+        }
+
+        if (_controls.getButtonVision()) {
+            double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+            double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+            double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+            double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+            if(tv < 1){
+                SmartDashboard.putString("Climber State", climberState.name());
+                limeLightDriveCommand = 0.0;
+                limeLightSteerCommand = 0.0;
+            }
+            else{
+                limeLightSteerCommand = tx * Constants.kVisionSteer;
+                limeLightDriveCommand = (Constants.kVisionDesiredArea - ta) * Constants.kVisionDrive;
+                if (limeLightDriveCommand > Constants.kVisionMaxDrive){
+                    limeLightDriveCommand = Constants.kVisionMaxDrive;
+                }
+                _drive.arcadeDrive(limeLightDriveCommand, limeLightSteerCommand, _controls.getDriveThrottle())
+            }   
+                //_drive.arcadeDrive(_controls.getDrivePower(), _vision.getAngle() * Constants.kVisionServoingGain * (_controls.getDrivePower() + 0.1), _controls.getDriveThrottle());
         }
     }
 
@@ -443,15 +501,6 @@ Timer gameTimer = new Timer();
         // }
 
         SmartDashboard.putString("Climber State", climberState.name());
-    }
-
-    public void stEnd() {
-        //The end is here! ARRGH
-    }
-
-    public void stVictory() {
-        //AND THAT'S A WIN FOR TEAM 5985!!!!!!!!!!!!!!!!!!!!!
-        _drive.setMotors(1.0, -1.0);
     }
 
     public void setGamePieceMode() {
