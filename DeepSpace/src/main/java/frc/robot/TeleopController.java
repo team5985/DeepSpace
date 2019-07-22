@@ -34,12 +34,22 @@ public class TeleopController {
     ElevatorStates climberState;
 
     Timer gameTimer = new Timer();
-    double newTime = gameTimer.getFPGATimestamp();
+    long newTime = 0;
     boolean finished = true;
-    double oldTime = 0;             
+    long oldTime = 0;    
+    boolean testStart = false;  
+    boolean doOne = false;
+    boolean doTwo = false;    
+    boolean doThree = false; 
+    boolean doFour = false; 
+    boolean doFive = false; 
+    boolean doSix = false; 
+    boolean doSeven = false;     
 
     private double limeLightDriveCommand = 0.0;
     private double limeLightSteerCommand = 0.0;
+
+    double position = 0.0;
 
     public enum States {
         AUTO,
@@ -122,6 +132,9 @@ public class TeleopController {
                 // trVision();
                 stTeleop();
                 trHab();
+                autoClimb();
+                //String s = "test";
+                //SmartDashboard.putString("Climber State", s);
                 break;
             case VISION:
                 stTeleop();
@@ -133,7 +146,7 @@ public class TeleopController {
                 trTeleop();
                 break;
             case VICTORY:
-                autoClimb();
+                
                 trTeleop();
                 break;
             default:
@@ -359,39 +372,74 @@ public class TeleopController {
     }
 
 
+
     public void autoClimb() {
+        /*
+        newTime = System.currentTimeMillis();
+        position = _climb.getPosition();
         if(_controls.getButtonPress6()) {
-            oldTime = gameTimer.getFPGATimestamp();
-            finished = false;
+            oldTime = System.currentTimeMillis();
+            finished = false;    
+        }      
+        if (finished == false){
+            if(newTime - oldTime < 0.5 * 1000){
+                if(doOne == false){
+                    climberState = ElevatorStates.RISE;
+                    doOne = true;
+                }
+            }
+            if(newTime - oldTime >=3.5 * 1000 && newTime - oldTime < 4 * 1000){
+                if(doTwo == false){
+                    doTwo = true;
+                    _drive.teleopDrive(0.2, 1, 1);
+                }    
+            }
+            if(newTime - oldTime >=4 * 1000 && newTime - oldTime < 4.5 * 1000){
+                if(doThree == false){
+                    doThree = true;
+                    climberState = ElevatorStates.TRANSITION;
+                }    
+            }
+            if(newTime - oldTime >=4.5 * 1000 && newTime - oldTime < 5 * 1000){
+                if(doFour == false){
+                    doFour = true;
+                    _drive.teleopDrive(0.2, 1, 1);
+                }    
+            }
+            if(newTime - oldTime >=5 * 1000 && newTime - oldTime < 5.5 * 1000){
+                if(doFive == false){
+                    doFive = true;
+                    _drive.teleopDrive(-0.1, 1, 1);
+                }    
+            }
+            if(newTime - oldTime >=5.5 * 1000 && newTime - oldTime < 7.5 * 1000){
+                if(doSix == false){
+                    doSix = true;
+                    climberState = ElevatorStates.RETRACT;
+                }    
+            }
+            if(newTime - oldTime >=7.5 * 1000 && newTime - oldTime < 8 * 1000){
+                if(doSeven == false){
+                    doSeven = true;
+                    _drive.teleopDrive(0.2, 1, 1);
+                }    
+            }
+            if(newTime - oldTime >= 8 * 1000){
+                finished = true;
+                doOne = false;
+                doTwo = false;
+                doThree = false;
+                doFour = false;
+                doFive = false;
+                doSix = false;
+                doSeven = false;
+                }  
+            }
+            */
         }
         
-        if (finished == false){
-            if(newTime - oldTime < 4){
-                // activate elevators and mantis arms
-                climberState = ElevatorStates.RISE;
-            }
-            // wait 4 seconds
-            if(newTime - oldTime >= 4 && newTime - oldTime < 9){
-                //retract elevator arms and drive forward for 5
-                climberState = ElevatorStates.TRANSITION;
-                _drive.teleopDrive(0.2, 1, 1);
-            }
-            //drive forward for five seconds
-            if (newTime - oldTime >= 9 && newTime - oldTime < 10){
-                //drive back a little so elevators can retract
-                _drive.teleopDrive(0.2, -1, 1);
-
-                }
-            if (newTime - oldTime >= 10 && newTime - oldTime < 13)
-                climberState = ElevatorStates.STOWED;
-            }
-            if (newTime - oldTime >= 13 && newTime - oldTime < 15){
-                _drive.teleopDrive(0.2, 1, 1);
-            }
-            else{
-                finished = true;
-            }  
-    }
+    
+    
 
     //States
     public void callDrive() {
