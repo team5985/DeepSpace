@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.Calcs;
+import frc.util.Calcs;
 import frc.robot.Constants;
 
 /**

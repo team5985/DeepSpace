@@ -8,7 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.Calcs;
+import frc.util.Calcs;
 import frc.robot.Constants;
 
 public class CargoIntake extends Subsystem {
