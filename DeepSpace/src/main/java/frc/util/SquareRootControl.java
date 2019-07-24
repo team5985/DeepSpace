@@ -1,4 +1,4 @@
-package frc.lib;
+package frc.util;
 
 /**
  * Simple feedback controller that accelerates, coasts, and decelerates.
