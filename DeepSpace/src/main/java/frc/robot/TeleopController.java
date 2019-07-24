@@ -449,7 +449,8 @@ public class TeleopController {
         if ((robotState != States.HAB) || (robotState != States.VISION)){
             _drive.teleopDrive(_controls.getDrivePower(), _controls.getDriveSteering(), _controls.getDriveThrottle());
         }
-
+    }
+        /*
         if (_controls.getButtonVision()) {
             double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
             double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
@@ -471,6 +472,7 @@ public class TeleopController {
                 //_drive.arcadeDrive(_controls.getDrivePower(), _vision.getAngle() * Constants.kVisionServoingGain * (_controls.getDrivePower() + 0.1), _controls.getDriveThrottle());
         }
     }
+    */
 
     /**
      * Runs the vision assist code for the driver. DOES NOT UPDATE VISION TARGETING VALUES
