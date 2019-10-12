@@ -13,13 +13,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Calcs;
 import frc.robot.Constants;
 import frc.robot.DriverControls;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Bobcat extends Subsystem {
     boolean hatchCollected = false;
     DriverControls driverControls = new DriverControls();
     private CANSparkMax jointMotor;
     private Encoder jointEncoder;
-    private DigitalInput hallEffect;
+    DigitalInput hallEffect;
 
     private double lowAngleHatch = 8;
     private double midAngleHatch = 55;
@@ -33,18 +34,21 @@ public class Bobcat extends Subsystem {
     private double climbAngle = 38;
 
     private double stowedAngle = 0;
+    private double errorAngle = 537;
     public static Bobcat bobcatInstance;
-
     public static Bobcat getInstance() {
         if (bobcatInstance == null) {
             bobcatInstance = new Bobcat();
         }
         return bobcatInstance;
+        
     }
+   
 
     private Bobcat(){
         configActuators();
         configSensors();  
+        hallEffect = new DigitalInput(Constants.kBobcatHallEffectPort);
     }
     
     public enum ArmPositions {
@@ -57,6 +61,7 @@ public class Bobcat extends Subsystem {
         LOW_CARGO,
         CARGOSHIP_BALL_POSITION,
         CLIMB_ANGLE,
+        ERROR,
     }
 
     public boolean actionMoveTo(ArmPositions positions){
@@ -91,7 +96,9 @@ public class Bobcat extends Subsystem {
 
             case CLIMB_ANGLE:
                 return setAngle(climbAngle, true);
-
+            case ERROR:
+                manualMove(0.0);
+                return 
             default:
                 return false;
         }

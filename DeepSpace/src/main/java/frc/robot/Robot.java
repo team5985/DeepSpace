@@ -35,11 +35,12 @@ public class Robot extends TimedRobot {
     comp = new Compressor(Constants.kPcmCanId);
     comp.setClosedLoopControl(true);
 
-    CameraServer.getInstance().startAutomaticCapture();
+    CameraServer.getInstance().startAutomaticCapture();    
   }
 
   @Override
   public void robotPeriodic() {
+  
     _vision.updateVision();
     // SmartDashboard.putBoolean("Target Lock", _vision.getDataIsValid());
     // SmartDashboard.putNumber("Vision Angle", _vision.getAngle());
